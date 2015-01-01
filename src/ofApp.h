@@ -4,7 +4,6 @@
 #include "ofxGui.h"
 #include "INF_Utils.h"
 
-
 #include "Sequencer.h"
 #include "NetOSC.h"
 #include "PolyGUI.h"
@@ -95,8 +94,9 @@ class ofApp : public ofBaseApp {
     
     vector<Sequencer*>INF_seq;
     vector<PolyGUI*>INF_gui;
-    
+    INF_Clock clock;
     bool trigger;
+    bool mouseClick;
     
     
     //Network

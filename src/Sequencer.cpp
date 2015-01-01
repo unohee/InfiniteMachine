@@ -32,6 +32,10 @@ void Sequencer::seq_change(int step, int pulse){
     copy(b.sequence, false);
 }
 //--------------------------------------------------------------
+void Sequencer::play(int &playHead){
+    int length = step;
+    notePlayed = seq.at(playHead % length);
+}
 void Sequencer::play(bool isPlay){
     //clock ticks here..
     currentCount=floor(counter.phasor(bps));//this sets up the metronome that ticks in every second, amount of tick is based on BPM conversion above.

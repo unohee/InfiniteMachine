@@ -11,7 +11,26 @@
 
 #include "ofxMaxim.h"
 #include "Bjorklund.h"
+#include "PolyGUI.h" // GUI
 #include "ofMain.h"
+
+struct Steps{
+public:
+    
+    int *accent;
+    bool on;
+    
+    Steps():on(false), accent(0){
+        
+    }
+    ~Steps()
+    {
+        //destructor
+        if(accent != NULL)
+            delete accent;
+    };
+};
+
 
 
 //operator overloading test
@@ -43,13 +62,11 @@ public:
     }
     bool trigger(int playHead){
         return (euclid) ? sequence[playHead%seq_len] : 0;
-//        return -1;
     }
     
     bool euclid;
     int seq_len, seq_pulse;
     vector<bool> seq;
-    
 };
 
 class Sequencer {
@@ -65,6 +82,11 @@ public:
     void copy(vector<bool>&v, bool verbose);
     void seq_change(int step, int pulse);
     void play(bool isPlay);
+    void play(int &playHead);
+    
+    void draw();
+    
+    
     void setNote(int &pitch){note = pitch;};
     bool trigger(){return (notePlayed == true ? 1 : 0); };
     void setClock(int BPM, int speed){bps = BPM / 60.f * pow(2,speed); };
@@ -82,7 +104,6 @@ private:
     //play method
     //Transport Control (Maximilian)
     maxiOsc counter; //Phasor object
-    maxiClock mClock;
     double bps;
     
     int currentCount;

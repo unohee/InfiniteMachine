@@ -134,6 +134,8 @@
 		8A3ADC330D8624DB4F114273 /* TransportBar.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TransportBar.cpp; path = src/TransportBar.cpp; sourceTree = SOURCE_ROOT; };
 		8B30E93FD3D3475EED522A0E /* ofxOscBundle.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscBundle.h; path = ../../../addons/ofxOsc/src/ofxOscBundle.h; sourceTree = SOURCE_ROOT; };
 		8C75AFC8774A62495DD53464 /* ofxOscReceiver.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscReceiver.h; path = ../../../addons/ofxOsc/src/ofxOscReceiver.h; sourceTree = SOURCE_ROOT; };
+		8D0ACDF01D16E3CA0039FCD6 /* Sequence.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sequence.h; sourceTree = "<group>"; };
+		8DCF45A51D14A38D0080D497 /* INF_Clock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = INF_Clock.h; sourceTree = "<group>"; };
 		902724601B82C6AD81BBCD71 /* ofxDatGui2dPad.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxDatGui2dPad.h; path = ../../../addons/ofxDatGui/src/components/ofxDatGui2dPad.h; sourceTree = SOURCE_ROOT; };
 		907C5B5E104864A2D3A25745 /* ofxToggle.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxToggle.cpp; path = ../../../addons/ofxGui/src/ofxToggle.cpp; sourceTree = SOURCE_ROOT; };
 		9312F3864ED05FC3E847FF69 /* ofxMaxim.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxMaxim.h; path = ../../../addons/ofxMaxim/src/ofxMaxim.h; sourceTree = SOURCE_ROOT; };
@@ -480,8 +482,10 @@
 				87B2AAD8ECDAF0433B830FA9 /* PolyGUI.h */,
 				E282FEFB97E3684440CD75CE /* Sequencer.cpp */,
 				4324679E4DB7F91DE15A2EAD /* Sequencer.h */,
+				8D0ACDF01D16E3CA0039FCD6 /* Sequence.h */,
 				8A3ADC330D8624DB4F114273 /* TransportBar.cpp */,
 				89ABDDF399D6884BED487837 /* TransportBar.h */,
+				8DCF45A51D14A38D0080D497 /* INF_Clock.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;

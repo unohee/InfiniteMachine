@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxMeshFont2D.h"
 #include "INF_Utils.h"
+#include "Bjorklund.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -11,13 +12,16 @@
 struct Step{
 public:
     
-    int *accent;
-    float radius;
-    ofPoint pos;
-    bool isFloat;
     bool on;
+    int *accent;
+    int *note;
+    ofPoint pos;
+
+    bool isFloat;
+    float radius;
     
-    Step(ofPoint p, bool _on):pos(p), on(_on), radius(15), accent(0)
+    Step():on(false){};
+    Step(bool _on):on(_on), accent(0)
     {
         //constructor
         
@@ -27,19 +31,64 @@ public:
         //destructor
         if(accent != NULL)
             delete accent;
+        if(note != NULL)
+            delete note;
     };
-    bool mouseOver(){
+    void mouseOver(bool &mouseClicked){
         float disX = pos.x - ofGetMouseX();
         float disY = pos.y - ofGetMouseY();
         (sqrt(pow(disX, 2) + pow(disY,2)) < radius * 2 ) ? isFloat = 1 : isFloat = 0;
     }
     void render(){
-        ofSetColor(ofColor::red);
         (on) ? ofFill() : ofNoFill();
-        ofDrawCircle(pos.x, pos.y , radius);
+        ofDrawCircle(pos.x, pos.y, radius);
+        
     }
 
+
 };
+
+struct Seq_Loop{
+public:
+    
+    vector<Step>step_Arr;
+    vector<ofPoint> pos;
+    
+    int stepAmount;
+    int pulses;
+    float radius;
+    
+    Seq_Loop(int seq_len):stepAmount(seq_len){
+        if(!step_Arr.empty())
+            step_Arr.clear();
+        float angle = 360 / stepAmount;
+        
+        for(int i = 0; i < stepAmount; i++){
+            pos.insert(pos.begin()+i, ofPoint(radius * cos(angle*i*PI/180), radius * sin(angle*i*PI/180), 0));
+            
+            Step temp = Step(pos[i],0);
+            temp.radius = 15;
+            step_Arr.insert(step_Arr.begin()+i, temp);
+        }
+    };
+    
+    Seq_Loop(int seq_len, int seq_pulse):stepAmount(seq_len), pulses(seq_pulse){
+        if(!step_Arr.empty())
+            step_Arr.clear();
+        
+        //gets all points
+        for(int i=0;i < stepAmount;i++){
+            
+        }
+    };
+    
+    ~Seq_Loop(){
+        
+    }
+    
+};
+
+typedef vector<unique_ptr<Seq_Loop>> seqCollection;
 
 class PolyGUI : public ofNode {
 public:
@@ -59,25 +108,25 @@ public:
     }
     
     void mouseOver();
-    void setOSC(string HOST, int PORT){
-        address = HOST;
-    };
+    void createPoly(int seq_len);
     void createPoly(vector<bool> &seq);
-    void vertAdd(vector<ofVec3f>&v);
+    vector<bool>seq_Return();
     void createMesh();
     void draw();
     
     vector<ofVec3f>steps;
+    vector<bool>isOn;
     vector<Step*> step_Arr;
+    
+    
     
     float width, height;
     float radius;
     ofMatrix4x4 m;
     ofVec3f pos;
     
+    bool euclid;
     bool isFloat;
-    int playHead;
-    int pulses;
     
     string typeTag;
     string address;

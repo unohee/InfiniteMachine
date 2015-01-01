@@ -40,28 +40,56 @@ void PolyGUI::mouseOver(){
     (sqrt(pow(disX, 2) + pow(disY,2)) < radius * 2 ) ? isFloat = 1 : isFloat = 0;
 }
 //--------------------------------------------------------------
-void PolyGUI::createPoly(vector<bool>&seq){
-    
-    //for Euclidean Rhythm notation..
+void PolyGUI::createPoly(int seq_len){
     if(!step_Arr.empty())
         step_Arr.clear();
-    
     innerPoly.clearVertices();
     outerPoly.clearVertices();
-
-    int length = seq.size();
+    
+    int length = seq_len;
     float angle = 360.f / length;
-    ofColor c;
-    c.set(122, 122, 122);
     
     //iterate all position
     steps.clear();
     for(int i = 0; i < length; i++){
         steps.insert(steps.begin()+i, ofVec3f(radius * cos(angle*i*PI/180), radius * sin(angle*i*PI/180), 0));
     }
-    //Inner Polygon - Polyline
-        glPointSize(15);
     
+    //Inner Polygon - Polyline
+    try{
+        for(int i=0; i < length;i++){
+            Step *s;
+            outerPoly.addVertex(steps.at(i));
+//            s = new Step(steps[i], 0);
+//            step_Arr.insert(step_Arr.begin()+i,s);
+        }
+    }catch(out_of_range){
+        cerr<<"[PolyGUI !!Sequence is out of range!!]"<<endl;
+    }catch(exception& e){
+        cerr<<"[PolyGUI: Exception is catched]"<<endl;
+        cout<<e.what()<<endl;
+    }
+    
+}
+//--------------------------------------------------------------
+void PolyGUI::createPoly(vector<bool>&seq){
+    
+    if(!step_Arr.empty())
+        step_Arr.clear();
+    innerPoly.clearVertices();
+    outerPoly.clearVertices();
+
+    int length = seq.size();
+    float angle = 360.f / length;
+    
+    //iterate all position
+    steps.clear();
+    for(int i = 0; i < length; i++){
+        steps.insert(steps.begin()+i, ofVec3f(radius * cos(angle*i*PI/180), radius * sin(angle*i*PI/180), 0));
+    }
+    
+    
+    //Inner Polygon - Polyline
     try{
         if(seq.size() > 0){
             for(int i=0; i < length;i++){
@@ -71,14 +99,11 @@ void PolyGUI::createPoly(vector<bool>&seq){
                 
                     //updating vertex for polyline
                     innerPoly.addVertex(steps.at(i)); //front vertices
-//                    point.addVertex(steps.at(i));
-//                    point.addColor(ofFloatColor(1,0,0));
                     s = new Step(steps[i],1);
                 }else{
                     s = new Step(steps[i],0);
                 }
                 step_Arr.insert(step_Arr.begin()+i,s);
-//                step_Arr.push_back(s);
             }
         }
     }catch(out_of_range){
@@ -209,19 +234,9 @@ void PolyGUI::draw(){
         //draw all steps
         step_Arr[i]->render();
     }
-//        point.draw();
+    
     ofPopMatrix();
-    
-    
-    
-
-
-//    if(isFloat){//rectFrame is only visible when mouse is floating onto GUI
-//        //Rectangle Frame
-//        //    }
-
     //Cyclical Polygon
-
     
 //    ofPushMatrix();
 //    ofRotateY(180);

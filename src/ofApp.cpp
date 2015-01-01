@@ -29,6 +29,10 @@ void ofApp::setup(){
     int a = 8;
     int b = 3;
     string typeTag = "/test/";
+    
+    
+    
+    
     //Sequencer init
     try {
         Sequencer *seq = new Sequencer(a,b);
@@ -37,13 +41,19 @@ void ofApp::setup(){
         cerr<<"[Sequencer Initilization] Exception has been thrown "<<ofGetElapsedTimef()<<endl;
         cout<<e.what()<<endl;
     }
+    vector<bool>seq;
+    seq.resize(12);
+    seq=
+       {1,0,0,0,
+        0,1,1,1,
+        0,1,0,0};
     
     //PolyGUI init
     ofVec3f n(ofGetWidth()/2,ofGetHeight()/2,0);
     for(int i=0;i!=INF_seq.size();i++){
         try{
             PolyGUI *p = new PolyGUI(200, n, typeTag);
-            p->createPoly(INF_seq[i]->seq);
+            p->createPoly(14);
             INF_gui.push_back(p);
         }catch(exception e){
             cerr<<"exception occur"<<endl;
@@ -87,6 +97,10 @@ void ofApp::draw(){
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     int index = INF_seq.size();
     for(int i = 0; i < bufferSize; i++){
+        
+        clock.ticker(start);
+        
+        
         for(int i=0;i < index;++i){
             
             try {
@@ -123,6 +137,13 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+    
+    if(button == 0)
+        mouseClick = true;
+    else
+        mouseClick = !mouseClick;
+        
+    cout<<mouseClick<<endl;
 
 }
 
