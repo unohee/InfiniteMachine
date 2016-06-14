@@ -1,6 +1,7 @@
 #ifndef Bjorklund_h
 #define Bjorklund_h
 
+#include "ofMain.h"
 #include <iostream>
 #include <stdexcept>
 #include <vector>
@@ -10,14 +11,14 @@ class Bjorklund{
 
 public:
 
-    Bjorklund(){};
-    Bjorklund(int step, int pulse): lengthOfSeq(step), pulseAmt(pulse){
+    Bjorklund():verbose(0){};
+    Bjorklund(int step, int pulse, bool _verbose): lengthOfSeq(step), pulseAmt(pulse), verbose(_verbose){
         if(lengthOfSeq <= 0 || lengthOfSeq < pulseAmt) lengthOfSeq = pulseAmt;
         init();
     };
     ~Bjorklund(){
-        //destructor
-        clear();
+        if(verbose)
+            cout<<"[Bjorklund::Deleted] "<<ofGetElapsedTimef()<<endl;
     };
     void init();
     void init(int step, int pulse);
@@ -36,6 +37,9 @@ public:
 
     int lengthOfSeq;
     int pulseAmt;
+    
+private:
+    bool verbose;
 
 };
 

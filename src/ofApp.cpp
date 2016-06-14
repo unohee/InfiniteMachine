@@ -13,6 +13,7 @@ void ofApp::setup(){
 
     max_len = 64; numPulse = 4;
     
+  
     //default IP:PORT Address
     string netAddress;
     stringstream convert;
@@ -20,8 +21,15 @@ void ofApp::setup(){
     netAddress = HOST + convert.str();
     ip_adrs = HOST;
     port_adrs = PORT;
+
     
-    seq = Sequencer();
+    
+    //Sequencer test
+    seq = new Sequencer();
+    //PolyGUI
+    p = new PolyGUI(200,ofVec2f(ofGetWidth()/2, ofGetHeight()/2), "/test");
+    p->createPoly(seq->seq);
+    
     setGui();
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
@@ -36,7 +44,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    
+//    p->draw();
     
     
     
@@ -48,8 +56,8 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     
     for(int i = 0; i < bufferSize; i++){
         
-        seq.play(start);
-        trigger = seq.trigger();
+//        seq->play(start);
+//        trigger = seq->trigger();
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
     }
 }
@@ -106,4 +114,10 @@ void ofApp::gotMessage(ofMessage msg){
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
+}
+//--------------------------------------------------------------
+void ofApp::exit(){
+    //delete objects
+    delete p;
+    delete seq;
 }

@@ -16,6 +16,8 @@ void Bjorklund::init(){
     }catch(out_of_range){
         cerr<<"pulse::out_of_range"<<'\n';
     }
+    if(verbose)
+        cout<<"[Bjorklund::initilized] "<<ofGetElapsedTimef()<<endl;
 }
 void Bjorklund::init(int step, int pulse){
     lengthOfSeq = step;
@@ -27,6 +29,8 @@ void Bjorklund::init(int step, int pulse){
     }catch(out_of_range){
         cerr<<"pulse::out_of_range"<<'\n';
     }
+    if(verbose)
+        cout<<"[Bjorklund::initilized] "<<ofGetElapsedTimef()<<endl;
 }
 void Bjorklund::iter(){
     //\Bjorklund algorithm
@@ -80,12 +84,6 @@ void Bjorklund::buildSeq(int slot){
         }
         step ++;
     }
-}
-void Bjorklund::clear(){
-    //plush all data before create new sequence.
-    sequence.clear();
-    remainder.clear();
-    count.clear();
 }
 void Bjorklund::print(){
     for(int i=0; i != sequence.size();i++){

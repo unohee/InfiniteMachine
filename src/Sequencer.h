@@ -15,17 +15,14 @@
 class Sequencer {
 public:
     
-    Sequencer():bLund(16,4), step(16), pulses(4){
-        cout<<"Sequence is created "<<step<<":"<<pulses<<'\n';
-    };
-    Sequencer(int seq_len, int seq_pulse, string HOST, int PORT, string typeTag):
-    //initialization lists
-    step(seq_len),
-    pulses(seq_pulse),
-    bLund(seq_len, seq_pulse)
-    {
-        cout<<"Sequence is created "<<step<<":"<<pulses<<'\n';
-    };
+    Sequencer();
+    Sequencer(int seq_len, int seq_pulse);
+    
+    ~Sequencer(){
+        cout<<"Sequencer Deleted"<<endl;
+    }
+    
+    void copy(vector<bool>&v, bool verbose);
     void seq_change(int step, int pulse);
     void play(bool isPlay);
     void setNote(int pitch){note = pitch;};
@@ -35,14 +32,13 @@ public:
     bool notePlayed;
     
     //sequencer
+    vector<bool>seq;
     int step;
     int pulses;
     
 private:
-    Bjorklund bLund;
-    int note;
-    vector<bool>newSeq;
     
+    int note;
     //play method
     //Transport Control (Maximilian)
     maxiOsc counter; //Phasor object

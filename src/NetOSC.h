@@ -15,6 +15,10 @@ class NetOSC{
 public:
     
     NetOSC(string HOST, string PORT, string oscTypeTag);
+    ~NetOSC(){
+        if(msg)
+        delete[] msg;
+    }
     void makeNote(Note &note);
     void sendOSC(bool isOn);
     

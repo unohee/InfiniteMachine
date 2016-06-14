@@ -19,6 +19,7 @@ public:
     Note(int _pitch, int _velocity, float _duration):
     pitch(_pitch), velocity(_velocity), duration(_duration)
     { };
+
     int pitch;
     int velocity;
     float duration;

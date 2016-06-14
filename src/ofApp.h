@@ -5,7 +5,7 @@
 
 #include "Sequencer.h"
 #include "NetOSC.h"
-
+#include "PolyGUI.h"
 
 class ofApp : public ofBaseApp{
 
@@ -26,6 +26,7 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+        void exit();
 
     
     void setGui(){
@@ -58,7 +59,8 @@ class ofApp : public ofBaseApp{
         if(seq_len < seq_pulse){
             seq_len = seq_pulse;
         }
-        seq.seq_change(seq_len, seq_pulse);
+//        cout<<ofGetElapsedTimef()<<endl;
+        seq->seq_change(seq_len, seq_pulse);
 //        //re-popluating Infinity Series
 //        matrix.init(0,7,seq_len);
 //        matrix.generate();
@@ -70,17 +72,23 @@ class ofApp : public ofBaseApp{
         else{
             seq_pulse = seq_len;
         }
-        seq.seq_change(seq_len, seq_pulse);
+        seq->seq_change(seq_len, seq_pulse);
+//        cout<<ofGetElapsedTimef()<<endl;
     }
     void tempoChanged(int &bpm_slider){
-        seq.setClock(bpm_slider,4);
+        seq->setClock(bpm_slider,4);
+//        cout<<ofGetElapsedTimef()<<endl;
     }
     
     
     string ip_adrs, port_adrs;
     
-    Sequencer seq;
+    
+    Sequencer *seq;
+    PolyGUI *p;
     bool trigger;
+    
+    
     
     //GUI
     ofxIntSlider seq_len;

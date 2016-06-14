@@ -14,6 +14,7 @@
 		13114851103991019FCBD7E4 /* NetOSC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5625296695B25257DCA0FFC4 /* NetOSC.cpp */; };
 		1CD33E884D9E3358252E82A1 /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 907C5B5E104864A2D3A25745 /* ofxToggle.cpp */; };
 		22F21CE3B902225374BA1CA2 /* maximilian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 87D3A0051CCB2C0F0ECA139E /* maximilian.cpp */; };
+		46F559C91D0F69460041D3AA /* PolyGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46F559C71D0F69460041D3AA /* PolyGUI.cpp */; };
 		483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 78D67A00EB899FAC09430597 /* ofxLabel.cpp */; };
 		4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AED834CE4DEC5260AF302A2 /* ofxOscParameterSync.cpp */; };
 		510CAFE035E576A4E1502D52 /* UdpSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E6DEF695B88BA5FAACEAA937 /* UdpSocket.cpp */; };
@@ -101,6 +102,10 @@
 		4324679E4DB7F91DE15A2EAD /* Sequencer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = Sequencer.h; path = src/Sequencer.h; sourceTree = SOURCE_ROOT; };
 		440B2B891BD019685EF360B8 /* maxiMFCC.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = maxiMFCC.cpp; path = ../../../addons/ofxMaxim/libs/maxiMFCC.cpp; sourceTree = SOURCE_ROOT; };
 		444657A12E59D0ED86981498 /* TimerListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = TimerListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/TimerListener.h; sourceTree = SOURCE_ROOT; };
+		46F559C61D0F69460041D3AA /* Panel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Panel.h; sourceTree = "<group>"; };
+		46F559C71D0F69460041D3AA /* PolyGUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyGUI.cpp; sourceTree = "<group>"; };
+		46F559C81D0F69460041D3AA /* PolyGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyGUI.h; sourceTree = "<group>"; };
+		46F559CA1D0F699A0041D3AA /* ofxMeshFont2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMeshFont2D.h; sourceTree = "<group>"; };
 		48974F980F51769171D0B2F5 /* IpEndpointName.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = IpEndpointName.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h; sourceTree = SOURCE_ROOT; };
 		4CFB659E40D3D3DC5A3E9478 /* maxiGrains.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = maxiGrains.h; path = ../../../addons/ofxMaxim/libs/maxiGrains.h; sourceTree = SOURCE_ROOT; };
 		4E95FB446A9C9C6F0DE12D75 /* OscPrintReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscPrintReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscPrintReceivedElements.h; sourceTree = SOURCE_ROOT; };
@@ -462,6 +467,10 @@
 				5625296695B25257DCA0FFC4 /* NetOSC.cpp */,
 				E8627DE8BF70DCAC400BE97B /* NetOSC.h */,
 				B521B9FB89CB5F8B4D047B66 /* Note.h */,
+				46F559C61D0F69460041D3AA /* Panel.h */,
+				46F559C71D0F69460041D3AA /* PolyGUI.cpp */,
+				46F559C81D0F69460041D3AA /* PolyGUI.h */,
+				46F559CA1D0F699A0041D3AA /* ofxMeshFont2D.h */,
 				E282FEFB97E3684440CD75CE /* Sequencer.cpp */,
 				4324679E4DB7F91DE15A2EAD /* Sequencer.h */,
 			);
@@ -621,6 +630,7 @@
 				5C4A4AA5D4784DF23EA43038 /* maxiAtoms.cpp in Sources */,
 				ABA8875AF0C06690CC0B92B1 /* maxiBark.cpp in Sources */,
 				96084990AF216648B8B98E00 /* maxiFFT.cpp in Sources */,
+				46F559C91D0F69460041D3AA /* PolyGUI.cpp in Sources */,
 				AF0580829426DC6BCA135A5C /* maxiGrains.cpp in Sources */,
 				083FB2094A4DE99F5A60397A /* maxiMFCC.cpp in Sources */,
 				22F21CE3B902225374BA1CA2 /* maximilian.cpp in Sources */,
