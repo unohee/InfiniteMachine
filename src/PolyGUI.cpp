@@ -8,10 +8,13 @@
 
 #include "PolyGUI.h"
 
-PolyGUI::PolyGUI(float _radius, ofVec3f _pos, string _typeTag):
+PolyGUI::PolyGUI(float _radius, ofVec3f &_pos, string &_typeTag):
     radius(_radius), pos(_pos), typeTag(_typeTag)
 {
-    cout<<"[PolyGUI initialized] "<<ofGetElapsedTimef()<<endl;
+    point.setMode(OF_PRIMITIVE_POINTS);
+    innerPoly.setMode(OF_PRIMITIVE_LINE_LOOP);
+    outerPoly.setMode(OF_PRIMITIVE_LINE_LOOP);
+    
     //delete slash from typeTag.
     char chars[] = "/";
     for (unsigned int i = 0; i < strlen(chars); ++i)
@@ -20,40 +23,65 @@ PolyGUI::PolyGUI(float _radius, ofVec3f _pos, string _typeTag):
     }
     
     //loadFont
-//    gui_id.loadFont("verdana.ttf", 18);
-//    gui_adrs.loadFont("verdana.ttf", 14);
+    gui_id.loadFont("verdana.ttf", 18);
+    gui_adrs.loadFont("verdana.ttf", 14);
     
     //translation + getPosition (ofNode, ofMatrix4x4)
-//    setGlobalPosition(pos);
+    setGlobalPosition(pos);
     m.translate(pos);
-    cout<<"PolyGUI is created"<<endl;
+    createMesh();
+    cout<<"[PolyGUI initialized] "<<ofGetElapsedTimef()<<endl;
+}
+//--------------------------------------------------------------
+void PolyGUI::mouseOver(){
+    //error.
+    float disX = pos.x - ofGetMouseX();
+    float disY = pos.y - ofGetMouseY();
+    (sqrt(pow(disX, 2) + pow(disY,2)) < radius * 2 ) ? isFloat = 1 : isFloat = 0;
 }
 //--------------------------------------------------------------
 void PolyGUI::createPoly(vector<bool>&seq){
-    angle = 360.f / (float)length;
+    
+    innerPoly.clearVertices();
+    outerPoly.clearVertices();
+    point.clearVertices();
+    
+    int length = seq.size();
+    float angle = 360.f / length;
     ofColor c;
     c.set(122, 122, 122);
     
     //iterate all position
+    steps.clear();
     for(int i = 0; i < length; i++){
         steps.insert(steps.begin()+i, ofVec3f(radius * cos(angle*i*PI/180), radius * sin(angle*i*PI/180), 0));
     }
     //Inner Polygon - Polyline
-    point.setMode(OF_PRIMITIVE_POINTS);
-    glPointSize(15);
-    if(seq.size() > 0){
-        for(int i=0; i < length;i++){
-            outerPoly.addVertex(steps.at(i));
-            outerPoly.close();
-            if(seq.at(i) == true){
-                //updating vertex for polyline
-                innerPoly.addVertex(steps.at(i)); //front vertices
-                innerPoly.close();
-                point.addVertex(steps.at(i));
-                point.addColor(ofFloatColor(1,0,0));
+        glPointSize(15);
+    
+    try{
+        if(seq.size() > 0){
+            for(int i=0; i < length;i++){
+                outerPoly.addVertex(steps.at(i));
+                if(seq[i] == true){
+                    //updating vertex for polyline
+                    innerPoly.addVertex(steps.at(i)); //front vertices
+                    point.addVertex(steps.at(i));
+                    point.addColor(ofFloatColor(1,0,0));
+                }
             }
         }
+    }catch(out_of_range){
+        cerr<<"[PolyGUI !!Sequence is out of range!!]"<<endl;
+        for(auto x: seq)
+            cout<<x;
+    }catch(exception& e){
+        cerr<<"[PolyGUI: Exception is catched]"<<endl;
+        cout<<e.what()<<endl;
     }
+//    cout<<length<<endl;
+    cout<<"[PolyGUI : Seq"<<seq.size()<<endl;
+    cout<<"[PolyGUI : Steps"<<steps.size()<<endl;
 }
 //--------------------------------------------------------------
 void PolyGUI::createMesh(){
@@ -63,37 +91,32 @@ void PolyGUI::createMesh(){
     float innerRadius = radius + 7.5;
     float outerRadius = innerRadius + radius /8;
     
-//    mesh.clear();
-//    meshOutline.clear();
-//    polyLine.clear();
-//    
-//    //cFrame
-//
-//    vector<ofVec3f>innerCircleMeshOutline;
-//    //Front Face.
-//    mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
-//    meshOutline.setMode(OF_PRIMITIVE_LINE_LOOP);
-//    for(int i = 0; i <= circlepts; i++){
-//        
-//        float angle = i * TWO_PI  / circlepts;
-//        x = outerRadius * cos(angle);
-//        y = outerRadius * sin(angle);
-//        mesh.addVertex(ofVec3f(x, y, 0));
-//        meshOutline.addVertex(ofVec3f(x, y, 0));
-//        mesh.addColor(ofFloatColor(1,1,1));
-//        
-//        x = innerRadius * cos(angle);
-//        y = innerRadius * sin(angle);
-//        
-//        mesh.addVertex(ofVec3f(x,y,0));
-//        mesh.addColor(ofFloatColor(1,1,1));
-//        // adding the inner circle points to a vector because they need to be in reverse order.
-//        innerCircleMeshOutline.push_back(ofVec3f(x,y,0));
-//    }
-//    std::reverse(innerCircleMeshOutline.begin(), innerCircleMeshOutline.end());
-//    meshOutline.addVertices(innerCircleMeshOutline);
-//    meshOutline.addColor(ofFloatColor(1,1,1));
-//    
+    //cFrame
+    vector<ofVec3f>innerCircleMeshOutline;
+    //Front Face.
+    mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+    meshOutline.setMode(OF_PRIMITIVE_LINE_LOOP);
+    for(int i = 0; i <= circlepts; i++){
+        
+        float angle = i * TWO_PI  / circlepts;
+        x = outerRadius * cos(angle);
+        y = outerRadius * sin(angle);
+        mesh.addVertex(ofVec3f(x, y, 0));
+        meshOutline.addVertex(ofVec3f(x, y, 0));
+        mesh.addColor(ofFloatColor(1,1,1));
+        
+        x = innerRadius * cos(angle);
+        y = innerRadius * sin(angle);
+        
+        mesh.addVertex(ofVec3f(x,y,0));
+        mesh.addColor(ofFloatColor(1,1,1));
+        // adding the inner circle points to a vector because they need to be in reverse order.
+        innerCircleMeshOutline.push_back(ofVec3f(x,y,0));
+    }
+    std::reverse(innerCircleMeshOutline.begin(), innerCircleMeshOutline.end());
+    meshOutline.addVertices(innerCircleMeshOutline);
+    meshOutline.addColor(ofFloatColor(1,1,1));
+
     //rectFrame
     ofVec3f rects[4];
     width = outerRadius;
@@ -102,17 +125,17 @@ void PolyGUI::createMesh(){
     rects[2]=ofVec3f(width,-width, 0);
     rects[3]=ofVec3f(-width,-width,0);
     vector<ofVec3f>frameOutline;
-//
-//    //Polyline
-//    polyLine.setMode(OF_PRIMITIVE_LINE_LOOP);
-//    for(int i=0; i < 4;i++){
-//        polyLine.addVertex(rects[i]);
-//        polyLine.addColor(ofColor::red);
-//        polyLine.addIndex(i);
-//        frameOutline.push_back(rects[i]);
-//    }
-//    std::reverse(frameOutline.begin(), frameOutline.end());
-//    polyLine.addVertices(frameOutline);
+
+    //Polyline
+    polyLine.setMode(OF_PRIMITIVE_LINE_LOOP);
+    for(int i=0; i < 4;i++){
+        polyLine.addVertex(rects[i]);
+        polyLine.addColor(ofColor::red);
+        polyLine.addIndex(i);
+        frameOutline.push_back(rects[i]);
+    }
+    std::reverse(frameOutline.begin(), frameOutline.end());
+    polyLine.addVertices(frameOutline);
 //    
 //    //----------------------------------------------------------
 //    //FONT RENDERING
@@ -135,57 +158,54 @@ void PolyGUI::createMesh(){
 }
 //--------------------------------------------------------------
 void PolyGUI::draw(){
+    
     glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);
     ofPushMatrix();
     ofMultMatrix(m);
+    ofSetLineWidth(lineWidth);
+    
+    if(isFloat)
+        polyLine.draw();
+    
+    //TEXT DISPLAYS----
+//    stringstream elapsedTime;
+//    if(trigger){
+//        elapsedTime << ofGetElapsedTimef();
+//    }else{
+//        elapsedTime << "0.00000";
+//    }
+//    font->createNewString(elapsedTime.str());
+//    ofSetColor(255, 0, 15);
+//    font->position = rects[0];
+//    font->drawAsMesh();
+    //-----------------
+    
+    //Circle Frame
+    ofSetLineWidth(1);
+        meshOutline.draw();
+        meshOutline.clear();
+    ofSetLineWidth(0);
+        mesh.draw();
     
     //outer polyline
-    ofPushStyle();
     ofSetLineWidth(2);
     ofSetColor(255,255,120);
-    outerPoly.draw();
-    outerPoly.clear();
-    ofPopStyle();
     
-    ofPushStyle();
+        outerPoly.draw();
     ofSetColor(ofColor::red);
     ofSetLineWidth(3);
-    innerPoly.draw();
-    innerPoly.clear();
-    ofPopStyle();
     
-    point.draw();
-    point.clear();
+        innerPoly.drawFaces();
+        point.draw();
+    ofPopMatrix();
     
-//    //Circle Frame
-//    ofPushStyle();
-//    ofSetLineWidth(1);
-//    meshOutline.draw();
-//    meshOutline.clear();
-//    ofSetLineWidth(0);
-//    mesh.draw();
-//    mesh.clear();
-//    ofPopStyle();
+    
+    
+
 
 //    if(isFloat){//rectFrame is only visible when mouse is floating onto GUI
 //        //Rectangle Frame
-//        ofPushStyle();
-//        ofSetLineWidth(lineWidth);
-//        polyLine.draw();
-//        //TEXT DISPLAYS----
-////        stringstream elapsedTime;
-////        if(trigger){
-////            elapsedTime << ofGetElapsedTimef();
-////        }else{
-////            elapsedTime << "0.00000";
-////        }
-////        font->createNewString(elapsedTime.str());
-////        ofSetColor(255, 0, 15);
-////        font->position = rects[0];
-////        font->drawAsMesh();
-//        //-----------------
-//        ofPopStyle();
-//    }
+//        //    }
 
     //Cyclical Polygon
 

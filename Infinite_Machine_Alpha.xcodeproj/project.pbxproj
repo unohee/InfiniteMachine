@@ -90,7 +90,7 @@
 		1A3E3B8F332A1A3C7EDF4998 /* ofxDatGuiComponent.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxDatGuiComponent.cpp; path = ../../../addons/ofxDatGui/src/core/ofxDatGuiComponent.cpp; sourceTree = SOURCE_ROOT; };
 		1C0DA2561397A7DE0246858B /* ofxGuiGroup.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxGuiGroup.h; path = ../../../addons/ofxGui/src/ofxGuiGroup.h; sourceTree = SOURCE_ROOT; };
 		1EFA3ACBB8D16CC0DA1E79C6 /* maxiAtoms.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = maxiAtoms.cpp; path = ../../../addons/ofxMaxim/libs/maxiAtoms.cpp; sourceTree = SOURCE_ROOT; };
-		200CF14F8F555CADF93E5631 /* INF_monoSynth.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = INF_monoSynth.hpp; path = src/INF_monoSynth.hpp; sourceTree = SOURCE_ROOT; };
+		200CF14F8F555CADF93E5631 /* INF_monoSynth.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = INF_monoSynth.h; path = src/INF_monoSynth.h; sourceTree = SOURCE_ROOT; };
 		20F35AFADAF0068B067E713F /* OscReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscReceivedElements.h; sourceTree = SOURCE_ROOT; };
 		21E1E3071CB7B11914428B62 /* ofxDatGuiThemes.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxDatGuiThemes.h; path = ../../../addons/ofxDatGui/src/themes/ofxDatGuiThemes.h; sourceTree = SOURCE_ROOT; };
 		23640F57DF6C4BB6BFC5DA4C /* PacketListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = PacketListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/PacketListener.h; sourceTree = SOURCE_ROOT; };
@@ -106,6 +106,7 @@
 		46F559C71D0F69460041D3AA /* PolyGUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolyGUI.cpp; sourceTree = "<group>"; };
 		46F559C81D0F69460041D3AA /* PolyGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolyGUI.h; sourceTree = "<group>"; };
 		46F559CA1D0F699A0041D3AA /* ofxMeshFont2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMeshFont2D.h; sourceTree = "<group>"; };
+		46F559CE1D108E380041D3AA /* INF_Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = INF_Utils.h; sourceTree = "<group>"; };
 		48974F980F51769171D0B2F5 /* IpEndpointName.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = IpEndpointName.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h; sourceTree = SOURCE_ROOT; };
 		4CFB659E40D3D3DC5A3E9478 /* maxiGrains.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = maxiGrains.h; path = ../../../addons/ofxMaxim/libs/maxiGrains.h; sourceTree = SOURCE_ROOT; };
 		4E95FB446A9C9C6F0DE12D75 /* OscPrintReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscPrintReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscPrintReceivedElements.h; sourceTree = SOURCE_ROOT; };
@@ -463,7 +464,7 @@
 				855E91FD53DF7F1F965CD390 /* Bjorklund.cpp */,
 				DEF8405D8D9D8A9F362138B2 /* Bjorklund.h */,
 				0B3479442CA5D0E781A30989 /* INF_monoSynth.cpp */,
-				200CF14F8F555CADF93E5631 /* INF_monoSynth.hpp */,
+				200CF14F8F555CADF93E5631 /* INF_monoSynth.h */,
 				5625296695B25257DCA0FFC4 /* NetOSC.cpp */,
 				E8627DE8BF70DCAC400BE97B /* NetOSC.h */,
 				B521B9FB89CB5F8B4D047B66 /* Note.h */,
@@ -473,6 +474,7 @@
 				46F559CA1D0F699A0041D3AA /* ofxMeshFont2D.h */,
 				E282FEFB97E3684440CD75CE /* Sequencer.cpp */,
 				4324679E4DB7F91DE15A2EAD /* Sequencer.h */,
+				46F559CE1D108E380041D3AA /* INF_Utils.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;

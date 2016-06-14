@@ -6,4 +6,4 @@
 //
 //
 
-#include "INF_monoSynth.hpp"
+#include "INF_monoSynth.h"

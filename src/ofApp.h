@@ -2,10 +2,17 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
+#include "INF_Utils.h"
 
 #include "Sequencer.h"
 #include "NetOSC.h"
 #include "PolyGUI.h"
+#include "Note.h"
+
+#define SRATE 44100 //SAMPLE RATE
+#define BUFFER_SIZE 512 // BUFFERSIZE
+#define HOST "localhost" //default address
+#define PORT 8080 //default port.
 
 class ofApp : public ofBaseApp{
 
@@ -32,11 +39,6 @@ class ofApp : public ofBaseApp{
     void setGui(){
         //maximum length of sequence
         //GUI-------------------------------------------
-        //add Listeners first.
-        seq_len.addListener(this, &ofApp::lengthChanged);
-        seq_pulse.addListener(this, &ofApp::beatChanged);
-        bpm_slider.addListener(this, &ofApp::tempoChanged);
-        
         //ofParameter initial value.
         seq_len = 16;
         seq_pulse = 4;
@@ -50,8 +52,11 @@ class ofApp : public ofBaseApp{
         //    gui.add(offset.setup("Offset", 0, 0, max_len));
         gui.add(random.setup("Randomize", false));
         gui.add(start.setup("PLAY", false));
-        //----------------------------------------------
         
+        seq_len.addListener(this, &ofApp::lengthChanged);
+        seq_pulse.addListener(this, &ofApp::beatChanged);
+        bpm_slider.addListener(this, &ofApp::tempoChanged);
+        //----------------------------------------------
     }
     
     void lengthChanged(int &seq_len){
@@ -59,36 +64,43 @@ class ofApp : public ofBaseApp{
         if(seq_len < seq_pulse){
             seq_len = seq_pulse;
         }
-//        cout<<ofGetElapsedTimef()<<endl;
-        seq->seq_change(seq_len, seq_pulse);
-//        //re-popluating Infinity Series
-//        matrix.init(0,7,seq_len);
-//        matrix.generate();
+//        cout<<"[Sequence::"<<seq_pulse<<"/"<<seq_len<<"]"<<endl;
+        for(int i=0;i!=INF_seq.size();++i){
+            INF_seq[i]->seq_change(seq_len, seq_pulse);
+            INF_gui[i]->createPoly(INF_seq[i]->seq);
+        }
+        
     }
     void beatChanged(int &seq_pulse){
-        if(seq_pulse < seq_len){
-            
-        }
-        else{
+        if(seq_pulse > seq_len){
             seq_pulse = seq_len;
         }
-        seq->seq_change(seq_len, seq_pulse);
-//        cout<<ofGetElapsedTimef()<<endl;
+//        cout<<"[Sequence::"<<seq_pulse<<"/"<<seq_len<<"]"<<endl;
+        for(int i=0;i!=INF_seq.size();++i){
+            INF_seq[i]->seq_change(seq_len, seq_pulse);
+            INF_gui[i]->createPoly(INF_seq[i]->seq);
+        }
     }
     void tempoChanged(int &bpm_slider){
-        seq->setClock(bpm_slider,4);
-//        cout<<ofGetElapsedTimef()<<endl;
+        for(int i=0;i!=INF_seq.size();++i){
+            INF_seq[i]->setClock(bpm_slider,4);
+        }
+//        cout<<"Tempo: "<<bpm_slider<<endl;
     }
-    
-    
     string ip_adrs, port_adrs;
     
     
-    Sequencer *seq;
-    PolyGUI *p;
+//    Sequencer *seq;
+    
+    vector<Sequencer*>INF_seq;
+    vector<PolyGUI*>INF_gui;
+    
     bool trigger;
     
     
+    //Network
+    NetOSC *network;
+    Note notes;
     
     //GUI
     ofxIntSlider seq_len;

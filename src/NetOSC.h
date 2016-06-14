@@ -14,15 +14,17 @@ using namespace std;
 class NetOSC{
 public:
     
-    NetOSC(string HOST, string PORT, string oscTypeTag);
+    NetOSC(){};
+    NetOSC(string HOST, int PORT);
     ~NetOSC(){
-        if(msg)
-        delete[] msg;
+//        if(msg)
+//            delete[] msg;
+        cout<<"[OSC Sender Deleted]"<<endl;
     }
-    void makeNote(Note &note);
-    void sendOSC(bool isOn);
+    void receive(Note &note, bool trigger);
     
-    string ip_adrs, port_adrs;
+    string ip_adrs;
+    int port_adrs;
     string typeTag;
     string oscID;
     

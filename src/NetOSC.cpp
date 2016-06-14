@@ -2,28 +2,28 @@
 
 #include "NetOSC.h"
 
-NetOSC::NetOSC(string HOST, string PORT, string oscTypeTag):
-ip_adrs(HOST), port_adrs(PORT), oscID(oscTypeTag)
+NetOSC::NetOSC(string HOST, int PORT):
+ip_adrs(HOST), port_adrs(PORT)
 {
-    sender.setup(ip_adrs, stoi(port_adrs));
+    
+    string netAddress;
+    stringstream convert;
+    convert << ":" <<port_adrs;
+    netAddress = ip_adrs + convert.str();
+    
+    sender.setup(ip_adrs, port_adrs);
     //add slashes
-    if(!oscTypeTag.empty()){
-        string::iterator it;
-        it = oscID.insert(oscID.begin(), '/');
-        it = oscID.insert(oscID.end(), '/');
-    }
+//    if(!oscTypeTag.empty()){
+//        string::iterator it;
+//        it = oscID.insert(oscID.begin(), '/');
+//        it = oscID.insert(oscID.end(), '/');
+//    }
+    cout<<"[OSC connection is established :: "<<netAddress<<"]"<<endl;
 }
 //--------------------------------------------------------------
-void NetOSC::makeNote(Note &note){
+void NetOSC::receive(Note &note, bool trigger){
     
-    msg->addIntArg(note.pitch);
-    msg->addIntArg(note.velocity);
-    msg->addFloatArg(note.duration);
-    msg->setAddress(typeTag);
-    
-}
-//--------------------------------------------------------------
-void NetOSC::sendOSC(bool isOn){
-    sender.sendMessage(*msg);
+    if(trigger)
+        sender.sendMessage(*msg);
 }
 //--------------------------------------------------------------

@@ -2,29 +2,30 @@
 
 #include "ofMain.h"
 #include "ofxMeshFont2D.h"
+#include <iostream>
+#include <stdexcept>
 
 class PolyGUI : public ofNode {
 public:
     
     
     PolyGUI(){
+        point.setMode(OF_PRIMITIVE_POINTS);
+        innerPoly.setMode(OF_PRIMITIVE_LINE_LOOP);
+        outerPoly.setMode(OF_PRIMITIVE_LINE_LOOP);
         cout<<"[PolyGUI initialized]"<<ofGetElapsedTimef()<<endl;
     }
-    PolyGUI(float _radius, ofVec3f _pos, string typeTag);//completed constructor
+    PolyGUI(float _radius, ofVec3f &_pos, string &typeTag);//completed constructor
     ~PolyGUI(){//Destructor;
-        cout<<"PolyGUI is deleted"<<endl;
+        cout<<"[PolyGUI is deleted]"<<endl;
     }
-    void mouseOver(ofVec3f input) {
-        float disX = pos.x - input.x;
-        float disY = pos.y - input.y;
-        (sqrt(pow(disX, 2) + pow(disY,2)) < radius*2 ) ? isFloat : !isFloat;
-    }
+    
+    void mouseOver();
     void setOSC(string HOST, int PORT){
         address = HOST;
     };
     void createPoly(vector<bool> &seq);
     void createMesh();
-    using ofNode::draw;
     void draw();
     
     vector<ofVec3f>steps;
@@ -36,16 +37,16 @@ public:
     
     bool isFloat;
     int playHead;
-    float angle;
-    int length, pulses;
+    int pulses;
     
     string typeTag;
     string address;
     
     //cFrame
-    ofPolyline outerPoly, innerPoly;
+    ofVboMesh outerPoly;
+    ofVboMesh innerPoly;
     ofMesh point, clock;
-    ofMesh mesh;//cFrame
+    ofMesh mesh ;//cFrame
     ofMesh meshOutline;//cFrame
     float elapsedTime;
     

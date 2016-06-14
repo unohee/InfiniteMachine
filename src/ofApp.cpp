@@ -2,13 +2,11 @@
 
 #include "ofApp.h"
 
-#define SRATE 44100 //SAMPLE RATE
-#define BUFFER_SIZE 512 // BUFFERSIZE
-#define HOST "localhost" //default address
-#define PORT 8080 //default port.
+
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    cout<<"[Infinite Machine ALPHA.v02]"<<endl;
     ofBackground(0, 0, 0);
 
     max_len = 64; numPulse = 4;
@@ -22,15 +20,30 @@ void ofApp::setup(){
     ip_adrs = HOST;
     port_adrs = PORT;
 
+    int a = 8;
+    int b = 3;
+    string typeTag = "/test/";
+    //Sequencer init
+    Sequencer *seq = new Sequencer(a,b);
+    INF_seq.push_back(seq);
     
-    
-    //Sequencer test
-    seq = new Sequencer();
-    //PolyGUI
-    p = new PolyGUI(200,ofVec2f(ofGetWidth()/2, ofGetHeight()/2), "/test");
-    p->createPoly(seq->seq);
-    
+    //PolyGUI init
+    ofVec3f n(ofGetWidth()/2,ofGetHeight()/2,0);
+    for(int i=0;i!=INF_seq.size();i++){
+        try{
+            PolyGUI *p = new PolyGUI(200, n, typeTag);
+            p->createPoly(INF_seq[i]->seq);
+            INF_gui.push_back(p);
+        }catch(exception e){
+            cerr<<"exception occur"<<endl;
+            cout<<e.what()<<endl;
+        }
+    }
+
     setGui();
+    
+    //OSC Network
+    network = new NetOSC(HOST,PORT);
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
 }
@@ -39,13 +52,21 @@ void ofApp::setup(){
 void ofApp::update(){
     //FPS update on GUI parameter
     fps = ofToString(ofGetFrameRate());
+    
+    for(int i=0;i < INF_gui.size();++i){
+        INF_gui[i]->mouseOver();
+    }
+    
+//    network->receive(notes, trigger);
 
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-//    p->draw();
     
+    for(int i=0;i < INF_seq.size();++i){
+        INF_gui[i]->draw();
+    }
     
     
     gui.draw();
@@ -53,11 +74,12 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
-    
+    int index = INF_seq.size();
     for(int i = 0; i < bufferSize; i++){
-        
-//        seq->play(start);
-//        trigger = seq->trigger();
+        for(int i=0;i < index;++i){
+            INF_seq.at(i)->play(start);
+            trigger = INF_seq.at(i)->trigger();
+        }
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
     }
 }
@@ -73,6 +95,7 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
+    
 
 }
 
@@ -118,6 +141,8 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 //--------------------------------------------------------------
 void ofApp::exit(){
     //delete objects
-    delete p;
-    delete seq;
+    delete network;
+    for_each(INF_seq.begin(), INF_seq.end(), DeleteVector<Sequencer*>());
+    for_each(INF_gui.begin(), INF_gui.end(), DeleteVector<PolyGUI*>());
+    cout<<"[Infinite Machine : Goodbye.]"<<endl;
 }
