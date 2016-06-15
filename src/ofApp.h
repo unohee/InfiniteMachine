@@ -4,6 +4,7 @@
 #include "ofxGui.h"
 #include "INF_Utils.h"
 
+
 #include "Sequencer.h"
 #include "NetOSC.h"
 #include "PolyGUI.h"
@@ -14,7 +15,7 @@
 #define HOST "localhost" //default address
 #define PORT 8080 //default port.
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp {
 
 	public:
 		void setup();

@@ -28,7 +28,7 @@ public:
     void play(bool isPlay);
     void setNote(int &pitch){note = pitch;};
     bool trigger(){return (notePlayed == true ? 1 : 0); };
-    void setClock(int BPM, int ticks){bps = BPM / 60.f * ticks; };
+    void setClock(int BPM, int speed){bps = BPM / 60.f * pow(2,speed); };
     void offset(int offset);
     bool notePlayed;
     

@@ -3,13 +3,19 @@
 #include "ofApp.h"
 
 
-
 //--------------------------------------------------------------
 void ofApp::setup(){
     cout<<"[Infinite Machine ALPHA.v02]"<<endl;
     ofBackground(0, 0, 0);
 
-    max_len = 64; numPulse = 4;
+    vector<int>v;
+    Urn u = Urn(10);
+    v = u.urn();
+    
+    for(int i=0;i<v.size();i++)
+        cout<<v[i]<<" ";
+    
+    max_len = 16; numPulse = 4;
     
   
     //default IP:PORT Address
@@ -24,8 +30,13 @@ void ofApp::setup(){
     int b = 3;
     string typeTag = "/test/";
     //Sequencer init
-    Sequencer *seq = new Sequencer(a,b);
-    INF_seq.push_back(seq);
+    try {
+        Sequencer *seq = new Sequencer(a,b);
+        INF_seq.push_back(seq);
+    } catch (exception e) {
+        cerr<<"[Sequencer Initilization] Exception has been thrown "<<ofGetElapsedTimef()<<endl;
+        cout<<e.what()<<endl;
+    }
     
     //PolyGUI init
     ofVec3f n(ofGetWidth()/2,ofGetHeight()/2,0);
@@ -77,8 +88,14 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     int index = INF_seq.size();
     for(int i = 0; i < bufferSize; i++){
         for(int i=0;i < index;++i){
-            INF_seq.at(i)->play(start);
-            trigger = INF_seq.at(i)->trigger();
+            
+            try {
+                INF_seq.at(i)->play(start);
+                trigger = INF_seq.at(i)->trigger();
+            } catch (exception e) {
+                cout<<e.what()<<endl;
+            }
+            
         }
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
     }

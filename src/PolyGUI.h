@@ -25,6 +25,7 @@ public:
         address = HOST;
     };
     void createPoly(vector<bool> &seq);
+    void vertAdd(vector<ofVec3f>&v);
     void createMesh();
     void draw();
     

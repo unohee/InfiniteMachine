@@ -79,9 +79,6 @@ void PolyGUI::createPoly(vector<bool>&seq){
         cerr<<"[PolyGUI: Exception is catched]"<<endl;
         cout<<e.what()<<endl;
     }
-//    cout<<length<<endl;
-    cout<<"[PolyGUI : Seq"<<seq.size()<<endl;
-    cout<<"[PolyGUI : Steps"<<steps.size()<<endl;
 }
 //--------------------------------------------------------------
 void PolyGUI::createMesh(){

@@ -14,7 +14,7 @@
 
 class INF_monoSynth{
 public:
-    
+    maxiOsc switchableOSC;
     
 private:
     
