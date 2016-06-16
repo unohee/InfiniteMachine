@@ -2,8 +2,44 @@
 
 #include "ofMain.h"
 #include "ofxMeshFont2D.h"
+#include "INF_Utils.h"
+
 #include <iostream>
 #include <stdexcept>
+
+
+struct Step{
+public:
+    
+    int *accent;
+    float radius;
+    ofPoint pos;
+    bool isFloat;
+    bool on;
+    
+    Step(ofPoint p, bool _on):pos(p), on(_on), radius(15), accent(0)
+    {
+        //constructor
+        
+    };
+    ~Step()
+    {
+        //destructor
+        if(accent != NULL)
+            delete accent;
+    };
+    bool mouseOver(){
+        float disX = pos.x - ofGetMouseX();
+        float disY = pos.y - ofGetMouseY();
+        (sqrt(pow(disX, 2) + pow(disY,2)) < radius * 2 ) ? isFloat = 1 : isFloat = 0;
+    }
+    void render(){
+        ofSetColor(ofColor::red);
+        (on) ? ofFill() : ofNoFill();
+        ofDrawCircle(pos.x, pos.y , radius);
+    }
+
+};
 
 class PolyGUI : public ofNode {
 public:
@@ -17,6 +53,8 @@ public:
     }
     PolyGUI(float _radius, ofVec3f &_pos, string &typeTag);//completed constructor
     ~PolyGUI(){//Destructor;
+        if(!step_Arr.empty())
+            for_each(step_Arr.begin(), step_Arr.end(), DeleteVector<Step*>()); //flush all pointers in vectors
         cout<<"[PolyGUI is deleted]"<<endl;
     }
     
@@ -30,6 +68,7 @@ public:
     void draw();
     
     vector<ofVec3f>steps;
+    vector<Step*> step_Arr;
     
     float width, height;
     float radius;

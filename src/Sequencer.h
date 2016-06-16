@@ -13,6 +13,45 @@
 #include "Bjorklund.h"
 #include "ofMain.h"
 
+
+//operator overloading test
+struct Loop: public Bjorklund{
+public:
+    
+    Loop(){};
+    Loop(vector<bool> &v){
+        //constructor for usual step sequencer
+        //gets sequence from PolyGUI
+    }
+    Loop(int &step, int &pulse):seq_len(step), seq_pulse(pulse){
+        //constructor for Euclidean Rhythm sequence
+        Bjorklund(seq_len, seq_pulse, true);
+    }
+    vector<bool> copy(vector<bool>&v, bool verbose){
+        seq.clear();
+        for(int i=0;i!=v.size();++i){
+            seq.insert(seq.begin()+i, v[i]);
+        }
+        if(verbose){
+            cout<<"[Sequence is created "<<seq_len<<":"<<seq_pulse<<"] "<<ofGetElapsedTimef()<<endl;
+            cout<<"[Sequence Saved:";
+            for(bool x:v)
+                cout<<x;
+            cout<<"]"<<endl;
+        }
+        return v;
+    }
+    bool trigger(int playHead){
+        return (euclid) ? sequence[playHead%seq_len] : 0;
+//        return -1;
+    }
+    
+    bool euclid;
+    int seq_len, seq_pulse;
+    vector<bool> seq;
+    
+};
+
 class Sequencer {
 public:
     

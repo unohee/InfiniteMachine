@@ -34,7 +34,7 @@ PolyGUI::PolyGUI(float _radius, ofVec3f &_pos, string &_typeTag):
 }
 //--------------------------------------------------------------
 void PolyGUI::mouseOver(){
-    //error.
+    //****has error.
     float disX = pos.x - ofGetMouseX();
     float disY = pos.y - ofGetMouseY();
     (sqrt(pow(disX, 2) + pow(disY,2)) < radius * 2 ) ? isFloat = 1 : isFloat = 0;
@@ -42,10 +42,13 @@ void PolyGUI::mouseOver(){
 //--------------------------------------------------------------
 void PolyGUI::createPoly(vector<bool>&seq){
     
+    //for Euclidean Rhythm notation..
+    if(!step_Arr.empty())
+        step_Arr.clear();
+    
     innerPoly.clearVertices();
     outerPoly.clearVertices();
-    point.clearVertices();
-    
+
     int length = seq.size();
     float angle = 360.f / length;
     ofColor c;
@@ -62,13 +65,20 @@ void PolyGUI::createPoly(vector<bool>&seq){
     try{
         if(seq.size() > 0){
             for(int i=0; i < length;i++){
+                Step *s;
                 outerPoly.addVertex(steps.at(i));
                 if(seq[i] == true){
+                
                     //updating vertex for polyline
                     innerPoly.addVertex(steps.at(i)); //front vertices
-                    point.addVertex(steps.at(i));
-                    point.addColor(ofFloatColor(1,0,0));
+//                    point.addVertex(steps.at(i));
+//                    point.addColor(ofFloatColor(1,0,0));
+                    s = new Step(steps[i],1);
+                }else{
+                    s = new Step(steps[i],0);
                 }
+                step_Arr.insert(step_Arr.begin()+i,s);
+//                step_Arr.push_back(s);
             }
         }
     }catch(out_of_range){
@@ -133,7 +143,7 @@ void PolyGUI::createMesh(){
     }
     std::reverse(frameOutline.begin(), frameOutline.end());
     polyLine.addVertices(frameOutline);
-//    
+
 //    //----------------------------------------------------------
 //    //FONT RENDERING
 //    gui_id.setGlobalDpi(96);
@@ -193,7 +203,13 @@ void PolyGUI::draw(){
     ofSetLineWidth(3);
     
         innerPoly.drawFaces();
-        point.draw();
+    
+
+    for(int i=0; i < step_Arr.size();i++){
+        //draw all steps
+        step_Arr[i]->render();
+    }
+//        point.draw();
     ofPopMatrix();
     
     
