@@ -31,7 +31,6 @@
 		856AA354D08AB4B323081444 /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9604B925D32EE39065747725 /* ofxBaseGui.cpp */; };
 		879A251454401BC0B6E4F238 /* OscTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D9BFFBBF4CC43DEE890B3C3E /* OscTypes.cpp */; };
 		8DDD6EE21D17197000B47894 /* INF_Panel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DDD6EE01D17197000B47894 /* INF_Panel.cpp */; };
-		8DDD6EE61D17275900B47894 /* numberBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DDD6EE41D17275900B47894 /* numberBox.cpp */; };
 		8F5205AEF8861EF234F0651A /* ofxOscSender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81967292BFC87A0144BD32C6 /* ofxOscSender.cpp */; };
 		9514C2D90467055B1447D074 /* stb_vorbis.c in Sources */ = {isa = PBXBuildFile; fileRef = 80CD68E0DDF2C60D2715CC78 /* stb_vorbis.c */; };
 		96084990AF216648B8B98E00 /* maxiFFT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6A4EE0E35ED739A31CD0153E /* maxiFFT.cpp */; };
@@ -139,7 +138,6 @@
 		8DCF45A51D14A38D0080D497 /* INF_Clock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = INF_Clock.h; sourceTree = "<group>"; };
 		8DDD6EE01D17197000B47894 /* INF_Panel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Panel.cpp; sourceTree = "<group>"; };
 		8DDD6EE11D17197000B47894 /* INF_Panel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INF_Panel.h; sourceTree = "<group>"; };
-		8DDD6EE41D17275900B47894 /* numberBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = numberBox.cpp; sourceTree = "<group>"; };
 		8DDD6EE51D17275900B47894 /* numberBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = numberBox.h; sourceTree = "<group>"; };
 		902724601B82C6AD81BBCD71 /* ofxDatGui2dPad.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxDatGui2dPad.h; path = ../../../addons/ofxDatGui/src/components/ofxDatGui2dPad.h; sourceTree = SOURCE_ROOT; };
 		907C5B5E104864A2D3A25745 /* ofxToggle.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxToggle.cpp; path = ../../../addons/ofxGui/src/ofxToggle.cpp; sourceTree = SOURCE_ROOT; };
@@ -492,7 +490,6 @@
 				8DCF45A51D14A38D0080D497 /* INF_Clock.h */,
 				8DDD6EE01D17197000B47894 /* INF_Panel.cpp */,
 				8DDD6EE11D17197000B47894 /* INF_Panel.h */,
-				8DDD6EE41D17275900B47894 /* numberBox.cpp */,
 				8DDD6EE51D17275900B47894 /* numberBox.h */,
 			);
 			path = src;
@@ -657,7 +654,6 @@
 				083FB2094A4DE99F5A60397A /* maxiMFCC.cpp in Sources */,
 				22F21CE3B902225374BA1CA2 /* maximilian.cpp in Sources */,
 				9514C2D90467055B1447D074 /* stb_vorbis.c in Sources */,
-				8DDD6EE61D17275900B47894 /* numberBox.cpp in Sources */,
 				72A929D3561B8232A182ABFC /* ofxOscBundle.cpp in Sources */,
 				5864AD82E20F15536D054EA3 /* ofxOscMessage.cpp in Sources */,
 				4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */,

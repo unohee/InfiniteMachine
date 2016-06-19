@@ -13,7 +13,7 @@
 
 class numberBox{
     
-    numberBox(ofPoint p):pos(p){
+    numberBox(ofPoint p):pos(p) index(0){
         
     }
     ~numberBox(){
@@ -23,6 +23,7 @@ class numberBox{
         ofDrawRectangle(pos.x,pos.y, 15,15);
     };
     int index;
+    int width, height;
     char id;
     ofPoint pos;
     
