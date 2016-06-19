@@ -30,6 +30,8 @@
 		840A58883380B43C41B86786 /* Bjorklund.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 855E91FD53DF7F1F965CD390 /* Bjorklund.cpp */; };
 		856AA354D08AB4B323081444 /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9604B925D32EE39065747725 /* ofxBaseGui.cpp */; };
 		879A251454401BC0B6E4F238 /* OscTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D9BFFBBF4CC43DEE890B3C3E /* OscTypes.cpp */; };
+		8DDD6EE21D17197000B47894 /* INF_Panel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DDD6EE01D17197000B47894 /* INF_Panel.cpp */; };
+		8DDD6EE61D17275900B47894 /* numberBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DDD6EE41D17275900B47894 /* numberBox.cpp */; };
 		8F5205AEF8861EF234F0651A /* ofxOscSender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81967292BFC87A0144BD32C6 /* ofxOscSender.cpp */; };
 		9514C2D90467055B1447D074 /* stb_vorbis.c in Sources */ = {isa = PBXBuildFile; fileRef = 80CD68E0DDF2C60D2715CC78 /* stb_vorbis.c */; };
 		96084990AF216648B8B98E00 /* maxiFFT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6A4EE0E35ED739A31CD0153E /* maxiFFT.cpp */; };
@@ -134,8 +136,11 @@
 		8A3ADC330D8624DB4F114273 /* TransportBar.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TransportBar.cpp; path = src/TransportBar.cpp; sourceTree = SOURCE_ROOT; };
 		8B30E93FD3D3475EED522A0E /* ofxOscBundle.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscBundle.h; path = ../../../addons/ofxOsc/src/ofxOscBundle.h; sourceTree = SOURCE_ROOT; };
 		8C75AFC8774A62495DD53464 /* ofxOscReceiver.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscReceiver.h; path = ../../../addons/ofxOsc/src/ofxOscReceiver.h; sourceTree = SOURCE_ROOT; };
-		8D0ACDF01D16E3CA0039FCD6 /* Sequence.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sequence.h; sourceTree = "<group>"; };
 		8DCF45A51D14A38D0080D497 /* INF_Clock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = INF_Clock.h; sourceTree = "<group>"; };
+		8DDD6EE01D17197000B47894 /* INF_Panel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Panel.cpp; sourceTree = "<group>"; };
+		8DDD6EE11D17197000B47894 /* INF_Panel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INF_Panel.h; sourceTree = "<group>"; };
+		8DDD6EE41D17275900B47894 /* numberBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = numberBox.cpp; sourceTree = "<group>"; };
+		8DDD6EE51D17275900B47894 /* numberBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = numberBox.h; sourceTree = "<group>"; };
 		902724601B82C6AD81BBCD71 /* ofxDatGui2dPad.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxDatGui2dPad.h; path = ../../../addons/ofxDatGui/src/components/ofxDatGui2dPad.h; sourceTree = SOURCE_ROOT; };
 		907C5B5E104864A2D3A25745 /* ofxToggle.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxToggle.cpp; path = ../../../addons/ofxGui/src/ofxToggle.cpp; sourceTree = SOURCE_ROOT; };
 		9312F3864ED05FC3E847FF69 /* ofxMaxim.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxMaxim.h; path = ../../../addons/ofxMaxim/src/ofxMaxim.h; sourceTree = SOURCE_ROOT; };
@@ -470,7 +475,6 @@
 				3F64FC64F2B9A3BDFC5DDC55 /* INF_Utils.h */,
 				855E91FD53DF7F1F965CD390 /* Bjorklund.cpp */,
 				DEF8405D8D9D8A9F362138B2 /* Bjorklund.h */,
-				9B08360F51D393EF2685DFC4 /* DatPanel.h */,
 				0B3479442CA5D0E781A30989 /* INF_monoSynth.cpp */,
 				5B4AA18429AA48D8EDE6D178 /* INF_monoSynth.h */,
 				5625296695B25257DCA0FFC4 /* NetOSC.cpp */,
@@ -482,10 +486,14 @@
 				87B2AAD8ECDAF0433B830FA9 /* PolyGUI.h */,
 				E282FEFB97E3684440CD75CE /* Sequencer.cpp */,
 				4324679E4DB7F91DE15A2EAD /* Sequencer.h */,
-				8D0ACDF01D16E3CA0039FCD6 /* Sequence.h */,
+				9B08360F51D393EF2685DFC4 /* DatPanel.h */,
 				8A3ADC330D8624DB4F114273 /* TransportBar.cpp */,
 				89ABDDF399D6884BED487837 /* TransportBar.h */,
 				8DCF45A51D14A38D0080D497 /* INF_Clock.h */,
+				8DDD6EE01D17197000B47894 /* INF_Panel.cpp */,
+				8DDD6EE11D17197000B47894 /* INF_Panel.h */,
+				8DDD6EE41D17275900B47894 /* numberBox.cpp */,
+				8DDD6EE51D17275900B47894 /* numberBox.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -649,6 +657,7 @@
 				083FB2094A4DE99F5A60397A /* maxiMFCC.cpp in Sources */,
 				22F21CE3B902225374BA1CA2 /* maximilian.cpp in Sources */,
 				9514C2D90467055B1447D074 /* stb_vorbis.c in Sources */,
+				8DDD6EE61D17275900B47894 /* numberBox.cpp in Sources */,
 				72A929D3561B8232A182ABFC /* ofxOscBundle.cpp in Sources */,
 				5864AD82E20F15536D054EA3 /* ofxOscMessage.cpp in Sources */,
 				4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */,
@@ -656,6 +665,7 @@
 				8F5205AEF8861EF234F0651A /* ofxOscSender.cpp in Sources */,
 				ADE367465D2A8EBAD4C7A8D9 /* IpEndpointName.cpp in Sources */,
 				67FE4C7B15C2F0478C8126C2 /* NetworkingUtils.cpp in Sources */,
+				8DDD6EE21D17197000B47894 /* INF_Panel.cpp in Sources */,
 				510CAFE035E576A4E1502D52 /* UdpSocket.cpp in Sources */,
 				62545D179C94265CA1389D4A /* OscOutboundPacketStream.cpp in Sources */,
 				C4782ECC372420ACE0615B74 /* OscPrintReceivedElements.cpp in Sources */,

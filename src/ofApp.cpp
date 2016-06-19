@@ -65,6 +65,22 @@ void ofApp::setup(){
     
     //OSC Network
     network = new NetOSC(HOST,PORT);
+    
+    t.setup();
+//    ofxDatGuiComponent * component;
+//    component = new ofxDatGuiFRM();
+//    docker.push_back(component);
+//    
+//    float gap = ofGetWidth() / docker.size();
+//    for(int i=0;i < docker.size();++i){
+//        if(i <= 2){
+//            docker[i]->setWidth(gap, 0.45);
+//        }else{
+//            docker[i]->setWidth(gap, 0.2);
+//        }
+//        docker[i]->setPosition(gap*i, ofGetHeight() - docker[i]->getHeight());
+//    }
+//    
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
 }
@@ -77,7 +93,10 @@ void ofApp::update(){
     for(int i=0;i < INF_gui.size();++i){
         INF_gui[i]->mouseOver();
     }
-    
+    for(int i=0;i<docker.size();i++){
+        docker[i]->update();
+    }
+    t.update(ofGetWidth());
 //    network->receive(notes, trigger);
 
 }
@@ -91,6 +110,7 @@ void ofApp::draw(){
     
     
     gui.draw();
+    t.draw();
 }
 
 //--------------------------------------------------------------

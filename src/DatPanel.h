@@ -1,6 +1,7 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxDatGui.h"
+#include "INF_Utils.h"
 
 //Base class of ofxDatGui Panels
 class DatPanel {
@@ -9,10 +10,12 @@ public:
         
     };
     ~DatPanel(){
-        for (int i = 0; i < components.size(); ++i) {
-            delete components[i];
+        try{
+            if(!components.empty())
+                for_each(components.begin(),components.end(),DeleteVector<ofxDatGuiComponent*>());
+        }catch(exception e){
+            cout<<e.what()<<endl;
         }
-        components.clear();
     };
     void update();
     void draw();

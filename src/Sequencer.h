@@ -14,25 +14,6 @@
 #include "PolyGUI.h" // GUI
 #include "ofMain.h"
 
-struct Steps{
-public:
-    
-    int *accent;
-    bool on;
-    
-    Steps():on(false), accent(0){
-        
-    }
-    ~Steps()
-    {
-        //destructor
-        if(accent != NULL)
-            delete accent;
-    };
-};
-
-
-
 //operator overloading test
 struct Loop: public Bjorklund{
 public:
@@ -83,9 +64,6 @@ public:
     void seq_change(int step, int pulse);
     void play(bool isPlay);
     void play(int &playHead);
-    
-    void draw();
-    
     
     void setNote(int &pitch){note = pitch;};
     bool trigger(){return (notePlayed == true ? 1 : 0); };

@@ -23,8 +23,8 @@ PolyGUI::PolyGUI(float _radius, ofVec3f &_pos, string &_typeTag):
     }
     
     //loadFont
-    gui_id.loadFont("verdana.ttf", 18);
-    gui_adrs.loadFont("verdana.ttf", 14);
+    gui_id.loadFont("/Users/uno/Developer/of_v20160609_osx_release/apps/myApps/Infinite_Machine_Alpha/bin/data/ofxbraitsch/fonts/Verdana.ttf", 18);
+    gui_adrs.loadFont("/Users/uno/Developer/of_v20160609_osx_release/apps/myApps/Infinite_Machine_Alpha/bin/data/ofxbraitsch/fonts/Verdana.ttf", 14);
     
     //translation + getPosition (ofNode, ofMatrix4x4)
     setGlobalPosition(pos);
@@ -93,17 +93,17 @@ void PolyGUI::createPoly(vector<bool>&seq){
     try{
         if(seq.size() > 0){
             for(int i=0; i < length;i++){
-                Step *s;
+//                Step *s;
                 outerPoly.addVertex(steps.at(i));
                 if(seq[i] == true){
                 
                     //updating vertex for polyline
                     innerPoly.addVertex(steps.at(i)); //front vertices
-                    s = new Step(steps[i],1);
+//                    s = new Step(steps[i],1);
                 }else{
-                    s = new Step(steps[i],0);
+//                    s = new Step(steps[i],0);
                 }
-                step_Arr.insert(step_Arr.begin()+i,s);
+//                step_Arr.insert(step_Arr.begin()+i,s);
             }
         }
     }catch(out_of_range){
@@ -195,9 +195,7 @@ void PolyGUI::draw(){
     ofPushMatrix();
     ofMultMatrix(m);
     ofSetLineWidth(lineWidth);
-    
-    if(isFloat)
-        polyLine.draw();
+    polyLine.draw();
     
     //TEXT DISPLAYS----
 //    stringstream elapsedTime;

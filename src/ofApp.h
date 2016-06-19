@@ -4,6 +4,7 @@
 #include "ofxGui.h"
 #include "INF_Utils.h"
 
+#include "TransportBar.h"
 #include "Sequencer.h"
 #include "NetOSC.h"
 #include "PolyGUI.h"
@@ -94,6 +95,7 @@ class ofApp : public ofBaseApp {
     
     vector<Sequencer*>INF_seq;
     vector<PolyGUI*>INF_gui;
+    vector<ofxDatGuiComponent*>docker;
     INF_Clock clock;
     bool trigger;
     bool mouseClick;
@@ -114,4 +116,8 @@ class ofApp : public ofBaseApp {
     ofxToggle random;
     int max_len;
     int numPulse;
+    
+    //ofxDatGui
+    TransportBar t;
+    
 };

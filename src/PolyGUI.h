@@ -13,15 +13,15 @@ struct Step{
 public:
     
     bool on;
-    int *accent;
-    int *note;
+    int accent;
+    int note;
     ofPoint pos;
 
     bool isFloat;
     float radius;
     
     Step():on(false){};
-    Step(bool _on):on(_on), accent(0)
+    Step(ofPoint _pos, bool _on):pos(_pos),on(_on), accent(0)
     {
         //constructor
         
@@ -29,10 +29,8 @@ public:
     ~Step()
     {
         //destructor
-        if(accent != NULL)
-            delete accent;
-        if(note != NULL)
-            delete note;
+        
+        
     };
     void mouseOver(bool &mouseClicked){
         float disX = pos.x - ofGetMouseX();
@@ -42,7 +40,6 @@ public:
     void render(){
         (on) ? ofFill() : ofNoFill();
         ofDrawCircle(pos.x, pos.y, radius);
-        
     }
 
 
@@ -59,12 +56,14 @@ public:
     float radius;
     
     Seq_Loop(int seq_len):stepAmount(seq_len){
+        
+        //create a group of empty steps
         if(!step_Arr.empty())
             step_Arr.clear();
         float angle = 360 / stepAmount;
         
         for(int i = 0; i < stepAmount; i++){
-            pos.insert(pos.begin()+i, ofPoint(radius * cos(angle*i*PI/180), radius * sin(angle*i*PI/180), 0));
+            pos.insert(pos.begin()+i, ofPoint(radius * cos(angle*i*PI/180), radius * sin(angle*i*PI/180)));
             
             Step temp = Step(pos[i],0);
             temp.radius = 15;
@@ -73,6 +72,8 @@ public:
     };
     
     Seq_Loop(int seq_len, int seq_pulse):stepAmount(seq_len), pulses(seq_pulse){
+        
+        //create a Bjorklund sequence
         if(!step_Arr.empty())
             step_Arr.clear();
         
@@ -86,6 +87,11 @@ public:
         
     }
     
+    void render(){
+        for(int i=0;i < stepAmount;i++){
+            
+        }
+    }
 };
 
 typedef vector<unique_ptr<Seq_Loop>> seqCollection;
@@ -102,8 +108,13 @@ public:
     }
     PolyGUI(float _radius, ofVec3f &_pos, string &typeTag);//completed constructor
     ~PolyGUI(){//Destructor;
-        if(!step_Arr.empty())
-            for_each(step_Arr.begin(), step_Arr.end(), DeleteVector<Step*>()); //flush all pointers in vectors
+        try{
+            if(!step_Arr.empty())
+                for_each(step_Arr.begin(), step_Arr.end(), DeleteVector<Step*>()); //flush all pointers in vectors
+        }catch(exception e){
+            cout<<e.what()<<endl;
+        }
+        
         cout<<"[PolyGUI is deleted]"<<endl;
     }
     

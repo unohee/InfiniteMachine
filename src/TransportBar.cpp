@@ -7,31 +7,27 @@
 //
 
 #include "TransportBar.h"
-//--------------------------------------------------------------
-TransportBar::TransportBar(string _netAddress){
-    netAddress = _netAddress;
-    start = false;
-}
+
 //--------------------------------------------------------------
 void TransportBar::setup(){
 
     //ofxDatGui Setup
     //Framerate
     ofxDatGuiComponent* component;
-    component = new ofxDatGuiFRM(0.5f); //instantiate FRM object and set refreshrate
-//    component->setWidth(200, 120);
+    component = new ofxDatGuiFRM(0.01f);//instantiate FRM object and set refreshrate
     components.push_back(component);
+    
     //TEXTINPUT (IP + PORT)
     component = new ofxDatGuiTextInput("IP Address", netAddress);
     component->onTextInputEvent(this, &TransportBar::setNetwork);
     components.push_back(component);
     //BPM SLIDER
     ofxDatGuiSlider* bpmSlider = new ofxDatGuiSlider("BPM", 20, 240);
-//    bpmSlider->setWidth(180, 50);
     bpmSlider->setPrecision(0);
     bpmSlider->setValue(130);
     bpmSlider->onSliderEvent(this, &TransportBar::bpmChanged); //add event method
     components.push_back(bpmSlider);
+    
     //PLAY / Stop Toggle
     ofxDatGuiToggle* play = new ofxDatGuiToggle("PLAY", start);
     

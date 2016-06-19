@@ -9,12 +9,12 @@
 
 #include "DatPanel.h"
 
+
 class TransportBar : public DatPanel{
 public:
-    TransportBar(){
+    TransportBar():netAddress("localhost:8080"){
         
     };
-    TransportBar(string netAddress);
     ~TransportBar(){
         
     }
