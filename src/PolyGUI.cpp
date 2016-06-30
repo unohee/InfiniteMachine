@@ -22,9 +22,6 @@ PolyGUI::PolyGUI(float _radius, ofVec3f &_pos, string &_typeTag):
         typeTag.erase (std::remove(typeTag.begin(), typeTag.end(), chars[i]), typeTag.end());
     }
     
-    //loadFont
-    gui_id.loadFont("/Users/uno/Developer/of_v20160609_osx_release/apps/myApps/Infinite_Machine_Alpha/bin/data/ofxbraitsch/fonts/Verdana.ttf", 18);
-    gui_adrs.loadFont("/Users/uno/Developer/of_v20160609_osx_release/apps/myApps/Infinite_Machine_Alpha/bin/data/ofxbraitsch/fonts/Verdana.ttf", 14);
     
     //translation + getPosition (ofNode, ofMatrix4x4)
     setGlobalPosition(pos);
@@ -119,9 +116,9 @@ void PolyGUI::createPoly(vector<bool>&seq){
 void PolyGUI::createMesh(){
 
     float x,y;
-    float circlepts = 100;
-    float innerRadius = radius + 7.5;
-    float outerRadius = innerRadius + radius /8;
+    float circlepts = 200;
+    float innerRadius = radius + 50;
+    float outerRadius = innerRadius + 1.2;
     
     //cFrame
     vector<ofVec3f>innerCircleMeshOutline;
@@ -148,45 +145,6 @@ void PolyGUI::createMesh(){
     std::reverse(innerCircleMeshOutline.begin(), innerCircleMeshOutline.end());
     meshOutline.addVertices(innerCircleMeshOutline);
     meshOutline.addColor(ofFloatColor(1,1,1));
-
-    //rectFrame
-    ofVec3f rects[4];
-    width = outerRadius;
-    rects[0]=ofVec3f(-width,width, 0);
-    rects[1]=ofVec3f(width, width, 0);
-    rects[2]=ofVec3f(width,-width, 0);
-    rects[3]=ofVec3f(-width,-width,0);
-    vector<ofVec3f>frameOutline;
-
-    //Polyline
-    polyLine.setMode(OF_PRIMITIVE_LINE_LOOP);
-    for(int i=0; i < 4;i++){
-        polyLine.addVertex(rects[i]);
-        polyLine.addColor(ofColor::red);
-        polyLine.addIndex(i);
-        frameOutline.push_back(rects[i]);
-    }
-    std::reverse(frameOutline.begin(), frameOutline.end());
-    polyLine.addVertices(frameOutline);
-
-//    //----------------------------------------------------------
-//    //FONT RENDERING
-//    gui_id.setGlobalDpi(96);
-//    gui_id.createNewString(typeTag); //typeTag
-//    gui_id.position = ofVec3f(-30, -20, 0);
-//    
-//    gui_adrs.position = ofVec3f(-90,-70,0);
-//    gui_adrs.createNewString(address); //network address
-////    fonts.push_back(*newFont);
-////    fonts.push_back(*newFont);
-//
-////    //Display Sequence size
-////    stringstream seq;
-////    seq << pulses<< " / "<<length;
-////    newFont->createNewString(seq.str());
-////    newFont->position = rects[3];
-////    fonts.push_back(*newFont);
-//    cout<<"Mesh is generated."<<endl;
 }
 //--------------------------------------------------------------
 void PolyGUI::draw(){
@@ -194,21 +152,6 @@ void PolyGUI::draw(){
     glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);
     ofPushMatrix();
     ofMultMatrix(m);
-    ofSetLineWidth(lineWidth);
-    polyLine.draw();
-    
-    //TEXT DISPLAYS----
-//    stringstream elapsedTime;
-//    if(trigger){
-//        elapsedTime << ofGetElapsedTimef();
-//    }else{
-//        elapsedTime << "0.00000";
-//    }
-//    font->createNewString(elapsedTime.str());
-//    ofSetColor(255, 0, 15);
-//    font->position = rects[0];
-//    font->drawAsMesh();
-    //-----------------
     
     //Circle Frame
     ofSetLineWidth(1);
@@ -234,16 +177,4 @@ void PolyGUI::draw(){
     }
     
     ofPopMatrix();
-    //Cyclical Polygon
-    
-//    ofPushMatrix();
-//    ofRotateY(180);
-//    gui_id.drawAsMesh();
-//    gui_adrs.drawAsMesh();
-//    for(int i=0;i < fonts.size();i++){
-//        fonts[i].drawAsMesh();
-//    }
-//    for(auto fonts:fonts)fonts.drawAsMesh();
-//    ofPopMatrix();
-//    ofPopMatrix();
 }

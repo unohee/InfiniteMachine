@@ -3,12 +3,16 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "INF_Utils.h"
+#include "INF_MIDI.h"
 
-#include "TransportBar.h"
 #include "Sequencer.h"
 #include "NetOSC.h"
 #include "PolyGUI.h"
 #include "Note.h"
+
+//GUI
+#include "Dat_Docker.h"
+
 
 #define SRATE 44100 //SAMPLE RATE
 #define BUFFER_SIZE 512 // BUFFERSIZE
@@ -36,6 +40,8 @@ class ofApp : public ofBaseApp {
 		void gotMessage(ofMessage msg);
         void exit();
 
+    void deviceSelected(int &eventArgs);
+    void MIDI_ch_changed(int &eventArgs);
     
     void setGui(){
         //maximum length of sequence
@@ -104,8 +110,12 @@ class ofApp : public ofBaseApp {
     //Network
     NetOSC *network;
     Note notes;
+    INF_MIDI *midi; //MIDI OUTPUT
     
-    //GUI
+    //ofxDatGui
+    Dat_Docker *docks;
+    
+    
     ofxIntSlider seq_len;
     ofxIntSlider bpm_slider;
     ofxIntSlider seq_pulse;
@@ -117,7 +127,7 @@ class ofApp : public ofBaseApp {
     int max_len;
     int numPulse;
     
-    //ofxDatGui
-    TransportBar t;
+    
+
     
 };

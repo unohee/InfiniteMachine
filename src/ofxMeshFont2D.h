@@ -1,25 +1,25 @@
 
 #pragma once
 #include "ofMain.h"
-using namespace std;
+#include "INF_Utils.h"
 //2D Font Extrusion for the use of GUI in 3D Interaction..
 
 class ofxMeshFont2D : public ofTrueTypeFont{
     
 public:
     
-    ofxMeshFont2D(){
+    ofxMeshFont2D(string _path, int _size):path(_path), size(_size){
+        ofTrueTypeFont::load(path, size,true,true,true);
+    };
+    ~ofxMeshFont2D(){
         
     };
-    virtual ~ofxMeshFont2D(){
-        
-    };
-    void loadFont(string file, int size){
-        //this should be executed only once..
-        ofTrueTypeFont::load(file, size,true,true,true);
-
-    }
+    
     void createNewString(string input){
+        if(!typeFaceMesh.empty())
+            for(int i=0; i <typeFaceMesh.size();i++)
+                typeFaceMesh[i].clearVertices();
+        
         letterPaths = getStringAsPoints(input);
         bbox = getStringBoundingBox(input, 0, 0);
         for(int i=0; i<letterPaths.size(); i++)
@@ -36,10 +36,11 @@ public:
         for(int i=0; i<typeFaceMesh.size(); i++)
         {
             typeFaceMesh[i].draw();
-            typeFaceMesh[i].clear();
         }
         ofPopMatrix();
     }
+    string path;
+    int size;
     vector<ofMesh>typeFaceMesh;
     ofRectangle bbox;
     ofVec3f position;

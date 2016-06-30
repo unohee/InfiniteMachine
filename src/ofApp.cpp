@@ -6,14 +6,28 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     cout<<"[Infinite Machine ALPHA.v02]"<<endl;
-    ofBackground(0, 0, 0);
-
-    vector<int>v;
-    Urn u = Urn(10);
-    v = u.urn();
+    ofBackground(0);
+    ofSetLogLevel(OF_LOG_VERBOSE);
+    ofSetWindowTitle("Infinite Machine");
     
-    for(int i=0;i<v.size();i++)
-        cout<<v[i]<<" ";
+    //MIDI Initialization
+    midi = new INF_MIDI();
+    //Upper dock
+    docks = new Dat_Docker(midi->midiOut.getPortList());
+    //add EventListener.
+    ofAddListener(docks->deviceFocus, this, &ofApp::deviceSelected);
+    ofAddListener(docks->channelChanged, this, &ofApp::MIDI_ch_changed);
+    midi->midiOut.listPorts();
+
+    
+    
+    
+    //urn test
+//    vector<int>v;
+//    Urn u = Urn(10);
+//    v = u.urn();
+//    for(int i=0;i<v.size();i++)
+//        cout<<v[i]<<" ";
     
     max_len = 16; numPulse = 4;
     
@@ -29,9 +43,6 @@ void ofApp::setup(){
     int a = 8;
     int b = 3;
     string typeTag = "/test/";
-    
-    
-    
     
     //Sequencer init
     try {
@@ -52,7 +63,7 @@ void ofApp::setup(){
     ofVec3f n(ofGetWidth()/2,ofGetHeight()/2,0);
     for(int i=0;i!=INF_seq.size();i++){
         try{
-            PolyGUI *p = new PolyGUI(200, n, typeTag);
+            PolyGUI *p = new PolyGUI(75, n, typeTag);
             p->createPoly(14);
             INF_gui.push_back(p);
         }catch(exception e){
@@ -65,26 +76,10 @@ void ofApp::setup(){
     
     //OSC Network
     network = new NetOSC(HOST,PORT);
-    
-    t.setup();
-//    ofxDatGuiComponent * component;
-//    component = new ofxDatGuiFRM();
-//    docker.push_back(component);
-//    
-//    float gap = ofGetWidth() / docker.size();
-//    for(int i=0;i < docker.size();++i){
-//        if(i <= 2){
-//            docker[i]->setWidth(gap, 0.45);
-//        }else{
-//            docker[i]->setWidth(gap, 0.2);
-//        }
-//        docker[i]->setPosition(gap*i, ofGetHeight() - docker[i]->getHeight());
-//    }
-//    
+
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
 }
-
 //--------------------------------------------------------------
 void ofApp::update(){
     //FPS update on GUI parameter
@@ -96,9 +91,11 @@ void ofApp::update(){
     for(int i=0;i<docker.size();i++){
         docker[i]->update();
     }
-    t.update(ofGetWidth());
-//    network->receive(notes, trigger);
 
+//    network->receive(notes, trigger);
+    
+    ofSetWindowShape(docks->getWidth(), 768);
+    docks->update();
 }
 
 //--------------------------------------------------------------
@@ -110,7 +107,11 @@ void ofApp::draw(){
     
     
     gui.draw();
-    t.draw();
+
+    
+    
+    //ofxDatGui components
+    docks->draw();
 }
 
 //--------------------------------------------------------------
@@ -119,8 +120,6 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     for(int i = 0; i < bufferSize; i++){
         
         clock.ticker(start);
-        
-        
         for(int i=0;i < index;++i){
             
             try {
@@ -133,6 +132,16 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
         }
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
     }
+}
+//--------------------------------------------------------------
+void ofApp::deviceSelected(int &eventArgs){
+    //receive list index from GUI
+    midi->setDevice(eventArgs);
+}
+//--------------------------------------------------------------
+void ofApp::MIDI_ch_changed(int &eventArgs){
+    midi->channel = eventArgs+1;
+    cout<<"Channel : "<<eventArgs+1<<endl;
 }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
@@ -164,9 +173,7 @@ void ofApp::mousePressed(int x, int y, int button){
         mouseClick = !mouseClick;
         
     cout<<mouseClick<<endl;
-
 }
-
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
 
@@ -186,7 +193,6 @@ void ofApp::mouseExited(int x, int y){
 void ofApp::windowResized(int w, int h){
 
 }
-
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg){
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxMeshFont2D.h"
 #include "INF_Utils.h"
 #include "Bjorklund.h"
 
@@ -149,11 +148,5 @@ public:
     ofMesh mesh ;//cFrame
     ofMesh meshOutline;//cFrame
     float elapsedTime;
-    
-    //rectFrame
-    ofMesh polyLine;
-    float lineWidth = 2;
-    ofxMeshFont2D gui_id,gui_adrs;
-    vector<ofxMeshFont2D> fonts;
     
 };
