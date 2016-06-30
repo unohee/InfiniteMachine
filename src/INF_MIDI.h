@@ -21,16 +21,17 @@ public:
     int channel;
     unsigned int currentPgm;
     int voice;
-    int note[108];
-    int velocity[108];
+    int note;
+    int velocity;
     bool isPlayed[108];
-    
+    string notes[108];
     
     INF_MIDI();
     ~INF_MIDI(){
         //destructor
         midiOut.closePort();
     }
+    void setup();
     void sendNote(Note &n);
     void setDevice(int &device){
         midiOut.openPort(device); // by number

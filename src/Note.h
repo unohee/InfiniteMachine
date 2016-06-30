@@ -11,12 +11,16 @@
 enum NOTE_STATUS {KEY_ON, KEY_OFF};
 
 struct Note{
-    
+
     Note():pitch(0), velocity(0), status(KEY_OFF){
     };
     ~Note(){
         
     };
+    
+    int octave;
+    string notes[127];
+    
     NOTE_STATUS status;
     int pitch;
     int velocity;

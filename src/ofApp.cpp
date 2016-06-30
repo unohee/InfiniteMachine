@@ -12,6 +12,12 @@ void ofApp::setup(){
     
     //MIDI Initialization
     midi = new INF_MIDI();
+    
+    
+    
+    
+    
+    
     //Upper dock
     docks = new Dat_Docker(midi->midiOut.getPortList());
     //add EventListener.
@@ -22,12 +28,6 @@ void ofApp::setup(){
     
     
     
-    //urn test
-//    vector<int>v;
-//    Urn u = Urn(10);
-//    v = u.urn();
-//    for(int i=0;i<v.size();i++)
-//        cout<<v[i]<<" ";
     
     max_len = 16; numPulse = 4;
     
@@ -72,7 +72,7 @@ void ofApp::setup(){
         }
     }
 
-    setGui();
+//    setGui();
     
     //OSC Network
     network = new NetOSC(HOST,PORT);
@@ -82,8 +82,7 @@ void ofApp::setup(){
 }
 //--------------------------------------------------------------
 void ofApp::update(){
-    //FPS update on GUI parameter
-    fps = ofToString(ofGetFrameRate());
+    ofSetWindowShape(docks->getWidth(), 768);
     
     for(int i=0;i < INF_gui.size();++i){
         INF_gui[i]->mouseOver();
@@ -94,31 +93,39 @@ void ofApp::update(){
 
 //    network->receive(notes, trigger);
     
-    ofSetWindowShape(docks->getWidth(), 768);
     docks->update();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    //ofxDatGui components
+    ofPushStyle();
+    ofSetColor(255, 255, 255);
+    docks->draw();
+    ofPopStyle();
+    
+    // let's see something
+    ofSetColor(255);
+    stringstream text;
+    text << "connected to port " << midi->midiOut.getPort()
+    << " \"" << midi->midiOut.getName() << "\"" << endl
+    << "is virtual?: " << midi->midiOut.isVirtual() << endl << endl
+    << "sending to channel " << midi->channel << endl << endl
+    << "note: " << midi->note << endl
+    << "velocity: " << midi->velocity << endl;
+    ofDrawBitmapString(text.str(), 20, 60);
     
     for(int i=0;i < INF_seq.size();++i){
         INF_gui[i]->draw();
     }
     
-    
-    gui.draw();
 
-    
-    
-    //ofxDatGui components
-    docks->draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     int index = INF_seq.size();
     for(int i = 0; i < bufferSize; i++){
-        
         clock.ticker(start);
         for(int i=0;i < index;++i){
             
@@ -145,11 +152,38 @@ void ofApp::MIDI_ch_changed(int &eventArgs){
 }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    // send a note on if the key is a letter or a number
+    if(isalnum((unsigned char) key)) {
+        
+        // scale the ascii values to midi velocity range 0-127
+        // see an ascii table: http://www.asciitable.com/
+        int _note = ofMap(key, 48, 122, 0, 127);
+        int _velocity = 127;
+        
+        n = new Note();
+        n->status = KEY_ON;
+        n->pitch =_note;
+        n->velocity = _velocity;
+        midi->sendNote(*n);
+    }
 
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
+    
+    if(isalnum((unsigned char) key)) {
+        // scale the ascii values to midi velocity range 0-127
+        // see an ascii table: http://www.asciitable.com/
+        int _note = ofMap(key, 48, 122, 0, 127);
+        int _velocity = 0;
+        
+        n = new Note();
+        n->status = KEY_OFF;
+        n->pitch =_note;
+        n->velocity = 0;
+        midi->sendNote(*n);
+    }
 
 }
 
@@ -158,7 +192,6 @@ void ofApp::mouseMoved(int x, int y ){
     
 
 }
-
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
 
@@ -175,37 +208,13 @@ void ofApp::mousePressed(int x, int y, int button){
     cout<<mouseClick<<endl;
 }
 //--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
-
-}
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
-}
-//--------------------------------------------------------------
 void ofApp::exit(){
-    //delete objects
-    delete network;
+    //delete raw pointers
+    if(network != NULL)
+        delete network;
+    delete midi;
+    delete docks;
+    
     for_each(INF_seq.begin(), INF_seq.end(), DeleteVector<Sequencer*>());
     for_each(INF_gui.begin(), INF_gui.end(), DeleteVector<PolyGUI*>());
     cout<<"[Infinite Machine : Goodbye.]"<<endl;

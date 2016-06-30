@@ -32,12 +32,12 @@ class ofApp : public ofBaseApp {
 		void mouseMoved(int x, int y );
 		void mouseDragged(int x, int y, int button);
 		void mousePressed(int x, int y, int button);
-		void mouseReleased(int x, int y, int button);
-		void mouseEntered(int x, int y);
-		void mouseExited(int x, int y);
-		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
+    void mouseReleased(int x, int y, int button){};
+    void mouseEntered(int x, int y){};
+    void mouseExited(int x, int y){};
+    void windowResized(int w, int h){};
+    void dragEvent(ofDragInfo dragInfo){};
+    void gotMessage(ofMessage msg){};
         void exit();
 
     void deviceSelected(int &eventArgs);
@@ -52,17 +52,11 @@ class ofApp : public ofBaseApp {
         bpm_slider = 130;
         //setup
         gui.setup();
-        gui.add(fps.set("Framerate", ""));
-        gui.add(bpm_slider.setup("BPM",130,20,240));
         gui.add(seq_len.setup("Length of SEQ",16,2,max_len)); //max length needs to be dynamic.
         gui.add(seq_pulse.setup("Beats in SEQ", 3,2,max_len)); //this too.
         //    gui.add(offset.setup("Offset", 0, 0, max_len));
-        gui.add(random.setup("Randomize", false));
-        gui.add(start.setup("PLAY", false));
-        
         seq_len.addListener(this, &ofApp::lengthChanged);
         seq_pulse.addListener(this, &ofApp::beatChanged);
-        bpm_slider.addListener(this, &ofApp::tempoChanged);
         //----------------------------------------------
     }
     
@@ -88,17 +82,9 @@ class ofApp : public ofBaseApp {
             INF_gui[i]->createPoly(INF_seq[i]->seq);
         }
     }
-    void tempoChanged(int &bpm_slider){
-        for(int i=0;i!=INF_seq.size();++i){
-            INF_seq[i]->setClock(bpm_slider,4);
-        }
-//        cout<<"Tempo: "<<bpm_slider<<endl;
-    }
     string ip_adrs, port_adrs;
     
-    
-//    Sequencer *seq;
-    
+
     vector<Sequencer*>INF_seq;
     vector<PolyGUI*>INF_gui;
     vector<ofxDatGuiComponent*>docker;
@@ -107,10 +93,12 @@ class ofApp : public ofBaseApp {
     bool mouseClick;
     
     
-    //Network
+    //Network component
     NetOSC *network;
-    Note notes;
+    Note *n;
     INF_MIDI *midi; //MIDI OUTPUT
+    string notes[127];
+    
     
     //ofxDatGui
     Dat_Docker *docks;
