@@ -10,7 +10,7 @@ public:
     //Parameters that is received from Ableton Live
     int tempo, bar, beat;
     bool isPlay;
-    Ableton():tempo(120), bar(1), beat(1),isPlay(false){};
+    Ableton(){};
 };
 
 class OSC_Receive{
@@ -23,7 +23,6 @@ public:
     
     ofxOscReceiver receiver;
     ofEvent<Ableton> AbletonPlayed;
-    
     int current_msg_string;
     string msg_strings[NUM_MSG_STRINGS];
     float timers[NUM_MSG_STRINGS];
@@ -34,5 +33,5 @@ class OSC_Sender{
 public:
     
     OSC_Sender(){};
-
+    
 };

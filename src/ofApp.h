@@ -58,9 +58,12 @@ class ofApp : public ofBaseApp {
     
     //Sequencing
     INF_Clock clock;
+    int tempo, currentBar, currentBeat;
     bool trigger;
     bool mouseClick;
     bool start;
+    
+    
     
     //Network component
     Note *n;

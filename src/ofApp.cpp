@@ -12,12 +12,7 @@ void ofApp::setup(){
     
     //MIDI Initialization
     midi = new INF_MIDI();
-    
-    
-    
-    
-    
-    
+
     //Upper dock
     docks = new Dat_Docker(midi->midiOut.getPortList());
     //add EventListener.
@@ -160,8 +155,10 @@ void ofApp::keyReleased(int key){
 }
 //--------------------------------------------------------------
 void ofApp::AbletonPlayed(Ableton &eventArgs){
-    eventArgs.tempo;
-    
+    tempo = eventArgs.tempo;
+    currentBar = eventArgs.bar;
+    currentBeat = eventArgs.beat;
+    start = eventArgs.isPlay;
 }
 //--------------------------------------------------------------
 void ofApp::exit(){

@@ -14,14 +14,12 @@ void OSC_Receive::setup(){
 }
 //--------------------------------------------------------------
 void OSC_Receive::update(){
-    
     // hide old messages
     for(int i = 0; i < NUM_MSG_STRINGS; i++){
         if(timers[i] < ofGetElapsedTimef()){
             msg_strings[i] = "";
         }
     }
-    
     while(receiver.hasWaitingMessages()){
         ofxOscMessage m;
         receiver.getNextMessage(m);
@@ -34,7 +32,7 @@ void OSC_Receive::update(){
         }else if(m.getAddress()== "/transport/currentBar"){
             state.bar = m.getArgAsInt(0);
         }else if(m.getAddress()== "/transport/currentBeat"){
-            state.bar = m.getArgAsInt(0);
+            state.beat = m.getArgAsInt(0);
         }else{
             //do nothing
         }
