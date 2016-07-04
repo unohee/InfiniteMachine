@@ -37,6 +37,18 @@ void ofApp::setup(){
     port_adrs = PORT;
     
     //Sequencer init
+    
+    module = new INF_Module(0);
+    module->pos = ofPoint(ofGetWidth()/2, ofGetHeight()/2);
+    module->setup();
+    
+    
+    
+    
+    
+    
+    
+    
     int a = 8; int b = 3;
     try {
         Sequencer *seq = new Sequencer(a,b);
@@ -62,6 +74,7 @@ void ofApp::update(){
     for(int i=0;i<docker.size();i++){
         docker[i]->update();
     }
+    module->update();
     docks->update();
 }
 //--------------------------------------------------------------
@@ -76,6 +89,9 @@ void ofApp::draw(){
     << "note: " << midi->note << endl
     << "velocity: " << midi->velocity << endl;
     ofDrawBitmapString(text.str(), 20, 60);
+    
+    
+    module->draw();
     
     //ofxDatGui components
     ofPushStyle();
@@ -165,6 +181,7 @@ void ofApp::exit(){
     //delete raw pointers
     delete midi;
     delete docks;
+    delete module;
     
     for_each(INF_seq.begin(), INF_seq.end(), DeleteVector<Sequencer*>());
     cout<<"[Infinite Machine : Goodbye.]"<<endl;

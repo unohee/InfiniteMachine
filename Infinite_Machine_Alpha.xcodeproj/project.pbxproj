@@ -21,6 +21,9 @@
 		46202AA41D25A88700054601 /* DatIndex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46202A9F1D25A88700054601 /* DatIndex.cpp */; };
 		46202AA51D25A88700054601 /* ImageButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46202AA11D25A88700054601 /* ImageButton.cpp */; };
 		464FB7321D2A633C0046187E /* INF_OSC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 464FB7301D2A633C0046187E /* INF_OSC.cpp */; };
+		464FB7411D2A71A90046187E /* CircleButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 464FB73B1D2A71A90046187E /* CircleButton.cpp */; };
+		464FB7421D2A71A90046187E /* circleStep.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 464FB73D1D2A71A90046187E /* circleStep.cpp */; };
+		464FB7431D2A71A90046187E /* INF_Module.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 464FB73F1D2A71A90046187E /* INF_Module.cpp */; };
 		483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 78D67A00EB899FAC09430597 /* ofxLabel.cpp */; };
 		4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AED834CE4DEC5260AF302A2 /* ofxOscParameterSync.cpp */; };
 		510CAFE035E576A4E1502D52 /* UdpSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E6DEF695B88BA5FAACEAA937 /* UdpSocket.cpp */; };
@@ -132,6 +135,12 @@
 		46202AA71D25A95200054601 /* Note.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Note.h; sourceTree = "<group>"; };
 		464FB7301D2A633C0046187E /* INF_OSC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_OSC.cpp; sourceTree = "<group>"; };
 		464FB7311D2A633C0046187E /* INF_OSC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INF_OSC.h; sourceTree = "<group>"; };
+		464FB73B1D2A71A90046187E /* CircleButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CircleButton.cpp; sourceTree = "<group>"; };
+		464FB73C1D2A71A90046187E /* CircleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleButton.h; sourceTree = "<group>"; };
+		464FB73D1D2A71A90046187E /* circleStep.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = circleStep.cpp; sourceTree = "<group>"; };
+		464FB73E1D2A71A90046187E /* circleStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = circleStep.h; sourceTree = "<group>"; };
+		464FB73F1D2A71A90046187E /* INF_Module.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Module.cpp; sourceTree = "<group>"; };
+		464FB7401D2A71A90046187E /* INF_Module.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INF_Module.h; sourceTree = "<group>"; };
 		470CF04F1D4D1B38D5AA1797 /* ofxRtMidiOut.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxRtMidiOut.h; path = ../../../addons/ofxMidi/src/desktop/ofxRtMidiOut.h; sourceTree = SOURCE_ROOT; };
 		48974F980F51769171D0B2F5 /* IpEndpointName.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = IpEndpointName.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h; sourceTree = SOURCE_ROOT; };
 		4CFB659E40D3D3DC5A3E9478 /* maxiGrains.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = maxiGrains.h; path = ../../../addons/ofxMaxim/libs/maxiGrains.h; sourceTree = SOURCE_ROOT; };
@@ -330,6 +339,19 @@
 				E8627DE8BF70DCAC400BE97B /* NetOSC.h */,
 			);
 			name = Networking;
+			sourceTree = "<group>";
+		};
+		464FB7441D2A71B10046187E /* Sequencer GUI */ = {
+			isa = PBXGroup;
+			children = (
+				464FB73B1D2A71A90046187E /* CircleButton.cpp */,
+				464FB73C1D2A71A90046187E /* CircleButton.h */,
+				464FB73D1D2A71A90046187E /* circleStep.cpp */,
+				464FB73E1D2A71A90046187E /* circleStep.h */,
+				464FB73F1D2A71A90046187E /* INF_Module.cpp */,
+				464FB7401D2A71A90046187E /* INF_Module.h */,
+			);
+			name = "Sequencer GUI";
 			sourceTree = "<group>";
 		};
 		480A780D8D0308AE4A368801 /* ofxGui */ = {
@@ -600,6 +622,7 @@
 			children = (
 				46202A9A1D25A85100054601 /* DatGUI */,
 				464FB7341D2A63480046187E /* Networking */,
+				464FB7441D2A71B10046187E /* Sequencer GUI */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
@@ -774,16 +797,19 @@
 				AF0580829426DC6BCA135A5C /* maxiGrains.cpp in Sources */,
 				083FB2094A4DE99F5A60397A /* maxiMFCC.cpp in Sources */,
 				22F21CE3B902225374BA1CA2 /* maximilian.cpp in Sources */,
+				464FB7411D2A71A90046187E /* CircleButton.cpp in Sources */,
 				9514C2D90467055B1447D074 /* stb_vorbis.c in Sources */,
 				BCC8D420CBA9217E437D2D76 /* ofxRtMidiIn.cpp in Sources */,
 				3AEFE4FA8AD5C72671AD07F8 /* ofxRtMidiOut.cpp in Sources */,
 				1A86B7721CAEBC6F1C572C45 /* ofxBaseMidi.cpp in Sources */,
 				63F9FE1D90234FA6DE6F509E /* ofxMidi.cpp in Sources */,
+				464FB7431D2A71A90046187E /* INF_Module.cpp in Sources */,
 				0BFC9C20FD7E3C8D5873AA97 /* ofxMidiIn.cpp in Sources */,
 				C6FE64F74F1EA1D98C8F9847 /* ofxMidiMessage.cpp in Sources */,
 				83D9F930112E0944444124EE /* ofxMidiOut.cpp in Sources */,
 				63D0FD8734D5760B8080C901 /* RtMidi.cpp in Sources */,
 				464FB7321D2A633C0046187E /* INF_OSC.cpp in Sources */,
+				464FB7421D2A71A90046187E /* circleStep.cpp in Sources */,
 				72A929D3561B8232A182ABFC /* ofxOscBundle.cpp in Sources */,
 				5864AD82E20F15536D054EA3 /* ofxOscMessage.cpp in Sources */,
 				4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */,

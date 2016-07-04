@@ -3,10 +3,13 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "INF_Utils.h"
+#include "INF_Module.h"
 #include "INF_MIDI.h"
+#include "INF_OSC.h"
+
 #include "Sequencer.h"
 //#include "NetOSC.h" //DEPRECATED
-#include "INF_OSC.h"
+
 #include "Note.h"
 #include "Dat_Docker.h"
 
@@ -55,7 +58,7 @@ class ofApp : public ofBaseApp {
     //GUIs
     vector<ofxDatGuiComponent*>docker;
     Dat_Docker *docks;
-    
+    INF_Module *module;
     //Sequencing
     INF_Clock clock;
     int tempo, currentBar, currentBeat;
