@@ -33,9 +33,10 @@ void INF_Module::setGui(){
     //ofxDatGui Components
 
     //RANDOMIZATION Button
-    int x0 = rect->getLeft();
+    int x0 = rect->getTopLeft().x;
+    int y0 = rect->getTopLeft().y-40;
     ofxDatGuiButton* b = new ofxDatGuiButton("RANDOMIZE!");
-    b->setPosition(x0,0);
+    b->setPosition(x0,y0);
     b->setWidth(100);
     b->onButtonEvent(this, &INF_Module::onButtonEvent);
     components.push_back(b);
@@ -44,21 +45,21 @@ void INF_Module::setGui(){
     vector<string> mode = {"Manual", "Euclid"};
     ofxDatGuiDropdown* d = new ofxDatGuiDropdown("Mode", mode);
     d->setWidth(110);
-    d->setPosition(x0, 0);
+    d->setPosition(x0, y0);
     d->onDropdownEvent(this, &INF_Module::onDropdownEvent);
     components.push_back(d);
     
     //SEQ MODIFIERS
     int x1 = rect->getRight()-40;
     b = new ofxDatGuiButton("+");
-    b->setPosition(x1, 0);
+    b->setPosition(x1, y0);
     b->setWidth(40);
     b->onButtonEvent(this, &INF_Module::onButtonEvent);
     components.push_back(b);
     
     x1 += b->getWidth();
     b = new ofxDatGuiButton("-");
-    b->setPosition(x1, 0);
+    b->setPosition(x1, y0);
     b->setWidth(40);
     b->onButtonEvent(this, &INF_Module::onButtonEvent);
     components.push_back(b);
