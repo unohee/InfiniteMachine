@@ -27,12 +27,12 @@ void ImageButton::render(){
 void ImageButton::mouseReleased(ofMouseEventArgs & args){
     if (inside(args.x, args.y)) {
         isClicked = !isClicked;
-        customEvent * e = new customEvent();
-        e->label = label;
-        e->toggle = isClicked;
+        customEvent e;
+        e.label = label;
+        e.toggle = isClicked;
         // if the mouse is pressed over the circle an event will be notified (broadcasted)
         // the circleEvent object will contain the mouse position, so this values are accesible to any class that is listening.
-        ofNotifyEvent(buttonClicked, *e, this);
+        ofNotifyEvent(buttonClicked, e, this);
     }
 }
 bool ImageButton::inside(float _x, float _y ){

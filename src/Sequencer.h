@@ -11,7 +11,6 @@
 
 #include "ofxMaxim.h"
 #include "Bjorklund.h"
-#include "PolyGUI.h" // GUI
 #include "ofMain.h"
 
 //operator overloading test

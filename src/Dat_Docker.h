@@ -22,6 +22,8 @@ public:
     ofEvent<int>deviceFocus; //eventArgs for linking GUI and MIDI Interface
     ofEvent<int>channelChanged;
     ofEvent<bool>deviceRefreshed;
+    ofEvent<int>tempoChange;
+    
     static ofEvent<int>deviceFocusGlobal;
     static ofEvent<int>midiChGlobal;
     
@@ -50,11 +52,11 @@ public:
     void getDeviceList(vector<string> &list);
     void selectDevice(ofxDatGuiDropdownEvent e);
     void selectChannel(ofxDatGuiDropdownEvent e);
-    void bpmChanged(ofxDatGuiSliderEvent e){};
+    void bpmChanged(ofxDatGuiSliderEvent e);
     void modeChanged(ofxDatGuiDropdownEvent e){};
+    void play(customEvent &e){cout<<e.label<<endl;};
+    void stop(customEvent &e){cout<<e.label<<endl;};
     void customButtonEvent(customEvent &e);
-    
-    
     void pageAdded(ofxDatGuiButtonEvent e);
     void deviceRefresh(ofxDatGuiButtonEvent e);
     void update();

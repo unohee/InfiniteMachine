@@ -23,15 +23,16 @@ void ofApp::setup(){
     //add EventListener.
     ofAddListener(docks->deviceFocus, this, &ofApp::deviceSelected);
     ofAddListener(docks->channelChanged, this, &ofApp::MIDI_ch_changed);
-    midi->midiOut.listPorts();
+    ofAddListener(docks->tempoChange, this, &ofApp::tempoChange);
+//    ofAddListener(docks->customButtonEvent, this, &ofApp::seqStart);
+    
 
     
+    //Networking components
+    midi->midiOut.listPorts();
+    oscListener.setup();
+    ofAddListener(oscListener.AbletonPlayed, this, &ofApp::AbletonPlayed);
     
-    
-    
-    max_len = 16; numPulse = 4;
-    
-  
     //default IP:PORT Address
     string netAddress;
     stringstream convert;
@@ -39,12 +40,9 @@ void ofApp::setup(){
     netAddress = HOST + convert.str();
     ip_adrs = HOST;
     port_adrs = PORT;
-
-    int a = 8;
-    int b = 3;
-    string typeTag = "/test/";
     
     //Sequencer init
+    int a = 8; int b = 3;
     try {
         Sequencer *seq = new Sequencer(a,b);
         INF_seq.push_back(seq);
@@ -58,24 +56,6 @@ void ofApp::setup(){
        {1,0,0,0,
         0,1,1,1,
         0,1,0,0};
-    
-    //PolyGUI init
-    ofVec3f n(ofGetWidth()/2,ofGetHeight()/2,0);
-    for(int i=0;i!=INF_seq.size();i++){
-        try{
-            PolyGUI *p = new PolyGUI(75, n, typeTag);
-            p->createPoly(14);
-            INF_gui.push_back(p);
-        }catch(exception e){
-            cerr<<"exception occur"<<endl;
-            cout<<e.what()<<endl;
-        }
-    }
-
-//    setGui();
-    
-    //OSC Network
-    network = new NetOSC(HOST,PORT);
 
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
@@ -83,27 +63,14 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     ofSetWindowShape(docks->getWidth(), 768);
-    
-    for(int i=0;i < INF_gui.size();++i){
-        INF_gui[i]->mouseOver();
-    }
+
     for(int i=0;i<docker.size();i++){
         docker[i]->update();
     }
-
-//    network->receive(notes, trigger);
-    
     docks->update();
 }
-
 //--------------------------------------------------------------
 void ofApp::draw(){
-    //ofxDatGui components
-    ofPushStyle();
-    ofSetColor(255, 255, 255);
-    docks->draw();
-    ofPopStyle();
-    
     // let's see something
     ofSetColor(255);
     stringstream text;
@@ -115,11 +82,11 @@ void ofApp::draw(){
     << "velocity: " << midi->velocity << endl;
     ofDrawBitmapString(text.str(), 20, 60);
     
-    for(int i=0;i < INF_seq.size();++i){
-        INF_gui[i]->draw();
-    }
-    
-
+    //ofxDatGui components
+    ofPushStyle();
+    ofSetColor(255, 255, 255);
+    docks->draw();
+    ofPopStyle();
 }
 
 //--------------------------------------------------------------
@@ -151,7 +118,13 @@ void ofApp::MIDI_ch_changed(int &eventArgs){
     cout<<"Channel : "<<eventArgs+1<<endl;
 }
 //--------------------------------------------------------------
+void ofApp::tempoChange(int &eventArgs){
+    clock.setTempo(eventArgs);
+}
+//--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    //MIDINOTE SENDER TEST
+    
     // send a note on if the key is a letter or a number
     if(isalnum((unsigned char) key)) {
         
@@ -168,7 +141,6 @@ void ofApp::keyPressed(int key){
     }
 
 }
-
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
     
@@ -186,36 +158,17 @@ void ofApp::keyReleased(int key){
     }
 
 }
-
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
+void ofApp::AbletonPlayed(Ableton &eventArgs){
+    eventArgs.tempo;
     
-
-}
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-    
-    if(button == 0)
-        mouseClick = true;
-    else
-        mouseClick = !mouseClick;
-        
-    cout<<mouseClick<<endl;
 }
 //--------------------------------------------------------------
 void ofApp::exit(){
     //delete raw pointers
-    if(network != NULL)
-        delete network;
     delete midi;
     delete docks;
     
     for_each(INF_seq.begin(), INF_seq.end(), DeleteVector<Sequencer*>());
-    for_each(INF_gui.begin(), INF_gui.end(), DeleteVector<PolyGUI*>());
     cout<<"[Infinite Machine : Goodbye.]"<<endl;
 }

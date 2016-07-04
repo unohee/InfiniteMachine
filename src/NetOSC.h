@@ -32,5 +32,6 @@ private:
     
     ofxOscMessage *msg;
     ofxOscSender sender;
+    ofxOscReceiver receiver;
 };
 #endif /* NetOSC_h*/

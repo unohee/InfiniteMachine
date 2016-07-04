@@ -70,19 +70,21 @@ Dat_Docker::Dat_Docker(vector<string>&deviceList):list(deviceList), width(0), de
     ImageButton *b = new ImageButton("stop.png", "Stop");
     b->setPosition(width, 0);
     b->setSize(25);
-    ofAddListener(b->buttonClicked, this, &Dat_Docker::customButtonEvent);
+    ofAddListener(b->buttonClicked, this, &Dat_Docker::stop);
     
     buttons.push_back(b);
     
+    //PLAY Button
     width += b->getWidth();
     b = new ImageButton("play.png", "Play");
     b->setPosition(width, 0);
     b->setSize(25);
-    ofAddListener(b->buttonClicked, this, &Dat_Docker::customButtonEvent);
+    ofAddListener(b->buttonClicked, this, &Dat_Docker::play);
     buttons.push_back(b);
 
         width += b->getWidth();
 }
+//--------------------------------------------------------------
 void Dat_Docker::update(){
     browser->update();
     //component search
@@ -90,28 +92,42 @@ void Dat_Docker::update(){
     //ofxDatGui Components
     for(auto x:components) x->update();
 }
+//--------------------------------------------------------------
 void Dat_Docker::draw(){
     browser->render();
-    for(auto x:buttons) x->render();
+    for(auto x:buttons){
+        x->img.setColor(255);
+        x->render();
+    }
     for(auto x:midi_lists) x->render();
     //ofxDatGui Components
     for(auto x:components) x->draw();
 }
+//--------------------------------------------------------------
 void Dat_Docker::getDeviceList(vector<string> &v){
     list = v;
     //call the index number of vector and call callbacks to take it.
 }
+//--------------------------------------------------------------
 void Dat_Docker::selectDevice(ofxDatGuiDropdownEvent e){
     //eventArgs sender
     deviceNum = e.child;
     ofNotifyEvent(deviceFocus, deviceNum, this);//notify event to ofApp
     ofNotifyEvent(deviceFocusGlobal, deviceNum);
-};
+}
+//--------------------------------------------------------------
 void Dat_Docker::selectChannel(ofxDatGuiDropdownEvent e){
     int midiCh = e.child;
     ofNotifyEvent(channelChanged, midiCh, this);
     ofNotifyEvent(midiChGlobal, midiCh);
 }
+//--------------------------------------------------------------
+void Dat_Docker::bpmChanged(ofxDatGuiSliderEvent e){
+//    cout<<"Temposlider"<<(int)e.value<<endl;
+    int tempo = (int)e.value;
+    ofNotifyEvent(tempoChange, tempo, this);
+}
+//--------------------------------------------------------------
 void Dat_Docker::deviceRefresh(ofxDatGuiButtonEvent e){
     cout<<e.target->getLabel()<<endl;
     bool t = false;
@@ -119,10 +135,12 @@ void Dat_Docker::deviceRefresh(ofxDatGuiButtonEvent e){
         t = true;
     ofNotifyEvent(deviceRefreshed, t, this);
 }
+//--------------------------------------------------------------
 void Dat_Docker::customButtonEvent(customEvent &e){
     cout<<e.label<<endl;
 
 }
+//--------------------------------------------------------------
 void Dat_Docker::pageAdded(ofxDatGuiButtonEvent e){
     cout<<e.target->getLabel()<<endl;
 }

@@ -12,9 +12,12 @@
 #include "ofMain.h"
 
 struct customEvent{
-    
+public:
     string label;
     bool toggle;
+    customEvent():label(""),toggle(false){
+        
+    }
 };
 
 class ImageButton{
