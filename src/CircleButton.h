@@ -1,14 +1,15 @@
 
 #pragma once
 #include "ofMain.h"
-#include "ofxDatGui.h"
 
-struct CircleEvent{
+struct ButtonEvent{
 public:
     int index;
+    string label;
     bool bClicked;
-    CircleEvent():index(0),bClicked(false){};
+    ButtonEvent():index(0),bClicked(false){};
 };
+
 
 class CircleButton{
 public:
@@ -18,24 +19,19 @@ public:
     int posX,posY, lineWidth, index;
     int width, height;
     float radius;
-    bool bFill;
-    bool bClicked;
+    bool bFill, bClicked, bMouseRegistered;
     string label;
     
     
     //Event
     ofEvent<bool>buttonClicked;
-    ofEvent<CircleEvent>onCircleEvent;
+    ofEvent<ButtonEvent>onCircleEvent;
     ofColor edgeColor;
     ofColor innerColor;
     
-    //DatGui
-    vector<ofxDatGuiComponent*>components;
-    
-    
     CircleButton();
     ~CircleButton(){
-        
+        ofUnregisterMouseEvents(this);
     }
     void setup(int x, int y, float _radius, bool bMouse);
     void draw();
@@ -49,7 +45,7 @@ public:
     
     void getWidth(){return width;}
     void getHeight(){return height;}
-
+    
     bool inside(float _x, float _y);
     void mouseMoved(ofMouseEventArgs & args){};
     void mouseDragged(ofMouseEventArgs & args){};

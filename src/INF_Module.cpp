@@ -7,58 +7,61 @@
 
 #include "INF_Module.h"
 
-INF_Module::INF_Module(int _index):index(_index), radius(200), gap(20),seqAmt(0){
+INF_Module::INF_Module(int _index):index(_index), radius(300), gap(30),seqAmt(0){
     //constructor
-    
 }
 //--------------------------------------------------------------
 INF_Module::~INF_Module(){
-    cout<<"Page "<<index<<" is Deleted"<<endl;
+    if(!stepGui.empty())stepGui.clear();
+    if(!components.empty())components.clear();
+    cout<<"[Module "<<index<<" is Deleted]"<<endl;
 }
 //--------------------------------------------------------------
 void INF_Module::setup(){
-    rect = new ofRectangle();
-    rect->setFromCenter(pos, radius*2, radius*2);
+    rect_ptr= unique_ptr<ofRectangle>(new ofRectangle());
+    rect_ptr->setFromCenter(pos, radius*2, radius*2);
     setGui();
     
-    //Cyclic Step Sequencer
-    circleStep *seq;
-    seq = new circleStep(rect->getCenter(), radius);
+    //enhanced, simplified Modern C++ version
+    CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), radius));
     seq->setup();
-    ofAddListener(seq->sequenceUpdate, this, &INF_Module::sequenceCallback);
     stepGui.push_back(seq);
+    ofAddListener(stepGui[0]->sequenceUpdate, this, &INF_Module::sequenceCallback);
 }
 //--------------------------------------------------------------
 void INF_Module::setGui(){
     //ofxDatGui Components
-
+    
     //RANDOMIZATION Button
-    int x0 = rect->getTopLeft().x;
-    int y0 = rect->getTopLeft().y-40;
-    ofxDatGuiButton* b = new ofxDatGuiButton("RANDOMIZE!");
-    b->setPosition(x0,y0);
-    b->setWidth(100);
-    b->onButtonEvent(this, &INF_Module::onButtonEvent);
-    components.push_back(b);
+    int x0 = rect_ptr->getTopLeft().x;
+    int y0 = rect_ptr->getTopLeft().y-40;
+    ofPoint p = ofPoint(x0,y0);
+    random = unique_ptr<RoundedButton>(new RoundedButton());
+    random->setFontSize(10);
+    random->setLabel("RANDOMIZE!");
+    random->setColor(ofColor(60), ofColor(255));
+    random->set(p);
+    ofAddListener(random->onButtonEvent, this, &INF_Module::customButtonEvent);
 
-    x0 += b->getWidth();
+    //DatGUIs
+    x0 += random->getWidth();
     vector<string> mode = {"Manual", "Euclid"};
-    ofxDatGuiDropdown* d = new ofxDatGuiDropdown("Mode", mode);
+    shared_ptr<ofxDatGuiDropdown> d = make_shared<ofxDatGuiDropdown>("Mode", mode);
     d->setWidth(110);
     d->setPosition(x0, y0);
     d->onDropdownEvent(this, &INF_Module::onDropdownEvent);
     components.push_back(d);
     
     //SEQ MODIFIERS
-    int x1 = rect->getRight()-40;
-    b = new ofxDatGuiButton("+");
+    int x1 = rect_ptr->getRight()-40;
+    shared_ptr<ofxDatGuiButton> b = make_shared<ofxDatGuiButton>("+");
     b->setPosition(x1, y0);
     b->setWidth(40);
     b->onButtonEvent(this, &INF_Module::onButtonEvent);
     components.push_back(b);
     
     x1 += b->getWidth();
-    b = new ofxDatGuiButton("-");
+    b = make_shared<ofxDatGuiButton>("-");
     b->setPosition(x1, y0);
     b->setWidth(40);
     b->onButtonEvent(this, &INF_Module::onButtonEvent);
@@ -76,45 +79,51 @@ void INF_Module::update(){
 }
 //--------------------------------------------------------------
 void INF_Module::draw(){
-    
-    for(auto x: stepGui)
+    random->draw();
+    for(auto &x: stepGui)
         x->draw();
-    
-    for(auto x: components)
+    for(auto &x: components)
         x->draw();
 }
 //--------------------------------------------------------------
 void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
-        //ADD SEQUENCE
+    //ADD SEQUENCE
     if(e.target->getLabel() == "+"){
         if(seqAmt <8){
-            circleStep *seq;
             seqAmt ++;
-            cout<<seqAmt<<endl;
             radius -= gap;
-            seq = new circleStep(rect->getCenter(), radius);
+            CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), radius));
             seq->index = seqAmt;
             seq->setup();
             seq->setLength(16);
-            ofAddListener(seq->sequenceUpdate, this, &INF_Module::sequenceCallback);
             stepGui.push_back(seq);
+            ofAddListener(stepGui[seqAmt]->sequenceUpdate, this, &INF_Module::sequenceCallback);
         }
-        
-        //ERASE SEQUENCE
+    //ERASE SEQUENCE
     }else if(e.target->getLabel() == "-"){
         if(seqAmt > 0 && stepGui.size() > 1){
             seqAmt --;
-            cout<<seqAmt<<endl;
             radius += gap;
-            //garbage collection
             stepGui.pop_back();
-            ofRemoveListener(stepGui[seqAmt]->sequenceUpdate, this, &INF_Module::sequenceCallback);
-            delete stepGui[stepGui.size()];
-            
+            if(seqAmt > 1)
+                ofRemoveListener(stepGui[seqAmt]->sequenceUpdate, this, &INF_Module::sequenceCallback);
         }
         //RANDOMIZED
     }else if(e.target->getLabel() == "RANDOMIZE!"){
         for(auto x:stepGui){
+            int rand = (int)ofRandom(16);
+            int newStepAmt = (rand > 4) ? rand : 4;
+            loop.resize(newStepAmt);
+            x->stepAmt = newStepAmt;
+            x->setSequence(loop);
+            x->setup();
+        }
+    }
+}
+//--------------------------------------------------------------
+void INF_Module::customButtonEvent(ButtonEvent &e){
+    if(e.label=="RANDOMIZE!"){
+        for(auto &x:stepGui){
             int rand = (int)ofRandom(16);
             int newStepAmt = (rand > 4) ? rand : 4;
             loop.resize(newStepAmt);
@@ -130,7 +139,7 @@ void INF_Module::onDropdownEvent(ofxDatGuiDropdownEvent e){
     
 }
 //--------------------------------------------------------------
-void INF_Module::sequenceCallback(Sequence &e){
+void INF_Module::sequenceCallback(SequenceEvent &e){
     loop = e.seq;
     
     for(sequenceIterator = loop.begin(); sequenceIterator != loop.end(); sequenceIterator++){
@@ -138,9 +147,6 @@ void INF_Module::sequenceCallback(Sequence &e){
     }
     cout<<'\n'<<"##"<<e.index<<"## Length : "<<e.seq.size()<<endl;
     cout<<"loop "<<loop.size()<<endl;
-
+    
 };
 //--------------------------------------------------------------
-void INF_Module::exit(){
-    delete rect;
-}

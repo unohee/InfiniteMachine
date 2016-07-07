@@ -13,7 +13,8 @@ CircleButton::CircleButton():bFill(false), bClicked(false){
 };
 //--------------------------------------------------------------
 void CircleButton::setup(int x, int y, float _radius, bool bMouse){
-    if(bMouse){
+    bMouseRegistered = bMouse;
+    if(bMouseRegistered){
         ofRegisterMouseEvents(this); // this will enable our circle class to listen to the mouse events.
     }else{
         ofUnregisterMouseEvents(this);
@@ -51,12 +52,12 @@ void CircleButton::mouseReleased(ofMouseEventArgs & args){
     if(inside(args.x, args.y)){
         bClicked = !bClicked;
         bFill = !bFill;
-        ofNotifyEvent(buttonClicked, bClicked, this); //*** sometimes it throws mutex error in ofEvent
         
-        CircleEvent b;
+        ButtonEvent b;
         b.index = index;
         b.bClicked = bClicked;
-        ofNotifyEvent(onCircleEvent, b, this);
+        if(bMouseRegistered)
+            ofNotifyEvent(onCircleEvent, b, this);
     }
 };
 //--------------------------------------------------------------

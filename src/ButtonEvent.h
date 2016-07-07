@@ -2,11 +2,11 @@
 #include "ofMain.h"
 #include "ImageButton.h"
 
-class ButtonEvent {
+class ImgButtonEvent {
 public:
 
     
-    ButtonEvent(ImageButton *t) {
+    ImgButtonEvent(ImageButton *t) {
         target = t;
     }
 

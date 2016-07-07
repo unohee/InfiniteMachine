@@ -1,3 +1,4 @@
+ofxCenteredTrueTypeFont
 ofxDatGui
 ofxGui
 ofxMaxim

@@ -8,9 +8,14 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxDatGui.h"
+#include "RoundedButton.h"
+
 #include "circleStep.h"
 #include "Bjorklund.h"
 
+typedef shared_ptr<circleStep> CyclicSeq;
+typedef shared_ptr<ofxDatGuiComponent> ofxDatGuiPtr;
+typedef shared_ptr<RoundedButton> RButtonPtr;
 class INF_Module{
     
 public:
@@ -20,13 +25,16 @@ public:
     float radius;
     int seqAmt;
     
-    vector<circleStep*>stepGui;
-    vector<ofxDatGuiComponent*>components;
+    unique_ptr<ofRectangle> rect_ptr;
+    unique_ptr<RoundedButton> random;
+    vector<RButtonPtr>rButtons;
+    
+    vector<CyclicSeq>stepGui;
+    vector<ofxDatGuiPtr>components;
+    
     vector<Bjorklund*>euclids;
     vector<bool>loop;
     vector<bool>::iterator sequenceIterator;
-    
-    ofRectangle *rect;
     
     INF_Module(){};
     INF_Module(int _index);
@@ -35,10 +43,9 @@ public:
     void setGui();
     void update();
     void draw();
-    void exit();
-    
     //Event Callbacks
     void onButtonEvent(ofxDatGuiButtonEvent e);
+    void customButtonEvent(ButtonEvent &e);
     void onDropdownEvent(ofxDatGuiDropdownEvent e);
-    void sequenceCallback(Sequence &e);
+    void sequenceCallback(SequenceEvent &e);
 };

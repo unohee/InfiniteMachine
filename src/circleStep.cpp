@@ -13,35 +13,34 @@ circleStep::circleStep(ofPoint p, float _radius):index(0),pos(p), radius(_radius
     circle.arc(pos.x, pos.y, radius, radius, 0, 360);
     circle.arc(pos.x,pos.y,radius - 2.5,radius - 2.5, 0,360);
     circle.setColor(60);
-    for(int i=0; i < stepAmt;i++)
+    for(int i=0; i < stepAmt;i++)//allocate memory size first.
         step_seq.push_back(false);
 }
 //--------------------------------------------------------------
 void circleStep::setup(){
     if(!stepPos.empty())stepPos.clear();
-    if(!steps.empty()){//delete pointers(if it is not NULL)
-        for_each(steps.begin(), steps.end(), DeleteVector<CircleButton*>());
-        steps.clear();
-    }
+    if(!steps.empty()){steps.clear();}
     
     float angle = 360.f / stepAmt;
     int randMin = 20;
+    
+    //color of step is randomly chosen.
     ofColor c = ofColor((int)ofRandom(randMin, 255),(int)ofRandom(randMin, 255),(int)ofRandom(randMin, 255));
     
+    //create a set of buttons
     for(int i = 0; i < stepAmt; i++){
-        stepPos.insert(stepPos.begin()+i,
-                       ofPoint(pos.x+radius * cos(angle*i*PI/180), pos.y+radius * sin(angle*i*PI/180)));
-    }
-    
-    for(int i=0; i <stepPos.size();i++){
-        CircleButton *step = new CircleButton();
+        shared_ptr<ofPoint>p = shared_ptr<ofPoint>(new ofPoint(pos.x+radius * cos(angle*i*PI/180), pos.y+radius * sin(angle*i*PI/180)));
+        stepPos.insert(stepPos.begin()+i, p);
+        
+        shared_ptr<CircleButton> step = shared_ptr<CircleButton>(new CircleButton());
         step->index = i;
         step->lineWidth = 2.5;
         step->edgeColor = c;
-        step->setup(stepPos[i].x, stepPos[i].y, 10, true);
-        steps.push_back(step);
-        ofAddListener(step->onCircleEvent, this, &circleStep::stepClicked);
+        step->setup(stepPos[i]->x, stepPos[i]->y, 12, true);
+        steps.insert(steps.begin()+i, std::move(step));
+        ofAddListener(steps[i]->onCircleEvent, this, &circleStep::stepClicked);
     }
+    cout<<"[Cyclic Sequence "<<index<<" created]"<<endl;
 }
 //--------------------------------------------------------------
 void circleStep::setMode(SEQUENCER_MODE mode){
@@ -52,20 +51,16 @@ void circleStep::setMode(SEQUENCER_MODE mode){
     }
 }
 //--------------------------------------------------------------
-void circleStep::update(){
-    
-}
-//--------------------------------------------------------------
 void circleStep::draw(){
     circle.draw();
     //SEQ LINE
-    for(auto x:steps)x->draw();
+    for(auto &x:steps)x->draw();
 }
 //--------------------------------------------------------------
-void circleStep::stepClicked(CircleEvent &e){
+void circleStep::stepClicked(ButtonEvent &e){
     step_seq.at(e.index) = e.bClicked; //replace elements by button indices
     
-    Sequence newSeq;
+    SequenceEvent newSeq;
     newSeq.seq = step_seq;
     newSeq.index = index;
     ofNotifyEvent(sequenceUpdate, newSeq, this);

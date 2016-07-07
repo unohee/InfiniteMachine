@@ -13,11 +13,12 @@
 #include "INF_Utils.h"
 enum SEQUENCER_MODE {MANUAL, EUCLID};
 
-struct Sequence{
+struct SequenceEvent{
     //Custom ofEvent
     vector<bool>seq;
     int index;
-    Sequence(){
+    
+    SequenceEvent(){
         
     };
 };
@@ -25,7 +26,7 @@ struct Sequence{
 class circleStep{
 public:
     
-    ofEvent<Sequence>sequenceUpdate;
+    ofEvent<SequenceEvent>sequenceUpdate;
     //ofPath
     ofPoint pos;
     ofPath circle;
@@ -36,40 +37,38 @@ public:
     
     //Sequence
     int stepAmt;
-    vector<CircleButton*> steps;
-    vector<ofPoint>stepPos;
+    vector<shared_ptr<CircleButton>>steps;
+    vector<shared_ptr<ofPoint>>stepPos;
     
     vector<bool>step_seq;
     bool bEuclid;
     
     circleStep(ofPoint p, float radius);
     ~circleStep(){
-        
+        steps.clear();
+        stepPos.clear();
+        step_seq.clear();
+        cout<<"[Cyclic Sequence "<<index<<" Deleted]"<<endl;
     };
     void setup();
     void setMode(SEQUENCER_MODE mode);
-    void update();
     void draw();
-    void stepClicked(CircleEvent &e);
-    
-    
+    void stepClicked(ButtonEvent &e);
     void setLength(int seq_len){
-
+        
     };
     void setPulse(int seq_pulse){
         //now complicated things happen here..
     }
     void setSequence(vector<bool> &v){
-        setup();
+        step_seq.clear();
         for(int i=0; i < v.size();i++){
             step_seq.insert(step_seq.begin()+i, v[i]);
         }
+        setup();
     };
     vector<bool> getSequence(){return step_seq;};
     int getSize(){return step_seq.size();}
-    
-    
-    
     
 };
 
