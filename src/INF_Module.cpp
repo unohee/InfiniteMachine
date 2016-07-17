@@ -22,11 +22,18 @@ void INF_Module::setup(){
     rect_ptr->set(pos.x, pos.y, radius*2, radius*2);
 
     setGui();
-    //Cyclic Sequencer
+    //Cyclic Sequencer init
     cycleRad = radius - 12;
     CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad));
+    
+    //Add Euclidean Rhythm  (4:16)
+    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,4, false));
+    euclid->init();
+    
+    seq->setSequence(euclid->sequence);
     seq->setup();
     stepGui.push_back(move(seq));
+    
     ofAddListener(stepGui[0]->sequenceUpdate, this, &INF_Module::sequenceCallback);
     
     //and Add its controller
@@ -161,13 +168,22 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
             int newPulse = (rand > rand1) ? rand1 : rand;
             
             if(bEuclid){
-                unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(newStepAmt,newPulse, false));
-                euclid->init();
-                x->stepAmt = newStepAmt;
-                x->setSequence(euclid->sequence);
-                x->setup();
-                controls[x->index]->setEuclid(newStepAmt, newPulse);
-                loops.insert(loops.begin()+x->index, euclid->sequence);
+                if(x->index == 0){
+                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,newPulse, false));
+                    euclid->init();
+                    x->stepAmt = 16;
+                    x->setSequence(euclid->sequence);
+                    x->setup();
+                    controls[x->index]->setEuclid(16, newPulse);
+                }else{
+                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(newStepAmt,newPulse, false));
+                    euclid->init();
+                    x->stepAmt = newStepAmt;
+                    x->setSequence(euclid->sequence);
+                    x->setup();
+                    controls[x->index]->setEuclid(newStepAmt, newPulse);
+                }
+//                loops.insert(loops.begin()+x->index, euclid->sequence);
             }else{
                 loop.resize(newStepAmt);
                 x->stepAmt = newStepAmt;

@@ -70,6 +70,8 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     module->draw();
+    
+    /*
     // let's see something
     ofSetColor(255);
     stringstream text;
@@ -80,9 +82,7 @@ void ofApp::draw(){
     << "note: " << midi->note << endl
     << "velocity: " << midi->velocity << endl;
     ofDrawBitmapString(text.str(), 20, 60);
-    
-    
-    module->draw();
+    */
     
     //ofxDatGui components
     ofPushStyle();

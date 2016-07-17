@@ -51,6 +51,16 @@ void INF_Controls::setup(){
     heightSum += s->getHeight();
     sliders.push_back(s);
     
+    //OFFSET
+    pos.y += s->getHeight();
+    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("OFFSET", 0, 16));
+    s->setPrecision(0);
+    s->setPosition(pos.x, pos.y);
+    s->setValue(0);
+    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
+    heightSum += s->getHeight();
+    sliders.push_back(s);
+    
     //MIDI NOTE
     pos.y += s->getHeight();
     s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("MIDI NOTE", 12,108));
@@ -60,6 +70,7 @@ void INF_Controls::setup(){
     s->onSliderEvent(this, &INF_Controls::onSliderEvent);
     heightSum += s->getHeight();
     sliders.push_back(s);
+
     
     //VELOCITY
     pos.y += s->getHeight();
@@ -86,11 +97,11 @@ void INF_Controls::setup(){
 //    heightSum += d->getHeight();
 //    components.push_back(d);
     
-    ofColor randC = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
-    for(auto &x:components)
-        x->setStripe(randC, 2);
-    for(auto &x:sliders)
-        x->setStripe(randC, 2);
+        ofColor randC = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
+        for(auto &x:components)
+            x->setStripe(randC, 2);
+        for(auto &x:sliders)
+            x->setStripe(randC, 2);
 
 }
 //--------------------------------------------------------------
@@ -151,6 +162,10 @@ void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
         seq_pulse = e.value;
         newSeq.length = seq_len;
         newSeq.pulse = e.value;
+    }else if(e.target->getLabel() =="OFFSET"){
+        newSeq.offset = e.value;
+        newSeq.pulse = seq_pulse;
+        newSeq.length = seq_len;
     }
     ofNotifyEvent(GuiCallback, newSeq, this);
     

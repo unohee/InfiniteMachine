@@ -27,6 +27,7 @@ void circleStep::setup(){
     if(!steps.empty()){steps.clear();}
     
     float angle = 360.f / stepAmt;
+//    float angle = 360.f / 16;
     //create a set of buttons
     for(int i = 0; i < stepAmt; i++){
         shared_ptr<ofPoint>p = shared_ptr<ofPoint>(new ofPoint(pos.x+radius * cos(angle*i*PI/180), pos.y+radius * sin(angle*i*PI/180)));

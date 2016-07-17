@@ -10,7 +10,7 @@
 #include "ofxDatGui.h"
 #include "RoundedButton.h"
 #include "INF_Controls.hpp"
-#include "circleStep.h"
+#include "CircleStep.h"
 #include "Bjorklund.h"
 
 typedef shared_ptr<circleStep> CyclicSeq;

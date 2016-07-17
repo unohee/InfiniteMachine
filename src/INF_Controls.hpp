@@ -6,7 +6,7 @@ using namespace std;
 
 struct Controls{
     
-    int index, length, pulse, pitch, velocity;
+    int index, length, pulse, pitch, velocity, offset;
     Controls():index(0){
         
     };
