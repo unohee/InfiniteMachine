@@ -36,7 +36,7 @@ public:
     vector<DatDropdown*> midi_lists;
     
     
-    int width;
+    int width, height;
     int deviceNum;
     bool start;
     
@@ -44,10 +44,14 @@ public:
     Dat_Docker();
     Dat_Docker(vector<string>&deviceList);
     ~Dat_Docker(){
-        delete browser;
+//        if(browser != NULL)
+//            delete browser;
     };
     int getWidth(){
         return width;
+    }
+    int getHeight(){
+        return height;
     }
     void getDeviceList(vector<string> &list);
     void selectDevice(ofxDatGuiDropdownEvent e);

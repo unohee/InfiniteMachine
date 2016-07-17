@@ -36,11 +36,8 @@ void ofApp::setup(){
     
     //Sequencer init
     module = unique_ptr<INF_Module>(new INF_Module(0));
-    module->pos = ofPoint(30, 50);
+    module->pos = ofPoint(30, docks->getHeight()+12);
     module->setup();
-    
-    
-    
     
     
     int a = 8; int b = 3;
@@ -73,6 +70,7 @@ void ofApp::update(){
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
+    module->draw();
     // let's see something
     ofSetColor(255);
     stringstream text;

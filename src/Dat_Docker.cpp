@@ -12,20 +12,14 @@ ofEvent<int> Dat_Docker::deviceFocusGlobal = ofEvent<int>();
 ofEvent<int> Dat_Docker::midiChGlobal = ofEvent<int>();
 
 Dat_Docker::Dat_Docker(vector<string>&deviceList):list(deviceList), width(0), deviceNum(0){
-    
-    //MODE Selecter
-    vector<string> mode = {"MIDI", "OSC"};
-    DatDropdown *d;
-    d = new DatDropdown("MODE", width, 0, mode);
-    d->menus->onDropdownEvent(this, &Dat_Docker::modeChanged);
-    d->setWidth(75);
-    midi_lists.push_back(d);
-    
-    //MIDI Device list
-    width += d->getWidth();
-    d = new DatDropdown("MIDI Devices", width, 0, list);
+    int gWidth = 200;
+    //MIDI DEVICE
+    DatDropdown *d = new DatDropdown("MIDI Devices", width, 0, list);
     d->menus->onDropdownEvent(this, &Dat_Docker::selectDevice);
+    d->setWidth(gWidth);
     midi_lists.push_back(d);
+    
+    
     
     //MIDI Channel
     width += d->getWidth();
@@ -34,32 +28,27 @@ Dat_Docker::Dat_Docker(vector<string>&deviceList):list(deviceList), width(0), de
     
     d = new DatDropdown("Ch.", width, 0, ch);
     d->menus->onDropdownEvent(this, &Dat_Docker::selectChannel);
-    d->setWidth(50);
+    d->setWidth(gWidth);
     midi_lists.push_back(d);
     
-    //MIDI STATUS REFRESH
-    width += d->getWidth();
-    ofxDatGuiButton *refresh = new ofxDatGuiButton("Refresh");
-    refresh->setPosition(width, 0);
-    refresh->setWidth(74);
-    refresh->onButtonEvent(this, &Dat_Docker::deviceRefresh);
-    components.push_back(refresh);
-    
-    width += refresh->getWidth();
-    ofxDatGuiLabel *label = new ofxDatGuiLabel("Pages :");
-    label->setPosition(width, 0);
-    label->setWidth(68);
-    components.push_back(label);
-    
-    width += label->getWidth();
-    browser = new DatIndex(width,0);
-    browser->setup();
+//    //Module pages
+//    width += d->getWidth();
+//    ofxDatGuiLabel *label = new ofxDatGuiLabel("Pages :");
+//    label->setPosition(width, 0);
+//    label->setWidth(gWidth/2);
+//    components.push_back(label);
+//    
+//    width += label->getWidth();
+//    browser = new DatIndex(width,0);
+//    browser->setup();
     
     //BPM SLIDER
-    width += browser->getWidth()+210;
+//    width += browser->getWidth()+210;
+    width += d->getWidth();
     ofxDatGuiSlider* bpmSlider = new ofxDatGuiSlider("BPM", 40, 240);
+    height = bpmSlider->getHeight();
     bpmSlider->setPosition(width, 0);
-    bpmSlider->setWidth(200, 50);
+    bpmSlider->setWidth(gWidth, 50);
     bpmSlider->setPrecision(0);
     bpmSlider->setValue(130);
     bpmSlider->onSliderEvent(this, &Dat_Docker::bpmChanged);
@@ -83,10 +72,12 @@ Dat_Docker::Dat_Docker(vector<string>&deviceList):list(deviceList), width(0), de
     buttons.push_back(b);
 
         width += b->getWidth();
+    
+    
 }
 //--------------------------------------------------------------
 void Dat_Docker::update(){
-    browser->update();
+//    browser->update();
     //component search
     for(auto x:midi_lists) x->update();
     //ofxDatGui Components
@@ -94,7 +85,8 @@ void Dat_Docker::update(){
 }
 //--------------------------------------------------------------
 void Dat_Docker::draw(){
-    browser->render();
+//    browser->render();
+    
     for(auto x:buttons){
         x->img.setColor(255);
         x->render();
