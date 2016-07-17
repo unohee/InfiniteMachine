@@ -1,14 +1,22 @@
-#pragma once
-#include "ofMain.h"
-#include "ImageButton.h"
+//
+//  ButtonEvent.h
+//  CircleTest
+//
+//  Created by Heewon Oh on 17/07/2016.
+//
+//
 
-class ImgButtonEvent {
+#ifndef ButtonEvent_h
+#define ButtonEvent_h
+
+struct ButtonEvent {
+
 public:
-
+    int index;
+    string label;
+    bool bClicked;
     
-    ImgButtonEvent(ImageButton *t) {
-        target = t;
-    }
-
-    ImageButton *target;
+    ButtonEvent():index(0),bClicked(false){};
 };
+
+#endif /* ButtonEvent_h */

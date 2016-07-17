@@ -21,8 +21,6 @@ void ofApp::setup(){
     ofAddListener(docks->tempoChange, this, &ofApp::tempoChange);
 //    ofAddListener(docks->customButtonEvent, this, &ofApp::seqStart);
     
-
-    
     //Networking components
     midi->midiOut.listPorts();
     oscListener.setup();
@@ -37,13 +35,9 @@ void ofApp::setup(){
     port_adrs = PORT;
     
     //Sequencer init
-    
-    module = new INF_Module(0);
-    module->pos = ofPoint(ofGetWidth()/2, ofGetHeight()/2);
+    module = unique_ptr<INF_Module>(new INF_Module(0));
+    module->pos = ofPoint(30, 50);
     module->setup();
-    
-    
-    
     
     
     
@@ -69,7 +63,7 @@ void ofApp::setup(){
 }
 //--------------------------------------------------------------
 void ofApp::update(){
-    ofSetWindowShape(docks->getWidth(), 768);
+//    ofSetWindowShape(docks->getWidth(), 768);
 
     for(int i=0;i<docker.size();i++){
         docker[i]->update();
@@ -181,7 +175,7 @@ void ofApp::exit(){
     //delete raw pointers
     delete midi;
     delete docks;
-    delete module;
+    module.reset();
     
     for_each(INF_seq.begin(), INF_seq.end(), DeleteVector<Sequencer*>());
     cout<<"[Infinite Machine : Goodbye.]"<<endl;

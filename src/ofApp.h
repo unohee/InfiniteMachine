@@ -58,7 +58,8 @@ class ofApp : public ofBaseApp {
     //GUIs
     vector<ofxDatGuiComponent*>docker;
     Dat_Docker *docks;
-    INF_Module *module;
+//    INF_Module *module;
+    unique_ptr<INF_Module> module;
     //Sequencing
     INF_Clock clock;
     int tempo, currentBar, currentBeat;

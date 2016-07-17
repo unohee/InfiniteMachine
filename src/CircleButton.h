@@ -1,15 +1,7 @@
 
 #pragma once
 #include "ofMain.h"
-
-struct ButtonEvent{
-public:
-    int index;
-    string label;
-    bool bClicked;
-    ButtonEvent():index(0),bClicked(false){};
-};
-
+#include "ButtonEvent.h"
 
 class CircleButton{
 public:
