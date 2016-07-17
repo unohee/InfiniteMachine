@@ -19,12 +19,11 @@ void ofApp::setup(){
     ofAddListener(docks->deviceFocus, this, &ofApp::deviceSelected);
     ofAddListener(docks->channelChanged, this, &ofApp::MIDI_ch_changed);
     ofAddListener(docks->tempoChange, this, &ofApp::tempoChange);
-//    ofAddListener(docks->customButtonEvent, this, &ofApp::seqStart);
+    //Sequencer GUI
+    module = unique_ptr<INF_Module>(new INF_Module(0));
+    module->pos = ofPoint(0, docks->getHeight());
+    module->setup();
     
-    //Networking components
-    midi->midiOut.listPorts();
-    oscListener.setup();
-    ofAddListener(oscListener.AbletonPlayed, this, &ofApp::AbletonPlayed);
     
     //default IP:PORT Address
     string netAddress;
@@ -34,11 +33,11 @@ void ofApp::setup(){
     ip_adrs = HOST;
     port_adrs = PORT;
     
-    //Sequencer init
-    module = unique_ptr<INF_Module>(new INF_Module(0));
-    module->pos = ofPoint(30, docks->getHeight()+12);
-    module->setup();
-    
+    //Networking components
+    midi->midiOut.listPorts();
+    oscListener.setup();
+    ofAddListener(oscListener.AbletonPlayed, this, &ofApp::AbletonPlayed);
+    /*
     
     int a = 8; int b = 3;
     try {
@@ -54,14 +53,14 @@ void ofApp::setup(){
        {1,0,0,0,
         0,1,1,1,
         0,1,0,0};
+     */
 
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
 }
 //--------------------------------------------------------------
 void ofApp::update(){
-//    ofSetWindowShape(docks->getWidth(), 768);
-
+//    ofSetWindowShape(module->getWidth()*2, 768);
     for(int i=0;i<docker.size();i++){
         docker[i]->update();
     }

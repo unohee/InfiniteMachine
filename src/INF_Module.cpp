@@ -7,7 +7,7 @@
 
 #include "INF_Module.h"
 
-INF_Module::INF_Module(int _index):index(_index), radius(300), gap(30),seqAmt(0), bEuclid(true){
+INF_Module::INF_Module(int _index):index(_index), radius(300), gap(24),seqAmt(0), bEuclid(true){
     //constructor
 }
 //--------------------------------------------------------------
@@ -20,59 +20,61 @@ INF_Module::~INF_Module(){
 void INF_Module::setup(){
     rect_ptr= unique_ptr<ofRectangle>(new ofRectangle());
     rect_ptr->set(pos.x, pos.y, radius*2, radius*2);
-//    rect_ptr->setFromCenter(pos, radius*2, radius*2);
+
     setGui();
-    
     //Cyclic Sequencer
-    CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), radius));
+    cycleRad = radius - 12;
+    CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad));
     seq->setup();
     stepGui.push_back(move(seq));
     ofAddListener(stepGui[0]->sequenceUpdate, this, &INF_Module::sequenceCallback);
     
     //and Add its controller
-    guiLoc = ofPoint(rect_ptr->getTopRight()+15);
+    guiLoc = ofPoint(rect_ptr->getTopRight());
     GuiPtr c = GuiPtr(new INF_Controls());
     c->pos = guiLoc;
     c->setup();
     controls.push_back(c);
     ofAddListener(c->GuiCallback, this, &INF_Module::seqParamChanged);
-    
 }
 //--------------------------------------------------------------
 void INF_Module::setGui(){
     //ofxDatGui Components
     
     //RANDOMIZATION Button
-    int x0 = rect_ptr->getTopLeft().x;
-    int y0 = rect_ptr->getTopLeft().y-40;
+    int x0 = rect_ptr->getBottomLeft().x;
+    int y0 = rect_ptr->getBottomLeft().y;
     ofPoint p = ofPoint(x0,y0);
-    random = unique_ptr<RoundedButton>(new RoundedButton());
-    random->setFontSize(10);
-    random->setLabel("RANDOMIZE!");
-    random->setColor(ofColor(60), ofColor(255));
-    random->set(p);
-    ofAddListener(random->onButtonEvent, this, &INF_Module::customButtonEvent);
+    RButtonPtr rb = RButtonPtr(new RoundedButton());
+    rb->setFontSize(10);
+    rb->setLabel("RANDOMIZE!");
+    rb->setColor(ofColor(60), ofColor(255));
+    rb->set(p);
+    rButtons.push_back(rb);
+    ofAddListener(rb->onButtonEvent, this, &INF_Module::customButtonEvent);
     
-    //DatGUIs
-    x0 += random->getWidth();
-    vector<string> mode = {"Manual", "Euclid"};
-    shared_ptr<ofxDatGuiDropdown> d = make_shared<ofxDatGuiDropdown>("Mode", mode);
-    d->setWidth(110);
-    d->setPosition(x0, y0);
-    d->onDropdownEvent(this, &INF_Module::onDropdownEvent);
-    components.push_back(d);
+    x0 += rb->getWidth();
+    p = ofPoint(x0,y0);
+    rb = RButtonPtr(new RoundedButton());
+    rb->setFontSize(10);
+    rb->setLabel("VELOCITY");
+    rb->setColor(ofColor(60), ofColor(255));
+    rb->set(p);
+    rButtons.push_back(rb);
+    ofAddListener(rb->onButtonEvent, this, &INF_Module::customButtonEvent);
     
     //SEQ MODIFIERS
-    int x1 = rect_ptr->getRight()-40;
+    int x1 = rect_ptr->getBottomRight().x-80;
+    int y1 = rect_ptr->getBottomRight().y;
     shared_ptr<ofxDatGuiButton> b = make_shared<ofxDatGuiButton>("+");
-    b->setPosition(x1, y0);
+    b->setPosition(x1, y1);
     b->setWidth(40);
     b->onButtonEvent(this, &INF_Module::onButtonEvent);
     components.push_back(b);
     
     x1 += b->getWidth();
     b = make_shared<ofxDatGuiButton>("-");
-    b->setPosition(x1, y0);
+    b->setPosition(x1, y1);
     b->setWidth(40);
     b->onButtonEvent(this, &INF_Module::onButtonEvent);
     components.push_back(b);
@@ -90,7 +92,8 @@ void INF_Module::update(){
 }
 //--------------------------------------------------------------
 void INF_Module::draw(){
-    random->draw();
+    for(auto &x: rButtons)
+        x->draw();
     for(auto &x: controls)
         x->draw();
     for(auto &x: stepGui)
@@ -102,13 +105,13 @@ void INF_Module::draw(){
 void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
     //ADD SEQUENCE
     if(e.target->getLabel() == "+"){
-        if(seqAmt <8){
+        if(seqAmt <7){
             
             seqAmt ++;
-            radius -= gap;
+            cycleRad -= gap;
             
             //new Cyclic GUI
-            CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), radius));
+            CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad));
             seq->index = seqAmt;
             seq->setup();
             seq->setLength(16);
@@ -117,10 +120,10 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             
             //and its controller
             GuiPtr c = GuiPtr(new INF_Controls());
-            guiLoc.y += 182;
-            if(seqAmt == 3 || seqAmt == 6){
+            guiLoc.y += (26*6);
+            if(seqAmt == 4 || seqAmt == 8){
                 guiLoc.x += controls[0]->getWidth();
-                guiLoc.y = rect_ptr->getTopLeft().y+15;
+                guiLoc.y = rect_ptr->getTopLeft().y;
             }
             c->pos = guiLoc;
             c->index = seqAmt;
@@ -133,12 +136,12 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
     }else if(e.target->getLabel() == "-"){
         if(seqAmt > 0 && stepGui.size() > 1 && controls.size() > 1){
             seqAmt --;
-            radius += gap;
-            guiLoc.y -= 182;
-            if(seqAmt == 3 || seqAmt == 6){
+            cycleRad += gap;
+            guiLoc.y -= 160;
+            if(seqAmt == 4 || seqAmt == 8){
                 guiLoc.x -= controls[0]->getWidth();
             }
-            guiLoc.y = rect_ptr->getTopLeft().y+15;
+            guiLoc.y = rect_ptr->getTopLeft().y;
             stepGui.pop_back();
             controls.pop_back();
             if(seqAmt > 1){

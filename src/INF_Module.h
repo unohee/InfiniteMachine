@@ -25,7 +25,7 @@ public:
     
     int index, gap;
     ofPoint pos;
-    float radius;
+    float radius, cycleRad;
     int seqAmt;
     bool bEuclid;
     
@@ -33,12 +33,9 @@ public:
     unique_ptr<ofRectangle> rect_ptr;
     unique_ptr<RoundedButton> random;
     vector<RButtonPtr>rButtons;
-    
     vector<CyclicSeq>stepGui;
     vector<GuiPtr> controls;
-    
     vector<ofxDatGuiPtr>components;
-    
     unique_ptr<Bjorklund> euclid;
     vector<Sequence>loops;
     
@@ -52,6 +49,12 @@ public:
     void setGui();
     void update();
     void draw();
+    
+    //
+    int getWidth() const{
+        return rect_ptr->getWidth();
+    }
+    
     //Event Callbacks
     void onButtonEvent(ofxDatGuiButtonEvent e);
     void customButtonEvent(ButtonEvent &e);

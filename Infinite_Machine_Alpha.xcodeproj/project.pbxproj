@@ -321,8 +321,6 @@
 		46040C851D2DDFCA00B902FE /* Sequencer */ = {
 			isa = PBXGroup;
 			children = (
-				46BB97DE1D3BED7600129993 /* INF_Controls.cpp */,
-				46BB97DF1D3BED7600129993 /* INF_Controls.hpp */,
 				107CF808CEF1EFE569C06659 /* ImgButtonEvent.h */,
 				46BB97DD1D3BE2F500129993 /* ButtonEvent.h */,
 				68A91892A6BDCC0F278922E1 /* CircleButton.cpp */,
@@ -331,6 +329,8 @@
 				5DCEB274CD80AE5980E8937D /* circleStep.h */,
 				AC43C195D22AA0AEE501EB46 /* INF_Module.cpp */,
 				57E998CF210A3C7DC57CDF19 /* INF_Module.h */,
+				46BB97DE1D3BED7600129993 /* INF_Controls.cpp */,
+				46BB97DF1D3BED7600129993 /* INF_Controls.hpp */,
 				41D2D13F01658E2E8F8EAE0E /* RoundedButton.cpp */,
 				85ACE15C3C663588C685C4C4 /* RoundedButton.h */,
 				E282FEFB97E3684440CD75CE /* Sequencer.cpp */,

@@ -31,6 +31,7 @@ public:
     ofPoint pos;
     ofPath circle;
     ofPath inner;
+    ofColor c;
     int x,y, lineWidth;
     int index;
     float radius;

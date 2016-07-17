@@ -15,6 +15,11 @@ circleStep::circleStep(ofPoint p, float _radius):index(0),pos(p), radius(_radius
     circle.setColor(60);
     for(int i=0; i < stepAmt;i++)//allocate memory size first.
         step_seq.push_back(false);
+    
+    //color of step is randomly chosen.
+    int randMin = 20;
+    c = ofColor((int)ofRandom(randMin, 255),(int)ofRandom(randMin, 255),(int)ofRandom(randMin, 255));
+    
 }
 //--------------------------------------------------------------
 void circleStep::setup(){
@@ -22,11 +27,6 @@ void circleStep::setup(){
     if(!steps.empty()){steps.clear();}
     
     float angle = 360.f / stepAmt;
-    int randMin = 20;
-    
-    //color of step is randomly chosen.
-    ofColor c = ofColor((int)ofRandom(randMin, 255),(int)ofRandom(randMin, 255),(int)ofRandom(randMin, 255));
-    
     //create a set of buttons
     for(int i = 0; i < stepAmt; i++){
         shared_ptr<ofPoint>p = shared_ptr<ofPoint>(new ofPoint(pos.x+radius * cos(angle*i*PI/180), pos.y+radius * sin(angle*i*PI/180)));
@@ -36,6 +36,7 @@ void circleStep::setup(){
         step->index = i;
         step->lineWidth = 2.5;
         step->edgeColor = c;
+        step->setOn(step_seq[i]);
         step->setup(stepPos[i]->x, stepPos[i]->y, 12, true);
         steps.insert(steps.begin()+i, std::move(step));
         ofAddListener(steps[i]->onCircleEvent, this, &circleStep::stepClicked);
