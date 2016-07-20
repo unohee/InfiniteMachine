@@ -13,6 +13,13 @@
 #include "INF_Utils.h"
 enum SEQUENCER_MODE {MANUAL, EUCLID};
 
+struct Sequence{
+    
+    Sequence(){};
+    vector<bool>pattern;
+    unique_ptr<int> index;
+};
+
 struct SequenceEvent{
     //Custom ofEvent
     vector<bool>seq;
@@ -26,7 +33,10 @@ struct SequenceEvent{
 class circleStep{
 public:
     
-    ofEvent<SequenceEvent>sequenceUpdate;
+//    ofEvent<SequenceEvent>sequenceUpdate;//UNUSED
+    
+    
+    
     //ofPath
     ofPoint pos;
     ofPath circle;
@@ -42,6 +52,8 @@ public:
     vector<shared_ptr<ofPoint>>stepPos;
     
     vector<bool>step_seq;
+    unique_ptr<Sequence> track;
+    
     bool bEuclid;
     
     circleStep(ofPoint p, float radius);
@@ -54,6 +66,7 @@ public:
     void setup();
     void setMode(SEQUENCER_MODE mode);
     void draw();
+    void print();
     void stepClicked(ButtonEvent &e);
     void setLength(int seq_len){
         
@@ -72,5 +85,6 @@ public:
     int getSize(){return step_seq.size();}
     
 };
+
 
 #endif /* circleStep_h */

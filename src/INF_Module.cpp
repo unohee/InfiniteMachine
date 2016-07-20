@@ -7,7 +7,7 @@
 
 #include "INF_Module.h"
 
-INF_Module::INF_Module(int _index):index(_index), radius(300), gap(24),seqAmt(0), bEuclid(true){
+INF_Module::INF_Module(int _index):index(_index), radius(300), gap(24),seqAmt(0), bEuclid(false){
     //constructor
 }
 //--------------------------------------------------------------
@@ -26,15 +26,15 @@ void INF_Module::setup(){
     cycleRad = radius - 12;
     CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad));
     
-    //Add Euclidean Rhythm  (4:16)
-    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,4, false));
-    euclid->init();
-    
-    seq->setSequence(euclid->sequence);
+    if(bEuclid){
+        //Add Euclidean Rhythm  (4:16)
+        unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,4, false));
+        euclid->init();
+        seq->setSequence(euclid->sequence);
+    }
     seq->setup();
     stepGui.push_back(move(seq));
-    
-    ofAddListener(stepGui[0]->sequenceUpdate, this, &INF_Module::sequenceCallback);
+//    ofAddListener(stepGui[0]->sequenceUpdate, this, &INF_Module::sequenceCallback);//UNUSED CALLBACK
     
     //and Add its controller
     guiLoc = ofPoint(rect_ptr->getTopRight());
@@ -123,7 +123,7 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             seq->setup();
             seq->setLength(16);
             stepGui.push_back(seq);
-            ofAddListener(seq->sequenceUpdate, this, &INF_Module::sequenceCallback);
+//            ofAddListener(seq->sequenceUpdate, this, &INF_Module::sequenceCallback);
             
             //and its controller
             GuiPtr c = GuiPtr(new INF_Controls());
@@ -152,7 +152,7 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             stepGui.pop_back();
             controls.pop_back();
             if(seqAmt > 1){
-                ofRemoveListener(stepGui[seqAmt]->sequenceUpdate, this, &INF_Module::sequenceCallback);
+//                ofRemoveListener(stepGui[seqAmt]->sequenceUpdate, this, &INF_Module::sequenceCallback);
                 ofRemoveListener(controls[seqAmt]->GuiCallback, this, &INF_Module::seqParamChanged);
             }
         }
@@ -174,7 +174,9 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
                     x->stepAmt = 16;
                     x->setSequence(euclid->sequence);
                     x->setup();
+                    x->print();//sequence testing
                     controls[x->index]->setEuclid(16, newPulse);
+                    
                 }else{
                     unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(newStepAmt,newPulse, false));
                     euclid->init();
@@ -183,7 +185,6 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
                     x->setup();
                     controls[x->index]->setEuclid(newStepAmt, newPulse);
                 }
-//                loops.insert(loops.begin()+x->index, euclid->sequence);
             }else{
                 loop.resize(newStepAmt);
                 x->stepAmt = newStepAmt;
@@ -214,13 +215,11 @@ void INF_Module::seqParamChanged(Controls &e){
 }
 //--------------------------------------------------------------
 void INF_Module::sequenceCallback(SequenceEvent &e){
-    loop = e.seq;
-    
+
+    //Callback test (DEPRECATED)
     for(sequenceIterator = loop.begin(); sequenceIterator != loop.end(); sequenceIterator++){
         cout<<*sequenceIterator;
     }
     cout<<'\n'<<"##"<<e.index<<"## Length : "<<e.seq.size()<<endl;
-    cout<<"loop "<<loop.size()<<endl;
-    
 };
 //--------------------------------------------------------------

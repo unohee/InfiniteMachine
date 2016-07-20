@@ -32,11 +32,13 @@ public:
     
     void ticker(bool isPlay){
         //clock ticks here..
-        currentCount=floor(counter.phasor(bps));//this sets up the metronome that ticks in every second, amount of tick is based on BPM conversion above.
+        currentCount=(int)counter.phasor(bps);//this sets up the metronome that ticks in every second, amount of tick is based on BPM conversion above.
         //iterate playHead with Sequences.
         if(isPlay){
             if (lastCount!=currentCount) {//if we have a new timer int this sample, play the sound
                 playHead ++;
+                cout<<"Bang"<<playHead<<endl;
+                lastCount = 0;
             }
         }
     }

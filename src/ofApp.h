@@ -67,13 +67,19 @@ class ofApp : public ofBaseApp {
     bool mouseClick;
     bool start;
     
-    
-    
     //Network component
     Note *n;
     INF_MIDI *midi; //MIDI OUTPUT
     OSC_Receive oscListener; //OSC Receiver (from Ableton)
     string notes[127];
 
+    
+    //Maximilian for Timing
+    int currentCount, lastCount;
+    int playHead;
+    double bps;
+    bool isPlay;
+    maxiOsc timer;
+    void setTempo(float BPM);
     
 };

@@ -129,6 +129,7 @@
 		440B2B891BD019685EF360B8 /* maxiMFCC.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = maxiMFCC.cpp; path = ../../../addons/ofxMaxim/libs/maxiMFCC.cpp; sourceTree = SOURCE_ROOT; };
 		444657A12E59D0ED86981498 /* TimerListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = TimerListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/TimerListener.h; sourceTree = SOURCE_ROOT; };
 		4448415E40740409C6DAEB22 /* Dat_Docker.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Dat_Docker.cpp; path = src/Dat_Docker.cpp; sourceTree = SOURCE_ROOT; };
+		461F99D61D3FF5B1008A12AC /* Sequence.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sequence.h; sourceTree = "<group>"; };
 		46BB97DD1D3BE2F500129993 /* ButtonEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ButtonEvent.h; sourceTree = "<group>"; };
 		46BB97DE1D3BED7600129993 /* INF_Controls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Controls.cpp; sourceTree = "<group>"; };
 		46BB97DF1D3BED7600129993 /* INF_Controls.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = INF_Controls.hpp; sourceTree = "<group>"; };
@@ -335,6 +336,7 @@
 				85ACE15C3C663588C685C4C4 /* RoundedButton.h */,
 				E282FEFB97E3684440CD75CE /* Sequencer.cpp */,
 				4324679E4DB7F91DE15A2EAD /* Sequencer.h */,
+				461F99D61D3FF5B1008A12AC /* Sequence.h */,
 			);
 			name = Sequencer;
 			sourceTree = "<group>";

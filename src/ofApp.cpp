@@ -55,6 +55,9 @@ void ofApp::setup(){
         0,1,0,0};
      */
 
+    isPlay = false;
+    setTempo(120); //as long as it works as master mode. the initial tempo is 120.
+    
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
 }
@@ -90,20 +93,33 @@ void ofApp::draw(){
     docks->draw();
     ofPopStyle();
 }
-
+//--------------------------------------------------------------
+void ofApp::setTempo(float BPM){
+    bps = BPM / 60.f * 4;
+};
 //--------------------------------------------------------------
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     int index = INF_seq.size();
     for(int i = 0; i < bufferSize; i++){
-        clock.ticker(start);
-        for(int i=0;i < index;++i){
+        
+        if(isPlay)
+            currentCount=(int)timer.phasor(bps);
+        
+        if (lastCount!=currentCount) {//if we have a new timer int this sample, play the sound
             
-            try {
-                INF_seq.at(i)->play(start);
-                trigger = INF_seq.at(i)->trigger();
-            } catch (exception e) {
-                cout<<e.what()<<endl;
+            
+            //iterate the playhead
+            if(playHead <15)
+                playHead++;
+            else
+                playHead = 0;
+
+            for(int i=0; i < module->stepGui.size();i++){
+                module->stepGui[i]->getSequence().at(playHead%16);
             }
+
+            cout<<"Beat"<<playHead<<endl;
+            lastCount=0;//reset the metrotest
             
         }
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
@@ -162,6 +178,7 @@ void ofApp::keyReleased(int key){
 }
 //--------------------------------------------------------------
 void ofApp::AbletonPlayed(Ableton &eventArgs){
+    //Add something more here
     tempo = eventArgs.tempo;
     currentBar = eventArgs.bar;
     currentBeat = eventArgs.beat;
