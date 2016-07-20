@@ -1,4 +1,5 @@
-##Infinite Machine Algorithmic Step Sequencer. 64-Track Sequencer + Dynamic Control
+##Infinite Machine 
+##Algorithmic 64-Track Sequencer
 
 Supports sync mode with Ableton Live through Max 4 Live device with OSC
 Standalone mode : lets control the external Instruments that supports MIDI
