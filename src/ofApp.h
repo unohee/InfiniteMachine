@@ -68,7 +68,6 @@ class ofApp : public ofBaseApp {
     bool start;
     
     //Network component
-    Note *n;
     INF_MIDI *midi; //MIDI OUTPUT
     OSC_Receive oscListener; //OSC Receiver (from Ableton)
     string notes[127];

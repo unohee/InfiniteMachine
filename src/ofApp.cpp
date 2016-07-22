@@ -37,25 +37,8 @@ void ofApp::setup(){
     midi->midiOut.listPorts();
     oscListener.setup();
     ofAddListener(oscListener.AbletonPlayed, this, &ofApp::AbletonPlayed);
-    /*
-    
-    int a = 8; int b = 3;
-    try {
-        Sequencer *seq = new Sequencer(a,b);
-        INF_seq.push_back(seq);
-    } catch (exception e) {
-        cerr<<"[Sequencer Initilization] Exception has been thrown "<<ofGetElapsedTimef()<<endl;
-        cout<<e.what()<<endl;
-    }
-    vector<bool>seq;
-    seq.resize(12);
-    seq=
-       {1,0,0,0,
-        0,1,1,1,
-        0,1,0,0};
-     */
 
-    isPlay = false;
+    isPlay = true;
     setTempo(120); //as long as it works as master mode. the initial tempo is 120.
     
     //Audio Setup
@@ -113,12 +96,24 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
                 playHead++;
             else
                 playHead = 0;
-
-            for(int i=0; i < module->stepGui.size();i++){
-//                module->stepGui[i]->getSequence().at(playHead%16);
+            
+            int step_arr[]={1,0,0,0,1,0,0};
+            
+            for(auto &x: module->tracks){
+                unique_ptr<Note> n = unique_ptr<Note>(new Note());
+                if(x->pattern.at(playHead%16) == true){
+                    n->status = KEY_ON;
+                    n->pitch = 36;
+                    n->velocity = 127;
+                    midi->sendNote(*n);
+                }else{
+                    n->status = KEY_OFF;
+                    n->pitch = 36;
+                    n->velocity = 0;
+                    midi->sendNote(*n);
+                }
             }
 
-            cout<<"Beat"<<playHead<<endl;
             lastCount=0;//reset the metrotest
             
         }
@@ -151,11 +146,11 @@ void ofApp::keyPressed(int key){
         int _note = ofMap(key, 48, 122, 0, 127);
         int _velocity = 127;
         
-        n = new Note();
-        n->status = KEY_ON;
-        n->pitch =_note;
-        n->velocity = _velocity;
-        midi->sendNote(*n);
+//        n = new Note();
+//        n->status = KEY_ON;
+//        n->pitch =_note;
+//        n->velocity = _velocity;
+//        midi->sendNote(*n);
     }
 
 }
@@ -168,11 +163,11 @@ void ofApp::keyReleased(int key){
         int _note = ofMap(key, 48, 122, 0, 127);
         int _velocity = 0;
         
-        n = new Note();
-        n->status = KEY_OFF;
-        n->pitch =_note;
-        n->velocity = 0;
-        midi->sendNote(*n);
+//        n = new Note();
+//        n->status = KEY_OFF;
+//        n->pitch =_note;
+//        n->velocity = 0;
+//        midi->sendNote(*n);
     }
 
 }

@@ -34,14 +34,15 @@ public:
     int x,y, lineWidth;
     int index;
     float radius;
+    bool bEuclid;
+    
+    ofEvent<SequenceEvent>stepUpdated;
     
     //Sequence
     int stepAmt;
     vector<shared_ptr<CircleButton>>steps;
     vector<shared_ptr<ofPoint>>stepPos;
     vector<bool>stepState;
-    
-    bool bEuclid;
     
     circleStep(ofPoint p, float radius);
     ~circleStep(){
@@ -52,6 +53,7 @@ public:
     void setup();
     void setMode(SEQUENCER_MODE mode);
     void draw();
+    void print();
     void stepClicked(ButtonEvent &e);
     void setSequence(vector<bool> &v);
 };

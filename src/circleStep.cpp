@@ -26,8 +26,7 @@ void circleStep::setup(){
     if(!stepPos.empty())stepPos.clear();
     if(!steps.empty()){steps.clear();}
     
-    float angle = 360.f / stepAmt;
-    
+    float angle = 360.f / stepAmt;  
     //create a set of buttons
     for(int i = 0; i < stepAmt; i++){
         //calculate positions
@@ -61,25 +60,29 @@ void circleStep::draw(){
     for(auto &x:steps)x->draw();
 }
 //--------------------------------------------------------------
-void circleStep::stepClicked(ButtonEvent &e){
-    vector<bool> test;
-    for(int i=0;i <stepAmt;i++)
-        test.push_back(0);
-    test.at(e.index) = e.bClicked;
-    
+void circleStep::print(){
     //printout
     cout<<"[Track"<<index<<":";
-    for(auto x : test)
+    for(auto x : stepState)
         cout<<x;
     cout<<"]"<<endl;
+}
+//--------------------------------------------------------------
+void circleStep::stepClicked(ButtonEvent &e){
+    stepState.at(e.index) = e.bClicked;
+    print();
     
-    
-
+    SequenceEvent seqEvent;
+    seqEvent.seq = stepState;
+    seqEvent.index = index;
+    ofNotifyEvent(stepUpdated, seqEvent, this);
 }
 //--------------------------------------------------------------
 void circleStep::setSequence(vector<bool> &v){
+    stepState.clear();
     for(int i=0; i < v.size();i++){
-        stepState.at(i) = v[i];
+        stepState.insert(stepState.begin()+i, v.at(i));
     }
     setup();
+    print();
 };

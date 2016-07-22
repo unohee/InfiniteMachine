@@ -15,9 +15,16 @@
 
 
 struct Sequence{
-    Sequence(){};
+    
     vector<bool>pattern;
-    unique_ptr<int> index;
+    int index,pitch, velocity;
+    
+    Sequence():index(0), pitch(36), velocity(80){
+        while(pattern.size() < 16){
+            pattern.push_back(0);
+        }
+    };
+
 };
 
 typedef shared_ptr<circleStep> CyclicSeq;
@@ -35,19 +42,22 @@ public:
     float radius, cycleRad;
     int seqAmt;
     bool bEuclid;
-    
     ofPoint guiLoc;
+    
+    //smart pointers
     unique_ptr<ofRectangle> rect_ptr;
     unique_ptr<RoundedButton> random;
+    unique_ptr<Bjorklund> euclid;
+    
+    //vectors
     vector<RButtonPtr>rButtons;
     vector<CyclicSeq>stepGui;
     vector<GuiPtr> controls;
     vector<ofxDatGuiPtr>components;
-    unique_ptr<Bjorklund> euclid;
     vector<Track> tracks;
+    vector<bool>::iterator sequenceIterator; //DEPRECATED
     
-    vector<bool>loop;
-    vector<bool>::iterator sequenceIterator;
+    
     
     INF_Module(){};
     INF_Module(int _index);
@@ -55,9 +65,9 @@ public:
     void setup();
     void setGui();
     void update();
+    void makeNew();
     void draw();
-    
-    //
+
     int getWidth() const{
         return rect_ptr->getWidth();
     }
