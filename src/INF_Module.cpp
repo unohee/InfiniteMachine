@@ -7,7 +7,7 @@
 
 #include "INF_Module.h"
 
-INF_Module::INF_Module(int _index):index(_index), radius(300), gap(24),seqAmt(0), bEuclid(false){
+INF_Module::INF_Module(int _index):index(_index), radius(300), gap(24),seqAmt(0), bEuclid(true){
     //constructor
 }
 //--------------------------------------------------------------
@@ -27,6 +27,7 @@ void INF_Module::setup(){
     CyclicSeq cyclic = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad)); //GUI
     Track t = Track(new Sequence());//Actual Sequence data
     t->index = 0;
+    cyclic->setup();
     
     if(bEuclid){//if euclidean mode is enabled in initial state..
         //Add Euclidean Rhythm  (4:16)
@@ -40,7 +41,6 @@ void INF_Module::setup(){
             t->pattern.push_back(0);
         cyclic->setSequence(t->pattern);
     }
-    cyclic->setup();
     stepGui.push_back(move(cyclic));
     tracks.push_back(move(t));
 
@@ -183,7 +183,6 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
                     x->stepAmt = 16;
                     x->setSequence(euclid->sequence);
                     x->setup();
-                    x->print();//sequence testing
                     controls[x->index]->setEuclid(16, newPulse);
                     
                 }else{

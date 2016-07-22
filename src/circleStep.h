@@ -39,9 +39,7 @@ public:
     int stepAmt;
     vector<shared_ptr<CircleButton>>steps;
     vector<shared_ptr<ofPoint>>stepPos;
-    
-    vector<bool>step_seq;
-//    unique_ptr<Sequence> track;
+    vector<bool>stepState;
     
     bool bEuclid;
     
@@ -49,26 +47,13 @@ public:
     ~circleStep(){
         steps.clear();
         stepPos.clear();
-        step_seq.clear();
         cout<<"[Cyclic Sequence "<<index<<" Deleted]"<<endl;
     };
     void setup();
     void setMode(SEQUENCER_MODE mode);
     void draw();
     void stepClicked(ButtonEvent &e);
-    void setSequence(vector<bool> &v){
-        for(int i=0; i < v.size();i++){
-            steps[i]->setOn(v.at(i));
-        }
-        setup();
-        /*
-        track->pattern.clear();
-        for(int i=0; i < v.size();i++){
-            track->pattern.insert(track->pattern.begin()+i, v[i]);
-        }
-        setup();
-         */
-    };
+    void setSequence(vector<bool> &v);
 };
 
 

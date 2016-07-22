@@ -24,7 +24,8 @@ typedef shared_ptr<circleStep> CyclicSeq;
 typedef shared_ptr<ofxDatGuiComponent> ofxDatGuiPtr;
 typedef shared_ptr<RoundedButton> RButtonPtr;
 typedef shared_ptr<INF_Controls> GuiPtr;
-typedef unique_ptr<Sequence> Track;
+typedef shared_ptr<Sequence> Track;
+
 class INF_Module{
     
 public:

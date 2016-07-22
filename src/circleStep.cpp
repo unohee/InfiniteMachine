@@ -14,16 +14,10 @@ circleStep::circleStep(ofPoint p, float _radius):index(0),pos(p), radius(_radius
     circle.arc(pos.x,pos.y,radius - 2.5,radius - 2.5, 0,360);
     circle.setColor(60);
     
-    /*
-    //create unique pointer that stores data of Sequence..
-    for(int i=0; i < stepAmt;i++){
-        //allocate memory size first.
-        step_seq.push_back(false);
-        track ->pattern.push_back(0);
-        track ->index = make_unique<int>(index);
-    }
-     */
-    //color of step is randomly chosen.
+    for(int i=0; i < stepAmt; i++)
+        stepState.push_back(0);
+    
+    //color of steps is randomly chosen.
     int randMin = 20;
     c = ofColor((int)ofRandom(randMin, 255),(int)ofRandom(randMin, 255),(int)ofRandom(randMin, 255));
 }
@@ -40,11 +34,12 @@ void circleStep::setup(){
         shared_ptr<ofPoint>p = shared_ptr<ofPoint>(new ofPoint(pos.x+radius * cos(angle*i*PI/180), pos.y+radius * sin(angle*i*PI/180)));
         stepPos.insert(stepPos.begin()+i, p);
         
-        //adding circles into vector
+        //adding circles at vectors
         shared_ptr<CircleButton> step = shared_ptr<CircleButton>(new CircleButton());
         step->index = i;
         step->lineWidth = 2.5;
         step->edgeColor = c;
+        step->setOn(stepState[i]);
         step->setup(stepPos[i]->x, stepPos[i]->y, 12, true);
         steps.insert(steps.begin()+i, std::move(step));
         ofAddListener(steps[i]->onCircleEvent, this, &circleStep::stepClicked);
@@ -67,11 +62,22 @@ void circleStep::draw(){
 }
 //--------------------------------------------------------------
 void circleStep::stepClicked(ButtonEvent &e){
-    step_seq.at(e.index) = e.bClicked; //replace elements by buttons' indices
+    vector<bool> test;
+    for(int i=0;i <stepAmt;i++)
+        test.push_back(0);
+    test.at(e.index) = e.bClicked;
     
-//    track->pattern.at(e.index) = e.bClicked;
+    //printout
     cout<<"[Track"<<index<<":";
-    print();
+    for(auto x : test)
+        cout<<x;
     cout<<"]"<<endl;
 
 }
+//--------------------------------------------------------------
+void circleStep::setSequence(vector<bool> &v){
+    for(int i=0; i < v.size();i++){
+        stepState.at(i) = v[i];
+    }
+    setup();
+};
