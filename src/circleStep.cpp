@@ -72,6 +72,8 @@ void circleStep::stepClicked(ButtonEvent &e){
     for(auto x : test)
         cout<<x;
     cout<<"]"<<endl;
+    
+    
 
 }
 //--------------------------------------------------------------
