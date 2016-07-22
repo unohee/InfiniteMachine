@@ -24,16 +24,26 @@ void INF_Module::setup(){
     setGui();
     //Cyclic Sequencer init
     cycleRad = radius - 12;
-    CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad));
+    CyclicSeq cyclic = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad)); //GUI
+    Track t = Track(new Sequence());//Actual Sequence data
+    t->index = 0;
     
-    if(bEuclid){
+    if(bEuclid){//if euclidean mode is enabled in initial state..
         //Add Euclidean Rhythm  (4:16)
         unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,4, false));
         euclid->init();
-        seq->setSequence(euclid->sequence);
+        vector<bool> seq = euclid->sequence;
+        t->pattern = seq;
+        cyclic->setSequence(t->pattern);
+    }else{
+        for(int i=0; i < 16;i++)
+            t->pattern.push_back(0);
+        cyclic->setSequence(t->pattern);
     }
-    seq->setup();
-    stepGui.push_back(move(seq));
+    cyclic->setup();
+    stepGui.push_back(move(cyclic));
+    tracks.push_back(move(t));
+
 //    ofAddListener(stepGui[0]->sequenceUpdate, this, &INF_Module::sequenceCallback);//UNUSED CALLBACK
     
     //and Add its controller
@@ -92,10 +102,10 @@ void INF_Module::update(){
         x->update();
     for(auto &x: controls)
         x->update();
-    //copy sequence from StepGUI.
-    for(int i=0; i < stepGui[0]->getSize();i++){
-        loop.insert(loop.begin()+i, stepGui[0]->step_seq[i]);
-    }
+//    //copy sequence from StepGUI.
+//    for(int i=0; i < stepGui[0]->getSize();i++){
+//        loop.insert(loop.begin()+i, stepGui[0]->step_seq[i]);
+//    }
 }
 //--------------------------------------------------------------
 void INF_Module::draw(){
@@ -121,7 +131,6 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad));
             seq->index = seqAmt;
             seq->setup();
-            seq->setLength(16);
             stepGui.push_back(seq);
 //            ofAddListener(seq->sequenceUpdate, this, &INF_Module::sequenceCallback);
             

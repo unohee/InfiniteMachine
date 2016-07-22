@@ -115,7 +115,7 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
                 playHead = 0;
 
             for(int i=0; i < module->stepGui.size();i++){
-                module->stepGui[i]->getSequence().at(playHead%16);
+//                module->stepGui[i]->getSequence().at(playHead%16);
             }
 
             cout<<"Beat"<<playHead<<endl;

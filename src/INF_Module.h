@@ -14,26 +14,17 @@
 #include "Bjorklund.h"
 
 
-/*
 struct Sequence{
-    typedef unique_ptr<vector<bool>> steps;
-    
-    unique_ptr<int> track;
-    steps pattern;
-    
-    Sequence():track(nullptr) {
-    
-    };
-    
+    Sequence(){};
+    vector<bool>pattern;
+    unique_ptr<int> index;
 };
-*/
 
 typedef shared_ptr<circleStep> CyclicSeq;
 typedef shared_ptr<ofxDatGuiComponent> ofxDatGuiPtr;
 typedef shared_ptr<RoundedButton> RButtonPtr;
 typedef shared_ptr<INF_Controls> GuiPtr;
-typedef unique_ptr<vector<bool>> Track;
-
+typedef unique_ptr<Sequence> Track;
 class INF_Module{
     
 public:
@@ -52,7 +43,7 @@ public:
     vector<GuiPtr> controls;
     vector<ofxDatGuiPtr>components;
     unique_ptr<Bjorklund> euclid;
-    vector<Track>tracks;
+    vector<Track> tracks;
     
     vector<bool>loop;
     vector<bool>::iterator sequenceIterator;
