@@ -48,7 +48,7 @@ public:
     ~circleStep(){
         steps.clear();
         stepPos.clear();
-        cout<<"[Cyclic Sequence "<<index<<" Deleted]"<<endl;
+        //cout<<"[Cyclic Sequence "<<index<<" Deleted]"<<endl;
     };
     void setup();
     void setMode(SEQUENCER_MODE mode);

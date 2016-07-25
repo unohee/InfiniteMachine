@@ -43,7 +43,7 @@ void circleStep::setup(){
         steps.insert(steps.begin()+i, std::move(step));
         ofAddListener(steps[i]->onCircleEvent, this, &circleStep::stepClicked);
     }
-    cout<<"[Cyclic Sequence "<<index<<" created]"<<endl;
+    //cout<<"[Cyclic Sequence "<<index<<" created]"<<endl;
 }
 //--------------------------------------------------------------
 void circleStep::setMode(SEQUENCER_MODE mode){

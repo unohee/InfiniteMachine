@@ -145,7 +145,7 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             GuiPtr c = GuiPtr(new INF_Controls());
             guiLoc.y += (26*6);
             if(seqAmt == 4 || seqAmt == 8){
-                guiLoc.x += controls[0]->getWidth();
+                guiLoc.x += 270; //default width is 270;
                 guiLoc.y = rect_ptr->getTopLeft().y;
             }
             c->pos = guiLoc;
@@ -161,7 +161,7 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             cycleRad += gap;
             guiLoc.y -= 160;
             if(seqAmt == 4 || seqAmt == 8){
-                guiLoc.x -= controls[0]->getWidth();
+                guiLoc.x -= 270;
             }
             guiLoc.y = rect_ptr->getTopLeft().y;
             stepGui.pop_back();
@@ -218,44 +218,26 @@ void INF_Module::onDropdownEvent(ofxDatGuiDropdownEvent e){
 }
 //--------------------------------------------------------------
 void INF_Module::seqParamChanged(Controls &e){
-    
-    
     if(e.index < stepGui.size() && e.index < tracks.size()){
-        for(auto &x: stepGui){
-            x->stepAmt = e.length;
-            
-            if(bEuclid){
-                euclid = unique_ptr<Bjorklund>(new Bjorklund(e.length,e.pulse, false));
-                euclid->init();
-                tracks[e.index]->pattern = euclid->sequence;
-            }
-            
-            stepGui[e.index]->setSequence(tracks[e.index]->pattern);
-            stepGui[e.index]->setup();
-            tracks[e.index]->pitch = e.pitch;
-            tracks[e.index]->velocity = e.velocity;
-        }
-    }
-    
-    /*
-    for(auto &x:stepGui){
-        if(x->index == e.index){
+        stepGui[e.index]->stepAmt = e.length;
+        
+        if(bEuclid){
             euclid = unique_ptr<Bjorklund>(new Bjorklund(e.length,e.pulse, false));
             euclid->init();
+            tracks[e.index]->pattern = euclid->sequence;
+        }else{
             
-            x->stepAmt = e.length;
-            x->setSequence(tracks[x->index]->pattern);
-            x->setup();
         }
+        
+        stepGui[e.index]->setSequence(tracks[e.index]->pattern);
+        stepGui[e.index]->setup();
+        tracks[e.index]->pitch = e.pitch;
+        tracks[e.index]->velocity = e.velocity;
     }
-    */
 }
 //--------------------------------------------------------------
 void INF_Module::sequenceCallback(SequenceEvent &e){
-    
     if(e.index <= tracks.size())
         tracks[e.index]->pattern = e.seq;
-
-    cout<<'\n'<<"##"<<e.index<<"## Length : "<<e.seq.size()<<endl;
 };
 //--------------------------------------------------------------

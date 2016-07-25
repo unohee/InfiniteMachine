@@ -8,7 +8,7 @@
 
 #include "INF_Controls.hpp"
 
-INF_Controls::INF_Controls():bEuclid(1),name("Sequence"),index(0),seq_len(16),seq_pulse(4){
+INF_Controls::INF_Controls():bEuclid(1), bEnabled(1),name("Sequence"),index(0),seq_len(16),seq_pulse(4){
     //Create midi note array...
     const string note_substring[] = {"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
     int octave;//octave is 0 - 8;
@@ -16,6 +16,9 @@ INF_Controls::INF_Controls():bEuclid(1),name("Sequence"),index(0),seq_len(16),se
         octave = noteNum /12;
         notes.push_back(note_substring[noteNum%12]+to_string(octave));
     }
+    //Initialize Event Parameters
+    seq_Params.index = index;
+    seq_Params.clickEnable = false;
 }
 //--------------------------------------------------------------
 INF_Controls::~INF_Controls(){
@@ -23,16 +26,33 @@ INF_Controls::~INF_Controls(){
 }
 //--------------------------------------------------------------
 void INF_Controls::setup(){
-    
     string label_ = name + " " +to_string(index+1);
     shared_ptr<ofxDatGuiLabel> label = shared_ptr<ofxDatGuiLabel>(new ofxDatGuiLabel(label_));
     label->setPosition(pos.x, pos.y);
+    label->setWidth(210);
     width = label->getWidth();
     heightSum += label->getHeight();
     components.push_back(label);
     
-    //STEP
+    shared_ptr<ofxDatGuiToggle> on = shared_ptr<ofxDatGuiToggle>(new ofxDatGuiToggle("", bEnabled));
+    on->setPosition(pos.x+label->getWidth(), pos.y);
+    on->setStripeVisible(false);
+    on->ofxDatGuiComponent::setWidth(60, 20);
+    on->onToggleEvent(this, &INF_Controls::onToggleEvent);
+    components.push_back(on);
+    
+    //Sequencer Mode
     pos.y += label->getHeight();
+    vector<string>mode = {"Mode : STEP", "Mode : EUCLID"};
+    shared_ptr<ofxDatGuiDropdown> d = shared_ptr<ofxDatGuiDropdown>(new ofxDatGuiDropdown("Mode", mode));
+    d->setPosition(pos.x, pos.y);
+    d->select(1);
+    d->onDropdownEvent(this, &INF_Controls::onDropdownEvent);
+    heightSum += d->getHeight();
+    components.push_back(d);
+    
+    //STEP
+    pos.y += d->getHeight();
     shared_ptr<ofxDatGuiSlider> s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("Step", 4,16));
     s->setPrecision(0);
     s->setPosition(pos.x, pos.y);
@@ -43,7 +63,7 @@ void INF_Controls::setup(){
     
     //PULSES
     pos.y += s->getHeight();
-    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("Pulses", 1,seq_len));
+    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("Pulses", 0,seq_len));
     s->setPrecision(0);
     s->setPosition(pos.x, pos.y);
     s->setValue(seq_pulse);
@@ -89,27 +109,26 @@ void INF_Controls::setup(){
     heightSum += label->getHeight();
     components.push_back(label);
     
-//    pos.y += s->getHeight();
-//    vector<string>mode = {"STEP", "EUCLID"};
-//    shared_ptr<ofxDatGuiDropdown> d = shared_ptr<ofxDatGuiDropdown>(new ofxDatGuiDropdown("Mode", mode));
-//    d->setPosition(pos.x, pos.y);
-//    d->onDropdownEvent(this, &INF_Controls::onDropdownEvent);
-//    heightSum += d->getHeight();
-//    components.push_back(d);
     
         ofColor randC = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
         for(auto &x:components)
             x->setStripe(randC, 2);
         for(auto &x:sliders)
             x->setStripe(randC, 2);
-
+    
 }
 //--------------------------------------------------------------
 void INF_Controls::update(){
-    if(!currentNote.empty()) components[1]->setLabel(currentNote);
-    
-    for(auto &x:components)
+    if(!currentNote.empty()) components[3]->setLabel(currentNote);
+
+    for(auto &x:components){
         x->update();
+        
+        if(x->getIsExpanded()){//avoiding clicking overlay. seems bit unorthodox but this is the only way out.
+            for(auto &x: sliders)
+                x->setEnabled(false);
+        }
+    }
     for(auto &x:sliders){
         x->update();
         if(x->getLabel()=="PULSES"){
@@ -117,58 +136,91 @@ void INF_Controls::update(){
                 x->setValue(seq_len);
         }
     }
-    
 }
 //--------------------------------------------------------------
 void INF_Controls::draw(){
-    for(auto &x:components)
-        x->draw();
     for(auto &x:sliders)
         x->draw();
+    for(auto &x:components)
+        x->draw();
+}
+//--------------------------------------------------------------
+void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
+    for(auto &x:sliders)
+        x->setEnabled(e.checked);
     
+    if(e.checked == false){
+        seq_Params.length = 0;
+        seq_Params.pulse = 0;
+        
+            for(auto &x:sliders){
+                x->setValue(0);
+            }
+        
+        seq_Params.index = index;
+        seq_Params.clickEnable = false;
+        ofNotifyEvent(GuiCallback, seq_Params, this);
+    }else{
+        seq_Params.length = seq_len;
+        seq_Params.pulse = seq_pulse;
+        
+            sliders[0]->setValue(seq_len);
+            sliders[1]->setValue(seq_pulse);
+        
+        seq_Params.index = index;
+        seq_Params.clickEnable = true;
+        ofNotifyEvent(GuiCallback, seq_Params, this);
+        
+    }
 }
 //--------------------------------------------------------------
 void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
-    if(e.child ==0){
-        bEuclid = false;
-
-    }else if(e.child ==1){
-        bEuclid = true;
+    
+    if(e.target->ofxDatGuiComponent::getIsExpanded()){
+        cout<<"Expand!"<<endl;
+        //this never be caught up
+        
+    }else{
+        //avoiding clicking overlay.
+        //somehow DatGuiDropdown checks this one.
+        for(auto &x: sliders)
+            x->setEnabled(true);
     }
-    sliders[1]->setEnabled(bEuclid);
+    
+    bool click;
+    if(e.child ==0){
+        //IF MODE is changed to Manual mode..
+        click = true;
+        bEuclid = false;
+        sliders[1]->setEnabled(bEuclid); //pulse slider is disabled.
+        sliders[1]->setValue(0);
+    }else if(e.child ==1){
+        click = false;
+        bEuclid = true;
+        sliders[1]->setEnabled(bEuclid);
+    }
+    seq_Params.clickEnable = click;
+    ofNotifyEvent(GuiCallback, seq_Params, this);
+
 
 }
 //--------------------------------------------------------------
 void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
-    Controls newSeq;
-    newSeq.index = index;
     
     if(e.target->getLabel() == "MIDI NOTE"){
         string msg = "Current Note :: ";
         currentNote = msg +notes[e.value];
-        newSeq.pitch =e.value+24;
-        newSeq.pulse = seq_pulse;
-        newSeq.length = seq_len;
+        seq_Params.pitch =e.value+24;
     }else if(e.target->getLabel() == "VELOCITY"){
-        newSeq.index = index;
-        newSeq.pulse = seq_pulse;
-        newSeq.length = seq_len;
-        newSeq.velocity = e.value;
+        seq_Params.velocity = e.value;
     }else if(e.target->getLabel() =="STEP"){
-        seq_len = e.value;
-        newSeq.length = e.value;
-        newSeq.pulse = seq_pulse;
+        seq_Params.length = e.value;
     }else if(e.target->getLabel() =="PULSES"){
-        seq_pulse = e.value;
-        newSeq.length = seq_len;
-        newSeq.pulse = e.value;
+        seq_Params.pulse = e.value;
     }else if(e.target->getLabel() =="OFFSET"){
-        newSeq.offset = e.value;
-        newSeq.pulse = seq_pulse;
-        newSeq.length = seq_len;
+        seq_Params.offset = e.value;
     }
-    ofNotifyEvent(GuiCallback, newSeq, this);
-    
+    ofNotifyEvent(GuiCallback, seq_Params, this);
 }
 //--------------------------------------------------------------
 void INF_Controls::setEuclid(int length, int pulse){

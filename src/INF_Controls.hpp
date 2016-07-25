@@ -7,7 +7,8 @@ using namespace std;
 struct Controls{
     
     int index, length, pulse, pitch, velocity, offset;
-    Controls():index(0){
+    bool clickEnable;
+    Controls():index(0),length(16),offset(0){
         
     };
     
@@ -15,16 +16,16 @@ struct Controls{
 
 typedef shared_ptr<ofxDatGuiComponent> DatGuiPtr;
 typedef shared_ptr<ofxDatGuiSlider> DatSliderPtr;
-//typedef unique_ptr<ofxDatGuiComponent> DatGuiPtr_;
+
 class INF_Controls{
 public:
     
     ofEvent<Controls>GuiCallback;
+    Controls seq_Params;
     
     ofPoint pos;
-    bool bEuclid;
+    bool bEuclid, bEnabled;
     int index, seq_len, seq_pulse;
-    int noteIndex;
     int width, heightSum;
     
     string currentNote;
@@ -38,6 +39,7 @@ public:
     void setup();
     void update();
     void draw();
+    void onToggleEvent(ofxDatGuiToggleEvent e);
     void onDropdownEvent(ofxDatGuiDropdownEvent e);
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void setEuclid(int length, int pulse);

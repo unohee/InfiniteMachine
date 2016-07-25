@@ -19,7 +19,8 @@ void ofApp::setup(){
     ofAddListener(docks->deviceFocus, this, &ofApp::deviceSelected);
     ofAddListener(docks->channelChanged, this, &ofApp::MIDI_ch_changed);
     ofAddListener(docks->tempoChange, this, &ofApp::tempoChange);
-    //Sequencer GUI
+    
+    //Sequencer
     module = unique_ptr<INF_Module>(new INF_Module(0));
     module->pos = ofPoint(0, docks->getHeight());
     module->setup();
@@ -38,7 +39,7 @@ void ofApp::setup(){
     oscListener.setup();
     ofAddListener(oscListener.AbletonPlayed, this, &ofApp::AbletonPlayed);
 
-    isPlay = true;
+    isPlay = false;
     setTempo(120); //as long as it works as master mode. the initial tempo is 120.
     
     //Audio Setup
@@ -57,7 +58,6 @@ void ofApp::update(){
 void ofApp::draw(){
     module->draw();
     
-    /*
     // let's see something
     ofSetColor(255);
     stringstream text;
@@ -68,7 +68,6 @@ void ofApp::draw(){
     << "note: " << midi->note << endl
     << "velocity: " << midi->velocity << endl;
     ofDrawBitmapString(text.str(), 20, 60);
-    */
     
     //ofxDatGui components
     ofPushStyle();
@@ -82,15 +81,12 @@ void ofApp::setTempo(float BPM){
 };
 //--------------------------------------------------------------
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
-    int index = INF_seq.size();
     for(int i = 0; i < bufferSize; i++){
         
         if(isPlay)
             currentCount=(int)timer.phasor(bps);
         
-        if (lastCount!=currentCount) {//if we have a new timer int this sample, play the sound
-            
-            
+        if (lastCount!=currentCount) {
             //iterate the playhead
             if(playHead <15)
                 playHead++;
@@ -103,7 +99,7 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
                 unique_ptr<Note> n = unique_ptr<Note>(new Note());
                 if(x->pattern.at(playHead%16) == true){
                     n->status = KEY_ON;
-                    n->pitch = 36;
+                    n->pitch = x->pitch;
                     n->velocity = 127;
                     midi->sendNote(*n);
                 }else{
@@ -132,7 +128,7 @@ void ofApp::MIDI_ch_changed(int &eventArgs){
 }
 //--------------------------------------------------------------
 void ofApp::tempoChange(int &eventArgs){
-    clock.setTempo(eventArgs);
+
 }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
@@ -177,7 +173,7 @@ void ofApp::AbletonPlayed(Ableton &eventArgs){
     tempo = eventArgs.tempo;
     currentBar = eventArgs.bar;
     currentBeat = eventArgs.beat;
-    start = eventArgs.isPlay;
+    isPlay = eventArgs.isPlay;
 }
 //--------------------------------------------------------------
 void ofApp::exit(){
@@ -185,7 +181,6 @@ void ofApp::exit(){
     delete midi;
     delete docks;
     module.reset();
-    
-    for_each(INF_seq.begin(), INF_seq.end(), DeleteVector<Sequencer*>());
+
     cout<<"[Infinite Machine : Goodbye.]"<<endl;
 }
