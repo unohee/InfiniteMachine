@@ -7,10 +7,17 @@ using namespace std;
 struct Controls{
     
     int index, length, pulse, pitch, velocity, offset;
-    bool clickEnable;
+//    bool clickEnable;
     Controls():index(0),length(16),offset(0){
         
     };
+    
+};
+
+struct SequencerState{
+ 
+    bool mode, isOn;
+    SequencerState(){};
     
 };
 
@@ -21,12 +28,15 @@ class INF_Controls{
 public:
     
     ofEvent<Controls>GuiCallback;
+    ofEvent<SequencerState>currentState;
+    
     Controls seq_Params;
+    SequencerState seq_mode;
     
     ofPoint pos;
     bool bEuclid, bEnabled;
     int index, seq_len, seq_pulse;
-    int width, heightSum;
+    int width;
     
     string currentNote;
     vector<string>notes;
@@ -44,6 +54,6 @@ public:
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void setEuclid(int length, int pulse);
     void setLength(int length);
-    int getWidth(){return width;};
-    int getHeight(){return heightSum;};
+    int getWidth();
+    int getHeight();
 };

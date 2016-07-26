@@ -18,11 +18,12 @@ INF_Controls::INF_Controls():bEuclid(1), bEnabled(1),name("Sequence"),index(0),s
     }
     //Initialize Event Parameters
     seq_Params.index = index;
-    seq_Params.clickEnable = false;
+    seq_mode.mode = bEuclid; //checks whether Sequencer's mode is Euclidean or Step Sequencer...
 }
 //--------------------------------------------------------------
 INF_Controls::~INF_Controls(){
     components.clear();
+    sliders.clear();
 }
 //--------------------------------------------------------------
 void INF_Controls::setup(){
@@ -31,7 +32,6 @@ void INF_Controls::setup(){
     label->setPosition(pos.x, pos.y);
     label->setWidth(210);
     width = label->getWidth();
-    heightSum += label->getHeight();
     components.push_back(label);
     
     shared_ptr<ofxDatGuiToggle> on = shared_ptr<ofxDatGuiToggle>(new ofxDatGuiToggle("", bEnabled));
@@ -43,12 +43,11 @@ void INF_Controls::setup(){
     
     //Sequencer Mode
     pos.y += label->getHeight();
-    vector<string>mode = {"Mode : STEP", "Mode : EUCLID"};
+    vector<string>mode = {"Mode : Manual", "Mode : EUCLID"};
     shared_ptr<ofxDatGuiDropdown> d = shared_ptr<ofxDatGuiDropdown>(new ofxDatGuiDropdown("Mode", mode));
     d->setPosition(pos.x, pos.y);
     d->select(1);
     d->onDropdownEvent(this, &INF_Controls::onDropdownEvent);
-    heightSum += d->getHeight();
     components.push_back(d);
     
     //STEP
@@ -58,7 +57,6 @@ void INF_Controls::setup(){
     s->setPosition(pos.x, pos.y);
     s->setValue(seq_len);
     s->onSliderEvent(this, &INF_Controls::onSliderEvent);
-    heightSum += s->getHeight();
     sliders.push_back(s);
     
     //PULSES
@@ -68,7 +66,6 @@ void INF_Controls::setup(){
     s->setPosition(pos.x, pos.y);
     s->setValue(seq_pulse);
     s->onSliderEvent(this, &INF_Controls::onSliderEvent);
-    heightSum += s->getHeight();
     sliders.push_back(s);
     
     //OFFSET
@@ -78,7 +75,6 @@ void INF_Controls::setup(){
     s->setPosition(pos.x, pos.y);
     s->setValue(0);
     s->onSliderEvent(this, &INF_Controls::onSliderEvent);
-    heightSum += s->getHeight();
     sliders.push_back(s);
     
     //MIDI NOTE
@@ -88,25 +84,22 @@ void INF_Controls::setup(){
     s->setPosition(pos.x, pos.y);
     s->setValue(12);
     s->onSliderEvent(this, &INF_Controls::onSliderEvent);
-    heightSum += s->getHeight();
     sliders.push_back(s);
-
     
-    //VELOCITY
-    pos.y += s->getHeight();
-    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("Velocity", 1,127));
-    s->setPrecision(0);
-    s->setPosition(pos.x, pos.y);
-    s->setValue(80);
-    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
-    heightSum += s->getHeight();
-    sliders.push_back(s);
+    //VELOCITY (UNUSED)
+//    pos.y += s->getHeight();
+//    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("Velocity", 1,127));
+//    s->setPrecision(0);
+//    s->setPosition(pos.x, pos.y);
+//    s->setValue(80);
+//    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
+//    heightSum += s->getHeight();
+//    sliders.push_back(s);
     
     //Current NOTE in string
     pos.y += s->getHeight();
     label = shared_ptr<ofxDatGuiLabel>(new ofxDatGuiLabel("Current Note :: C1"));
     label->setPosition(pos.x, pos.y);
-    heightSum += label->getHeight();
     components.push_back(label);
     
     
@@ -150,28 +143,25 @@ void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
         x->setEnabled(e.checked);
     
     if(e.checked == false){
+        seq_Params.index = index;
         seq_Params.length = 0;
         seq_Params.pulse = 0;
         
             for(auto &x:sliders){
                 x->setValue(0);
             }
-        
-        seq_Params.index = index;
-        seq_Params.clickEnable = false;
         ofNotifyEvent(GuiCallback, seq_Params, this);
+        
     }else{
+        seq_Params.index = index;
         seq_Params.length = seq_len;
         seq_Params.pulse = seq_pulse;
-        
+
             sliders[0]->setValue(seq_len);
             sliders[1]->setValue(seq_pulse);
-        
-        seq_Params.index = index;
-        seq_Params.clickEnable = true;
         ofNotifyEvent(GuiCallback, seq_Params, this);
-        
     }
+    
 }
 //--------------------------------------------------------------
 void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
@@ -187,22 +177,21 @@ void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
             x->setEnabled(true);
     }
     
-    bool click;
     if(e.child ==0){
+        cout<<"step"<<endl;
         //IF MODE is changed to Manual mode..
-        click = true;
         bEuclid = false;
-        sliders[1]->setEnabled(bEuclid); //pulse slider is disabled.
+        sliders[1]->setEnabled(false); //pulse slider is disabled.
         sliders[1]->setValue(0);
     }else if(e.child ==1){
-        click = false;
         bEuclid = true;
         sliders[1]->setEnabled(bEuclid);
+        sliders[0]->setValue(seq_len);
+        sliders[1]->setValue(seq_pulse);
     }
-    seq_Params.clickEnable = click;
-    ofNotifyEvent(GuiCallback, seq_Params, this);
-
-
+    
+//    ofNotifyEvent(currentState, <EventArgs>, this);
+    
 }
 //--------------------------------------------------------------
 void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
@@ -214,9 +203,11 @@ void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
     }else if(e.target->getLabel() == "VELOCITY"){
         seq_Params.velocity = e.value;
     }else if(e.target->getLabel() =="STEP"){
-        seq_Params.length = e.value;
+        seq_len = e.value;
+        seq_Params.length = seq_len;
     }else if(e.target->getLabel() =="PULSES"){
-        seq_Params.pulse = e.value;
+        seq_pulse = e.value;
+        seq_Params.pulse = seq_pulse;
     }else if(e.target->getLabel() =="OFFSET"){
         seq_Params.offset = e.value;
     }
@@ -254,7 +245,18 @@ void INF_Controls::setLength(int length){
         }
     }
 }
-
+//--------------------------------------------------------------
+int INF_Controls::getWidth(){
+    return width;
+}
+//--------------------------------------------------------------
+int INF_Controls::getHeight(){
+    int cHeight = components[0]->getHeight(); //components height (all datgui's size are same. so I borrow this
+    
+    int sum = (components.size()+sliders.size()) * cHeight;
+    
+    return sum;
+}
 
 
 
