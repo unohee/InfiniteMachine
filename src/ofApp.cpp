@@ -25,6 +25,9 @@ void ofApp::setup(){
     module->pos = ofPoint(0, docks->getHeight());
     module->setup();
     
+    transport = unique_ptr<INF_Transport>(new INF_Transport());
+    transport->pos = ofPoint(0,754);
+    transport->setup();
     
     //default IP:PORT Address
     string netAddress;
@@ -41,22 +44,26 @@ void ofApp::setup(){
 
     isPlay = false;
     setTempo(120); //as long as it works as master mode. the initial tempo is 120.
+ 
     
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
 }
 //--------------------------------------------------------------
 void ofApp::update(){
+    
 //    ofSetWindowShape(module->getWidth()*2, 768);
     for(int i=0;i<docker.size();i++){
         docker[i]->update();
     }
     module->update();
     docks->update();
+    transport->update();
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
     module->draw();
+    transport->draw();
     
     // let's see something
     ofSetColor(255);
@@ -180,7 +187,9 @@ void ofApp::exit(){
     //delete raw pointers
     delete midi;
     delete docks;
+    //and smart pointers
     module.reset();
+    transport.release();
 
     cout<<"[Infinite Machine : Goodbye.]"<<endl;
 }

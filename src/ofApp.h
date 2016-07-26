@@ -6,6 +6,7 @@
 #include "INF_Module.h"
 #include "INF_MIDI.h"
 #include "INF_OSC.h"
+#include "INF_Transport.h"
 
 #include "Note.h"
 #include "Dat_Docker.h"
@@ -52,7 +53,7 @@ class ofApp : public ofBaseApp {
     vector<ofxDatGuiComponent*>docker;
     Dat_Docker *docks;
     unique_ptr<INF_Module> module;
-    
+    unique_ptr<INF_Transport> transport;
 
     //Network component
     INF_MIDI *midi; //MIDI OUTPUT

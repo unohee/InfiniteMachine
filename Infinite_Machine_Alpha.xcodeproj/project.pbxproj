@@ -21,6 +21,7 @@
 		35FE521EC5F2C509C0449BF1 /* CircleButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68A91892A6BDCC0F278922E1 /* CircleButton.cpp */; };
 		3AEFE4FA8AD5C72671AD07F8 /* ofxRtMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 712B183BC00EBFFB1EEA5AB8 /* ofxRtMidiOut.cpp */; };
 		46BB97E01D3BED7600129993 /* INF_Controls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46BB97DE1D3BED7600129993 /* INF_Controls.cpp */; };
+		46E849071D48076C0068B18D /* INF_Transport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46E849051D48076C0068B18D /* INF_Transport.cpp */; };
 		483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 78D67A00EB899FAC09430597 /* ofxLabel.cpp */; };
 		4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AED834CE4DEC5260AF302A2 /* ofxOscParameterSync.cpp */; };
 		4B0F891A816C31988AD16AB7 /* ImageButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E87A4349510CBF61D9DCF86E /* ImageButton.cpp */; };
@@ -131,6 +132,8 @@
 		46BB97DE1D3BED7600129993 /* INF_Controls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Controls.cpp; sourceTree = "<group>"; };
 		46BB97DF1D3BED7600129993 /* INF_Controls.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = INF_Controls.hpp; sourceTree = "<group>"; };
 		46E162266356FA3B71A5C741 /* DatButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = DatButton.h; path = src/DatButton.h; sourceTree = SOURCE_ROOT; };
+		46E849051D48076C0068B18D /* INF_Transport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Transport.cpp; sourceTree = "<group>"; };
+		46E849061D48076C0068B18D /* INF_Transport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INF_Transport.h; sourceTree = "<group>"; };
 		470CF04F1D4D1B38D5AA1797 /* ofxRtMidiOut.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxRtMidiOut.h; path = ../../../addons/ofxMidi/src/desktop/ofxRtMidiOut.h; sourceTree = SOURCE_ROOT; };
 		48974F980F51769171D0B2F5 /* IpEndpointName.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = IpEndpointName.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h; sourceTree = SOURCE_ROOT; };
 		4CFB659E40D3D3DC5A3E9478 /* maxiGrains.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = maxiGrains.h; path = ../../../addons/ofxMaxim/libs/maxiGrains.h; sourceTree = SOURCE_ROOT; };
@@ -634,6 +637,8 @@
 				DEF8405D8D9D8A9F362138B2 /* Bjorklund.h */,
 				4448415E40740409C6DAEB22 /* Dat_Docker.cpp */,
 				406489C76FF642F0D7A5F7BD /* Dat_Docker.h */,
+				46E849051D48076C0068B18D /* INF_Transport.cpp */,
+				46E849061D48076C0068B18D /* INF_Transport.h */,
 				46E162266356FA3B71A5C741 /* DatButton.h */,
 				88BAF5836BD88E208BAB73BD /* DatDropdown.h */,
 				107CF808CEF1EFE569C06659 /* ImgButtonEvent.h */,
@@ -807,6 +812,7 @@
 				F285EB3169F1566CA3D93C20 /* ofxPanel.cpp in Sources */,
 				837220E80EB56CD44AD27F2A /* ofxSlider.cpp in Sources */,
 				B56FE57CC35806596D38118C /* ofxSliderGroup.cpp in Sources */,
+				46E849071D48076C0068B18D /* INF_Transport.cpp in Sources */,
 				1CD33E884D9E3358252E82A1 /* ofxToggle.cpp in Sources */,
 				0FCED26D40D46CF89A58E54C /* fft.cpp in Sources */,
 				5C4A4AA5D4784DF23EA43038 /* maxiAtoms.cpp in Sources */,

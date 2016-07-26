@@ -18,11 +18,16 @@ INF_Controls::INF_Controls():bEuclid(1), bEnabled(1),name("Sequence"),index(0),s
     }
     //Initialize Event Parameters
     seq_Params.index = index;
-    seq_mode.mode = bEuclid; //checks whether Sequencer's mode is Euclidean or Step Sequencer...
+    seq_Params.mode = bEuclid;
+    seq_Params.isOn = bEnabled;//checks whether Sequencer's mode is Euclidean or Step Sequencer...
 }
 //--------------------------------------------------------------
 INF_Controls::~INF_Controls(){
+    for(auto &x:components)
+        x.reset();
     components.clear();
+    for(auto &x:sliders)
+        x.reset();
     sliders.clear();
 }
 //--------------------------------------------------------------
@@ -113,7 +118,7 @@ void INF_Controls::setup(){
 //--------------------------------------------------------------
 void INF_Controls::update(){
     if(!currentNote.empty()) components[3]->setLabel(currentNote);
-
+    
     for(auto &x:components){
         x->update();
         
@@ -146,7 +151,6 @@ void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
         seq_Params.index = index;
         seq_Params.length = 0;
         seq_Params.pulse = 0;
-        
             for(auto &x:sliders){
                 x->setValue(0);
             }
@@ -161,7 +165,10 @@ void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
             sliders[1]->setValue(seq_pulse);
         ofNotifyEvent(GuiCallback, seq_Params, this);
     }
-    
+    //send Sequencer state
+    seq_Params.index = index;
+    seq_Params.isOn = e.checked;
+    ofNotifyEvent(GuiCallback, seq_Params, this);
 }
 //--------------------------------------------------------------
 void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
@@ -189,8 +196,10 @@ void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
         sliders[0]->setValue(seq_len);
         sliders[1]->setValue(seq_pulse);
     }
-    
-//    ofNotifyEvent(currentState, <EventArgs>, this);
+    //send Sequencer mode
+    seq_Params.index = index;
+    seq_Params.mode = e.child;
+    ofNotifyEvent(GuiCallback, seq_Params, this);
     
 }
 //--------------------------------------------------------------
@@ -214,25 +223,13 @@ void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
     ofNotifyEvent(GuiCallback, seq_Params, this);
 }
 //--------------------------------------------------------------
-void INF_Controls::setEuclid(int length, int pulse){
-    if(length > seq_pulse){
-        seq_len = length;
-    }else{
-        seq_len = seq_pulse;
-    }
+void INF_Controls::setSliders(int length, int pulse){
+    
     for(auto &x:sliders){
         if(x->getLabel() == "STEP"){
-            x->setValue(seq_len);
-        }
-    }
-    if(pulse < seq_len){
-        seq_pulse = pulse;
-    }else{
-        seq_pulse = seq_len;
-    }
-    for(auto &x:sliders){
-        if(x->getLabel() == "PULSES"){
-            x->setValue(seq_pulse);
+            x->setValue(length);
+        }else if(x->getLabel() == "PULSES"){
+            x->setValue(pulse);
         }
     }
 }

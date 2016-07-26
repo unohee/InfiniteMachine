@@ -7,12 +7,17 @@
 
 #include "INF_Module.h"
 
-INF_Module::INF_Module(int _index):index(_index), radius(300), gap(24),seqAmt(0), bEuclid(true){
+INF_Module::INF_Module(int _index):index(_index), radius(300), gap(24),seqAmt(0){
     //constructor
 }
 //--------------------------------------------------------------
 INF_Module::~INF_Module(){
-    if(!stepGui.empty())stepGui.clear();
+    if(!stepGui.empty()){
+        for(auto &x:stepGui){
+            x.reset();
+        }
+        stepGui.clear();
+    }
     if(!components.empty())components.clear();
     cout<<"[Module "<<index<<" is Deleted]"<<endl;
 }
@@ -25,12 +30,13 @@ void INF_Module::setup(){
     //Cyclic Sequencer init
     cycleRad = radius - 12;
     CyclicSeq cyclic = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad)); //GUI
+    cyclic->bEuclid = true;
     
     
     Track t = Track(new Sequence());//Actual Sequence data
     t->index = seqAmt;
     
-        if(bEuclid){//if euclidean mode is enabled in initial state..
+        if(cyclic->bEuclid == true){//if euclidean mode is enabled in initial state..
             //Add Euclidean Rhythm  (4:16)
             unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,4, false));
             euclid->init();
@@ -124,12 +130,12 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             
             seqAmt ++;
             cycleRad -= gap;
-            
-            
+
             CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad));//Cyclic GUI
             Track t = Track(new Sequence());//Actual Sequence data
             
             //assigning index
+            seq->bEuclid = true;
             seq->index = seqAmt;
             t->index = seqAmt;
             
@@ -148,7 +154,9 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             controls.push_back(c);
             ofAddListener(c->GuiCallback, this, &INF_Module::seqParamChanged);
             
+            
             //Cyclic Gui Setup
+            seq->isEnabled = false;
             if(controls[seqAmt]->bEnabled == true){
                 seq->stepAmt = controls[seqAmt]->seq_len;
             }else{
@@ -158,10 +166,13 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             stepGui.push_back(seq);
             tracks.push_back(move(t));
             ofAddListener(seq->stepUpdated, this, &INF_Module::sequenceCallback);
+            
         }
         //ERASE SEQUENCE
     }else if(e.target->getLabel() == "-"){
         if(seqAmt > 0 && stepGui.size() > 1 && controls.size() > 1){
+            stepGui[seqAmt].reset();
+            tracks[seqAmt].reset();
             seqAmt --;
             cycleRad += gap;
             guiLoc.y -= (26*7);
@@ -170,6 +181,7 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             }
             guiLoc.y = rect_ptr->getTopLeft().y;
             stepGui.pop_back();
+            
             controls.pop_back();
             tracks.pop_back();
             if(seqAmt > 1){
@@ -186,33 +198,44 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
         for(auto &x:stepGui){
             int rand = (int)ofRandom(16);
             int newStepAmt = (rand > 4) ? rand : 4;
-            int rand1 = (int)ofRandom(16);
-            int newPulse = (rand > rand1) ? rand1 : rand;
             
-            if(bEuclid){
+            if(controls[x->index]->bEuclid == true && x->isEnabled == true){
                 if(x->index == 0){
-                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,newPulse, false));
+                    
+                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,rand, false));
                     euclid->init();
                     x->stepAmt = 16;
                     tracks[x->index]->pattern = euclid->sequence;
                     x->setSequence(tracks[x->index]->pattern);
                     x->setup();
-                    controls[x->index]->setEuclid(16, newPulse);
+                    controls[x->index]->setSliders(16, rand);
                     
                 }else{
+                    int rand1 = (int)ofRandom(16);
+                    int newPulse;
+                    
+                    if(newStepAmt > rand1)
+                        newPulse = rand1;
+                    else
+                        newPulse = (int)ofRandom(4);
+                    
                     unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(newStepAmt,newPulse, false));
                     euclid->init();
                     x->stepAmt = newStepAmt;
                     tracks[x->index]->pattern = euclid->sequence;
                     x->setSequence(tracks[x->index]->pattern);
                     x->setup();
-                    controls[x->index]->setEuclid(newStepAmt, newPulse);
+                    controls[x->index]->setSliders(newStepAmt, newPulse);
                 }
-            }else{
-                x->stepAmt = newStepAmt;
-                x->setSequence(tracks[x->index]->pattern);
-                x->setup();
-                controls[x->index]->setLength(newStepAmt);
+            }else if(controls[x->index]->bEuclid == false && x->isEnabled == true){
+                if(x->index ==0){
+                    
+                }else{
+                    x->stepAmt = newStepAmt;
+                    x->setSequence(tracks[x->index]->pattern);
+                    x->setup();
+                    controls[x->index]->setLength(newStepAmt);
+                }
             }
         }
     }
@@ -222,27 +245,28 @@ void INF_Module::onDropdownEvent(ofxDatGuiDropdownEvent e){
     cout<<e.child<<endl;
 }
 //--------------------------------------------------------------
-void INF_Module::seqParamChanged(Controls &e){
-    if(e.index < stepGui.size() && e.index < tracks.size()){
-        stepGui[e.index]->stepAmt = e.length;
-        
-        if(bEuclid){
-            euclid = unique_ptr<Bjorklund>(new Bjorklund(e.length,e.pulse, false));
-            euclid->init();
-            tracks[e.index]->pattern = euclid->sequence;
-        }else{
-            
-        }
-        
-        stepGui[e.index]->setSequence(tracks[e.index]->pattern);
-        stepGui[e.index]->setup();
-        tracks[e.index]->pitch = e.pitch;
-        tracks[e.index]->velocity = e.velocity;
-    }
-}
-//--------------------------------------------------------------
 void INF_Module::sequenceCallback(SequenceEvent &e){
     if(e.index <= tracks.size())
         tracks[e.index]->pattern = e.seq;
 };
+//--------------------------------------------------------------
+void INF_Module::seqParamChanged(Controls &e){
+    if(e.index < stepGui.size() && e.index < tracks.size()){
+        stepGui[e.index]->stepAmt = e.length;
+        stepGui[e.index]->isEnabled = e.isOn;
+        
+        for(auto &x:controls){
+            if(x->bEuclid == true){
+                euclid = unique_ptr<Bjorklund>(new Bjorklund(e.length,e.pulse, false));
+                euclid->init();
+                tracks[x->index]->pattern = euclid->sequence;
+                stepGui[e.index]->setSequence(tracks[e.index]->pattern);
+            }
+        }
+        stepGui[e.index]->setup();
+
+        tracks[e.index]->pitch = e.pitch;
+        tracks[e.index]->velocity = e.velocity;
+    }
+}
 //--------------------------------------------------------------

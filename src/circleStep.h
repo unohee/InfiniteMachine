@@ -34,7 +34,7 @@ public:
     int x,y, lineWidth;
     int index;
     float radius;
-    bool bEuclid;
+    bool bEuclid, isEnabled;
     
     ofEvent<SequenceEvent>stepUpdated;
     

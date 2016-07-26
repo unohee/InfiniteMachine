@@ -41,7 +41,6 @@ public:
     ofPoint pos;
     float radius, cycleRad;
     int seqAmt;
-    bool bEuclid;
     ofPoint guiLoc;
     
     //smart pointers
