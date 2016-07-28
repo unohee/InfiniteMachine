@@ -14,20 +14,21 @@
 
 typedef shared_ptr<ofxDatGuiComponent> DatGuiPtr;
 
-struct Meter{
-    int beat;
-    int beatPerBar;
+
+struct TransportMessage{
+    
 };
 
 class INF_Transport{
 public:
     vector<DatGuiPtr> components;
     ofPoint pos;
+    
+    int width;
+    bool bStart;
     INF_Transport();
     ~INF_Transport();
 
-    int width;
-    
     void setup();
     void update();
     void draw();

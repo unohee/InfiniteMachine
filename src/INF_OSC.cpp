@@ -33,8 +33,10 @@ void OSC_Receive::update(){
             state.bar = m.getArgAsInt(0);
         }else if(m.getAddress()== "/transport/currentBeat"){
             state.beat = m.getArgAsInt(0);
-        }else{
-            //do nothing
+        }else if(m.getAddress()== "/transport/beatPerBar"){
+            state.meter.beatPerBar = m.getArgAsInt(0);
+        }else if(m.getAddress()== "/transport/beatResolution"){
+            state.meter.beatResolution = m.getArgAsInt(0);
         }
         ofNotifyEvent(AbletonPlayed, state, this);
     }

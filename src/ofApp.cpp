@@ -1,8 +1,6 @@
 
 
 #include "ofApp.h"
-
-
 //--------------------------------------------------------------
 void ofApp::setup(){
     cout<<"[Infinite Machine ALPHA.v02]"<<endl;
@@ -52,7 +50,15 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     
-//    ofSetWindowShape(module->getWidth()*2, 768);
+    accents.resize(playHeadAmt);
+    for(int i=0; i != playHeadAmt; i++){
+        if(i % divisor == 0){//find strong beat and weak beats
+            accents.at(i) = 1;
+        }else{
+            accents.at(i) = 0;
+        }
+    }
+    
     for(int i=0;i<docker.size();i++){
         docker[i]->update();
     }
@@ -95,7 +101,7 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
         
         if (lastCount!=currentCount) {
             //iterate the playhead
-            if(playHead <15)
+            if(playHead <playHeadAmt-1)
                 playHead++;
             else
                 playHead = 0;
@@ -103,13 +109,15 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
             int step_arr[]={1,0,0,0,1,0,0};
             
             for(auto &x: module->tracks){
-                unique_ptr<Note> n = unique_ptr<Note>(new Note());
-                if(x->pattern.at(playHead%16) == true){
+                //Create Note ON/OFF Pair
+                if(x->pattern.at(playHead%playHeadAmt) == true){
+                    unique_ptr<Note> n = unique_ptr<Note>(new Note());
                     n->status = KEY_ON;
                     n->pitch = x->pitch;
                     n->velocity = 127;
                     midi->sendNote(*n);
                 }else{
+                    unique_ptr<Note> n = unique_ptr<Note>(new Note());
                     n->status = KEY_OFF;
                     n->pitch = 36;
                     n->velocity = 0;
@@ -176,11 +184,21 @@ void ofApp::keyReleased(int key){
 }
 //--------------------------------------------------------------
 void ofApp::AbletonPlayed(Ableton &eventArgs){
-    //Add something more here
     tempo = eventArgs.tempo;
     currentBar = eventArgs.bar;
     currentBeat = eventArgs.beat;
     isPlay = eventArgs.isPlay;
+    
+    timeSignature = to_string(eventArgs.meter.beatPerBar) + "/" + to_string(eventArgs.meter.beatResolution);
+    
+    divisor = eventArgs.meter.beatResolution;
+    if(eventArgs.meter.beatResolution == 4){
+        playHeadAmt = eventArgs.meter.beatPerBar * 4; //calculate the amount of semi-crochet per bar.
+    }else if(eventArgs.meter.beatResolution == 8){
+        playHeadAmt = eventArgs.meter.beatPerBar * 2;
+    }else if(eventArgs.meter.beatResolution == 16){
+        playHeadAmt = eventArgs.meter.beatPerBar;
+    }
 }
 //--------------------------------------------------------------
 void ofApp::exit(){

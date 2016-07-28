@@ -5,11 +5,17 @@
 #define PORT 8080
 #define NUM_MSG_STRINGS 20
 
+struct Meter{
+public:
+    
+    int beatPerBar, beatResolution;
+};
 struct Ableton{
 public:
     //Parameters that is received from Ableton Live
     int tempo, bar, beat;
     bool isPlay;
+    Meter meter;
     Ableton(){};
 };
 

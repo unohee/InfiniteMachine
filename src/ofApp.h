@@ -10,7 +10,7 @@
 
 #include "Note.h"
 #include "Dat_Docker.h"
-
+#include "ofxGui.h"
 
 #define SRATE 44100 //SAMPLE RATE
 #define BUFFER_SIZE 512 // BUFFERSIZE
@@ -54,6 +54,9 @@ class ofApp : public ofBaseApp {
     Dat_Docker *docks;
     unique_ptr<INF_Module> module;
     unique_ptr<INF_Transport> transport;
+    
+    ofxIntSlider s;
+    
 
     //Network component
     INF_MIDI *midi; //MIDI OUTPUT
@@ -62,7 +65,10 @@ class ofApp : public ofBaseApp {
 
 
     //Sequencing
-    int tempo, currentBar, currentBeat;
+    bool bHost;
+    
+    float tempo;
+    int currentBar, currentBeat;
     //Maximilian for Timing
     int currentCount, lastCount;
     int playHead;
@@ -70,5 +76,11 @@ class ofApp : public ofBaseApp {
     bool isPlay;
     maxiOsc timer;
     void setTempo(float BPM);
+    
+    
+    string timeSignature;
+    int divisor, playHeadAmt;
+    vector<bool>accents;
+    string beatGrid;
     
 };

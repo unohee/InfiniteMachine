@@ -29,6 +29,7 @@ void INF_Module::setup(){
     setGui();
     //Cyclic Sequencer init
     cycleRad = radius - 12;
+
     CyclicSeq cyclic = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad)); //GUI
     cyclic->bEuclid = true;
     
@@ -61,6 +62,51 @@ void INF_Module::setup(){
     c->setup();
     controls.push_back(c);
     ofAddListener(c->GuiCallback, this, &INF_Module::seqParamChanged);
+    
+    if(index ==0){//only first page can have 8 tracks
+        for(int i=1; i < 8; i ++){
+            seqAmt ++;
+            cycleRad -= gap;
+            
+            CyclicSeq seq = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad));//Cyclic GUI
+            Track t = Track(new Sequence());//Actual Sequence data
+            
+            //assigning index
+            seq->bEuclid = true;
+            seq->index = seqAmt;
+            t->index = seqAmt;
+            
+            //controller setup
+            GuiPtr c = GuiPtr(new INF_Controls());
+            guiLoc.y += (26*7);
+            if(seqAmt == 4 || seqAmt == 8){
+                guiLoc.x += 270; //default width is 270;
+                guiLoc.y = rect_ptr->getTopLeft().y;
+            }
+            c->pos = guiLoc;
+            c->index = seqAmt;
+            c->bEuclid = true;
+            c->bEnabled = false;
+            c->setup();
+            controls.push_back(c);
+            ofAddListener(c->GuiCallback, this, &INF_Module::seqParamChanged);
+            
+            //Cyclic Gui Setup
+            seq->isEnabled = false;
+            if(controls[seqAmt]->bEnabled == true){
+                seq->stepAmt = controls[seqAmt]->seq_len;
+            }else{
+                seq->stepAmt = 0;
+            }
+            seq->setup();
+            stepGui.push_back(seq);
+            tracks.push_back(move(t));
+            ofAddListener(seq->stepUpdated, this, &INF_Module::sequenceCallback);
+        }
+    }
+
+    
+    
 }
 //--------------------------------------------------------------
 void INF_Module::setGui(){
