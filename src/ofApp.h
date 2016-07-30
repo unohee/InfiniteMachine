@@ -38,6 +38,7 @@ class ofApp : public ofBaseApp {
     void AbletonPlayed(Ableton &eventArgs);
     void MIDICallback(MidiState &eventArgs);
     void globalState(TransportMessage &eventArgs);
+    void setMode(bool &eventArgs);
     void tempoChange(int &eventArgs);
     
     

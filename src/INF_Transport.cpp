@@ -39,6 +39,7 @@ void INF_Transport::setup(){
     unique_ptr<ofxDatGuiToggle> start = unique_ptr<ofxDatGuiToggle>(new ofxDatGuiToggle("Play", bStart));
     start->setPosition(pos.x, pos.y);
     start->setWidth(width);
+    start->onToggleEvent(this, &INF_Transport::onToggleEvent);
     components.push_back(move(start));
 }
 //--------------------------------------------------------------
@@ -86,4 +87,8 @@ void INF_Transport::onSliderEvent(ofxDatGuiSliderEvent e){
     currentState.BPM = tempoVal;
     ofNotifyEvent(ClockCallback, currentState, this);
 }
-
+//--------------------------------------------------------------
+void INF_Transport::onToggleEvent(ofxDatGuiToggleEvent e){
+    currentState.play = e.checked;
+    ofNotifyEvent(ClockCallback, currentState, this);
+}

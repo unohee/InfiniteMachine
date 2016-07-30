@@ -1,24 +1,13 @@
-//
-//  INF_Transport.h
-//  Infinite_Machine_Alpha
-//
-//  Created by Heewon Oh on 26/07/2016.
-//
-//
-
-#ifndef INF_Transport_h
-#define INF_Transport_h
-
+#pragma once
 #include "ofxDatGui.h"
 #include "ofxMaxim.h"
 #include "ofMain.h"
 
 typedef shared_ptr<ofxDatGuiComponent> DatGuiPtr;
 
-
 struct TransportMessage{
     float BPM;
-    bool mode;
+    bool play;
     string timeSignature;
 };
 
@@ -49,6 +38,5 @@ public:
     
     void onTextInput(ofxDatGuiTextInputEvent e);
     void onSliderEvent(ofxDatGuiSliderEvent e);
+    void onToggleEvent(ofxDatGuiToggleEvent e);
 };
-
-#endif /* INF_Transport_h */

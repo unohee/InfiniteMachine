@@ -84,6 +84,16 @@ void Dat_Docker::selectChannel(ofxDatGuiDropdownEvent e){
     ofNotifyEvent(deviceState, midiParam, this);
 }
 //--------------------------------------------------------------
+void Dat_Docker::modeChanged(ofxDatGuiDropdownEvent e){
+    bool isSlave;
+    if(e.child == 0){
+        isSlave = false;
+    }else if(e.child == 1){
+        isSlave = true;
+    }
+    ofNotifyEvent(modeChange, isSlave, this);
+}
+//--------------------------------------------------------------
 void Dat_Docker::pageAdded(ofxDatGuiButtonEvent e){
     cout<<e.target->getLabel()<<endl;
 }

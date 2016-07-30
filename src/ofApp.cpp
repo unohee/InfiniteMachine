@@ -11,7 +11,7 @@ void ofApp::setup(){
     //Upper dock
     docks = new Dat_Docker(midi->midiOut.getPortList());
     ofAddListener(docks->deviceState, this, &ofApp::MIDICallback);//add EventListener.
-    
+    ofAddListener(docks->modeChange, this, &ofApp::setMode);
     //Lower Transport dock Init
     transport = unique_ptr<INF_Transport>(new INF_Transport());
     transport->pos = ofPoint(0,754);
@@ -19,7 +19,6 @@ void ofApp::setup(){
     transport->setTimeSignature(4, 4);
     timeSignature = "4/4";
     ofAddListener(transport->ClockCallback, this, &ofApp::globalState);
-    
     bHost = false; //add GUI for this parameter.
     isPlay = false;
     if(bHost){
@@ -152,10 +151,6 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     }
 }
 //--------------------------------------------------------------
-void ofApp::tempoChange(int &eventArgs){
-
-}
-//--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     //MIDINOTE SENDER TEST
     
@@ -221,6 +216,23 @@ void ofApp::MIDICallback(MidiState &eventArgs){
 }
 //--------------------------------------------------------------
 void ofApp::globalState(TransportMessage &eventArgs){
+    
+}
+//--------------------------------------------------------------
+void ofApp::setMode(bool &eventArgs){
+    if(eventArgs){
+        bHost = false;
+        cout<<"[Slave Mode is Activated]"<<endl;
+    }else{
+        bHost = true;
+        
+        cout<<"[Master Mode is Activated]"<<endl;
+    }
+    transport->tempoSlider->setEnabled(bHost);
+    transport->components[0]->setEnabled(bHost);
+}
+//--------------------------------------------------------------
+void ofApp::tempoChange(int &eventArgs){
     
 }
 //--------------------------------------------------------------

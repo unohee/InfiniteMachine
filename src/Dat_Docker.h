@@ -30,7 +30,7 @@ public:
     
     //ofEvents
     ofEvent<MidiState>deviceState;
-    ofEvent<bool>host;
+    ofEvent<bool>modeChange;
     MidiState midiParam;
     
     //GUI Components
@@ -62,7 +62,7 @@ public:
     void getDeviceList(vector<string> &list);
     void selectDevice(ofxDatGuiDropdownEvent e);
     void selectChannel(ofxDatGuiDropdownEvent e);
-    void modeChanged(ofxDatGuiDropdownEvent e){};
+    void modeChanged(ofxDatGuiDropdownEvent e);
     void pageAdded(ofxDatGuiButtonEvent e);
     void update();
     void draw();
