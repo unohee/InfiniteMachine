@@ -8,6 +8,7 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxDatGui.h"
+#include "ofxMaxim.h"
 #include "RoundedButton.h"
 #include "INF_Controls.hpp"
 #include "CircleStep.h"
@@ -40,9 +41,9 @@ public:
     int index, gap;
     ofPoint pos;
     float radius, cycleRad;
-    int seqAmt;
+    int seqAmt, tempoVal;
     ofPoint guiLoc;
-    
+    unique_ptr<maxiOsc> clock;
     //smart pointers
     unique_ptr<ofRectangle> rect_ptr;
     unique_ptr<RoundedButton> random;
@@ -64,9 +65,9 @@ public:
     void setup();
     void setGui();
     void update();
-    void makeNew();
     void draw();
 
+    int getClock();
     int getWidth() const{
         return rect_ptr->getWidth();
     }

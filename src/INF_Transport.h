@@ -3,8 +3,6 @@
 #include "ofxMaxim.h"
 #include "ofMain.h"
 
-typedef shared_ptr<ofxDatGuiComponent> DatGuiPtr;
-
 struct TransportMessage{
     float BPM;
     bool play;
@@ -16,12 +14,13 @@ public:
     
     unique_ptr<ofxDatGuiTextInput> text;
     unique_ptr<ofxDatGuiSlider> tempoSlider;
-    vector<DatGuiPtr> components;
+    unique_ptr<ofxDatGuiToggle> start;
     ofPoint pos;
     
     ofEvent<TransportMessage> ClockCallback;
     TransportMessage currentState;
     
+    maxiOsc clock;
     int width;
     float tempoVal;
     bool bStart, bFreeze;
@@ -31,9 +30,9 @@ public:
     void setup();
     void update();
     void draw();
-    void setMode(bool isSlave);
     void setTimeSignature(int beat, int amount);
-    float ClockSync();
+    float getClock();
+    float getClock(int ticks);
     string meter;
     
     void onTextInput(ofxDatGuiTextInputEvent e);

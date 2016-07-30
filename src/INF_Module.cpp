@@ -167,6 +167,15 @@ void INF_Module::draw(){
         x->draw();
 }
 //--------------------------------------------------------------
+int INF_Module::getClock(){
+    
+    clock = unique_ptr<maxiOsc>(new maxiOsc());
+    
+    float bps = tempoVal / 60.f * 4;
+
+    return (int)floor(clock->phasor(bps));
+}
+//--------------------------------------------------------------
 void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
     //ADD SEQUENCE
     if(e.target->getLabel() == "+"){
@@ -270,15 +279,6 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
                     x->setSequence(tracks[x->index]->pattern);
                     x->setup();
                     controls[x->index]->setSliders(newStepAmt, newPulse);
-                }
-            }else if(controls[x->index]->bEuclid == false && x->isEnabled == true){
-                if(x->index ==0){
-                    
-                }else{
-                    x->stepAmt = newStepAmt;
-                    x->setSequence(tracks[x->index]->pattern);
-                    x->setup();
-                    controls[x->index]->setLength(newStepAmt);
                 }
             }
         }

@@ -30,8 +30,6 @@ class ofApp : public ofBaseApp {
     //Events used
     void keyPressed(int key);
     void keyReleased(int key);
-    
-    
     void seqStart(bool &eventArgs){};
     
     //custom event callbacks
@@ -40,7 +38,7 @@ class ofApp : public ofBaseApp {
     void globalState(TransportMessage &eventArgs);
     void setMode(bool &eventArgs);
     void tempoChange(int &eventArgs);
-    
+    void clockStarted(bool &eventArgs);
     
     //unused events
     void mouseMoved(int x, int y ){};
@@ -80,6 +78,7 @@ class ofApp : public ofBaseApp {
     void setTempo(float BPM);
     
     
+    ofEvent<bool>activated;
     string timeSignature;
     int divisor, playHeadAmt;
     vector<bool>accents;

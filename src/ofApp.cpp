@@ -12,6 +12,8 @@ void ofApp::setup(){
     docks = new Dat_Docker(midi->midiOut.getPortList());
     ofAddListener(docks->deviceState, this, &ofApp::MIDICallback);//add EventListener.
     ofAddListener(docks->modeChange, this, &ofApp::setMode);
+    
+    
     //Lower Transport dock Init
     transport = unique_ptr<INF_Transport>(new INF_Transport());
     transport->pos = ofPoint(0,754);
@@ -19,7 +21,9 @@ void ofApp::setup(){
     transport->setTimeSignature(4, 4);
     timeSignature = "4/4";
     ofAddListener(transport->ClockCallback, this, &ofApp::globalState);
-    bHost = false; //add GUI for this parameter.
+    ofAddListener(activated, this, &ofApp::clockStarted);
+    
+    bHost = true; //add GUI for this parameter.
     isPlay = false;
     if(bHost){
         transport->tempoSlider->setEnabled(true);
@@ -40,6 +44,9 @@ void ofApp::setup(){
     module->pos = ofPoint(0, docks->getHeight());
     module->setup();
     
+    playHeadAmt = 16;
+    divisor = 4;
+    
     //default IP:PORT Address
     string netAddress;
     stringstream convert;
@@ -58,18 +65,18 @@ void ofApp::setup(){
 }
 //--------------------------------------------------------------
 void ofApp::update(){
-    if(bHost)
+    if(!bHost && playHeadAmt != NULL && divisor != NULL){
         oscListener.update(); //Listening OSC...
-    
-    
-    accents.resize(playHeadAmt);
-    for(int i=0; i != playHeadAmt; i++){
-        if(i % divisor == 0){//find strong beat and weak beats
-            accents.at(i) = 1;
-        }else{
-            accents.at(i) = 0;
+        accents.resize(playHeadAmt);
+        for(int i=0; i != playHeadAmt; i++){
+            if(i % divisor == 0){//find strong beat and weak beats
+                accents.at(i) = 1;
+            }else{
+                accents.at(i) = 0;
+            }
         }
     }
+
     
     module->update();
     docks->update();
@@ -118,7 +125,8 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     for(int i = 0; i < bufferSize; i++){
         
         if(isPlay)
-            currentCount=(int)timer.phasor(bps);
+            currentCount=(int)floor(transport->getClock());
+//            currentCount=(int)timer.phasor(bps);
         
         if (lastCount!=currentCount) {
             //iterate the playhead
@@ -192,7 +200,12 @@ void ofApp::AbletonPlayed(Ableton &eventArgs){
     tempo = eventArgs.tempo;
     currentBar = eventArgs.bar;
     currentBeat = eventArgs.beat;
-    isPlay = eventArgs.isPlay;
+    
+    if(!bHost){
+        isPlay = eventArgs.isPlay;
+        transport->start->setChecked(isPlay);
+    }
+    
     
     timeSignature = to_string(eventArgs.meter.beatPerBar) + "/" + to_string(eventArgs.meter.beatResolution);
     if(isPlay)
@@ -217,19 +230,48 @@ void ofApp::MIDICallback(MidiState &eventArgs){
 //--------------------------------------------------------------
 void ofApp::globalState(TransportMessage &eventArgs){
     
+    if(bHost)
+        isPlay = eventArgs.play;
+//        ofNotifyEvent(activated, isPlay, this);
+    
+    string tempoIn = eventArgs.timeSignature;
+    
+    tempoIn.erase(std::remove(tempoIn.begin(),tempoIn.end(),'/'),tempoIn.end());
 }
 //--------------------------------------------------------------
 void ofApp::setMode(bool &eventArgs){
     if(eventArgs){
         bHost = false;
-        cout<<"[Slave Mode is Activated]"<<endl;
+        cout<<"[Slave Mode is Activated]"<<endl
+        <<"[Now Listening Ableton Live...]"<<endl;
     }else{
         bHost = true;
         
         cout<<"[Master Mode is Activated]"<<endl;
+       
     }
+    transport->text->setEnabled(bHost);
     transport->tempoSlider->setEnabled(bHost);
-    transport->components[0]->setEnabled(bHost);
+    transport->start->setEnabled(bHost);
+}
+//--------------------------------------------------------------
+void ofApp::clockStarted(bool &eventArgs){
+    for(auto &x: module->tracks){
+        //Create Note ON/OFF Pair
+        if(x->pattern.at(0) == true){
+            unique_ptr<Note> n = unique_ptr<Note>(new Note());
+            n->status = KEY_ON;
+            n->pitch = x->pitch;
+            n->velocity = 127;
+            midi->sendNote(*n);
+        }else{
+            unique_ptr<Note> n = unique_ptr<Note>(new Note());
+            n->status = KEY_OFF;
+            n->pitch = x->pitch;
+            n->velocity = 0;
+            midi->sendNote(*n);
+        }
+    }
 }
 //--------------------------------------------------------------
 void ofApp::tempoChange(int &eventArgs){

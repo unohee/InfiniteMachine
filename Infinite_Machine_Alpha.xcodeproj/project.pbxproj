@@ -22,6 +22,7 @@
 		3AEFE4FA8AD5C72671AD07F8 /* ofxRtMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 712B183BC00EBFFB1EEA5AB8 /* ofxRtMidiOut.cpp */; };
 		46BB97E01D3BED7600129993 /* INF_Controls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46BB97DE1D3BED7600129993 /* INF_Controls.cpp */; };
 		46E849071D48076C0068B18D /* INF_Transport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46E849051D48076C0068B18D /* INF_Transport.cpp */; };
+		46E9E3101D4C4B9F00CDEA89 /* commandLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46E9E30E1D4C4B9F00CDEA89 /* commandLine.cpp */; };
 		483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 78D67A00EB899FAC09430597 /* ofxLabel.cpp */; };
 		4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AED834CE4DEC5260AF302A2 /* ofxOscParameterSync.cpp */; };
 		4B0F891A816C31988AD16AB7 /* ImageButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E87A4349510CBF61D9DCF86E /* ImageButton.cpp */; };
@@ -134,6 +135,8 @@
 		46E162266356FA3B71A5C741 /* DatButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = DatButton.h; path = src/DatButton.h; sourceTree = SOURCE_ROOT; };
 		46E849051D48076C0068B18D /* INF_Transport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Transport.cpp; sourceTree = "<group>"; };
 		46E849061D48076C0068B18D /* INF_Transport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INF_Transport.h; sourceTree = "<group>"; };
+		46E9E30E1D4C4B9F00CDEA89 /* commandLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = commandLine.cpp; sourceTree = "<group>"; };
+		46E9E30F1D4C4B9F00CDEA89 /* commandLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = commandLine.h; sourceTree = "<group>"; };
 		470CF04F1D4D1B38D5AA1797 /* ofxRtMidiOut.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxRtMidiOut.h; path = ../../../addons/ofxMidi/src/desktop/ofxRtMidiOut.h; sourceTree = SOURCE_ROOT; };
 		48974F980F51769171D0B2F5 /* IpEndpointName.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = IpEndpointName.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h; sourceTree = SOURCE_ROOT; };
 		4CFB659E40D3D3DC5A3E9478 /* maxiGrains.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = maxiGrains.h; path = ../../../addons/ofxMaxim/libs/maxiGrains.h; sourceTree = SOURCE_ROOT; };
@@ -327,6 +330,8 @@
 				57E998CF210A3C7DC57CDF19 /* INF_Module.h */,
 				46BB97DE1D3BED7600129993 /* INF_Controls.cpp */,
 				46BB97DF1D3BED7600129993 /* INF_Controls.hpp */,
+				46E849051D48076C0068B18D /* INF_Transport.cpp */,
+				46E849061D48076C0068B18D /* INF_Transport.h */,
 			);
 			name = Sequencer;
 			sourceTree = "<group>";
@@ -636,11 +641,11 @@
 				DEF8405D8D9D8A9F362138B2 /* Bjorklund.h */,
 				4448415E40740409C6DAEB22 /* Dat_Docker.cpp */,
 				406489C76FF642F0D7A5F7BD /* Dat_Docker.h */,
-				46E849051D48076C0068B18D /* INF_Transport.cpp */,
-				46E849061D48076C0068B18D /* INF_Transport.h */,
 				46E162266356FA3B71A5C741 /* DatButton.h */,
 				107CF808CEF1EFE569C06659 /* ImgButtonEvent.h */,
 				46BB97DD1D3BE2F500129993 /* ButtonEvent.h */,
+				46E9E30E1D4C4B9F00CDEA89 /* commandLine.cpp */,
+				46E9E30F1D4C4B9F00CDEA89 /* commandLine.h */,
 				7A38E9C2B2D99A1E32148449 /* DatIndex.cpp */,
 				FB9E78A215D2BE59162DFA10 /* DatIndex.h */,
 				9B08360F51D393EF2685DFC4 /* DatPanel.h */,
@@ -826,6 +831,7 @@
 				63F9FE1D90234FA6DE6F509E /* ofxMidi.cpp in Sources */,
 				0BFC9C20FD7E3C8D5873AA97 /* ofxMidiIn.cpp in Sources */,
 				C6FE64F74F1EA1D98C8F9847 /* ofxMidiMessage.cpp in Sources */,
+				46E9E3101D4C4B9F00CDEA89 /* commandLine.cpp in Sources */,
 				83D9F930112E0944444124EE /* ofxMidiOut.cpp in Sources */,
 				63D0FD8734D5760B8080C901 /* RtMidi.cpp in Sources */,
 				72A929D3561B8232A182ABFC /* ofxOscBundle.cpp in Sources */,

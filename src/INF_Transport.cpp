@@ -10,12 +10,13 @@
 
 INF_Transport::INF_Transport(){
     width=  200;
+    tempoVal = 120;
 }
 //--------------------------------------------------------------
 INF_Transport::~INF_Transport(){
     text.reset();
-    for(auto &x:components)
-        x.reset();
+    tempoSlider.reset();
+    start.reset();
 }//--------------------------------------------------------------
 void INF_Transport::setup(){
     
@@ -36,34 +37,22 @@ void INF_Transport::setup(){
     tempoSlider->onSliderEvent(this, &INF_Transport::onSliderEvent);
     pos.x += tempoSlider->getWidth();
     
-    unique_ptr<ofxDatGuiToggle> start = unique_ptr<ofxDatGuiToggle>(new ofxDatGuiToggle("Play", bStart));
+    start = unique_ptr<ofxDatGuiToggle>(new ofxDatGuiToggle("Play", bStart));
     start->setPosition(pos.x, pos.y);
     start->setWidth(width);
     start->onToggleEvent(this, &INF_Transport::onToggleEvent);
-    components.push_back(move(start));
 }
 //--------------------------------------------------------------
 void INF_Transport::update(){
     text->update();
     tempoSlider->update();
-    for(auto &x:components){
-        x->update();
-    }
+    start->update();
 }
 //--------------------------------------------------------------
 void INF_Transport::draw(){
     text->draw();
     tempoSlider->draw();
-    for(auto &x:components)
-        x->draw();
-}
-//--------------------------------------------------------------
-void INF_Transport::setMode(bool isSlave){
-    bFreeze = isSlave;
-    
-    for(auto &x:components)
-        x->setEnabled(bFreeze);
-    text->setEnabled(bFreeze);
+    start->draw();
 }
 //--------------------------------------------------------------
 void INF_Transport::setTimeSignature(int beat, int amount){
@@ -71,10 +60,16 @@ void INF_Transport::setTimeSignature(int beat, int amount){
     text->setText(meter);
 }
 //--------------------------------------------------------------
-float INF_Transport::ClockSync(){
+float INF_Transport::getClock(){
     float bps = tempoVal / 60.f * 4;
     
-    return bps;
+    return clock.phasor(bps);
+}
+//--------------------------------------------------------------
+float INF_Transport::getClock(int ticks){
+    float bps = tempoVal / 60.f * ticks;
+    
+    return clock.phasor(bps);
 }
 //--------------------------------------------------------------
 void INF_Transport::onTextInput(ofxDatGuiTextInputEvent e){
