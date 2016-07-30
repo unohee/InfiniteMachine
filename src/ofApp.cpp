@@ -8,24 +8,38 @@ void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE);
     ofSetWindowTitle("Infinite Machine");
     
-    //MIDI Initialization
-    midi = new INF_MIDI();
-
     //Upper dock
     docks = new Dat_Docker(midi->midiOut.getPortList());
-    //add EventListener.
-    ofAddListener(docks->deviceFocus, this, &ofApp::deviceSelected);
-    ofAddListener(docks->channelChanged, this, &ofApp::MIDI_ch_changed);
-    ofAddListener(docks->tempoChange, this, &ofApp::tempoChange);
+    ofAddListener(docks->deviceState, this, &ofApp::MIDICallback);//add EventListener.
+    
+    //Lower Transport dock Init
+    transport = unique_ptr<INF_Transport>(new INF_Transport());
+    transport->pos = ofPoint(0,754);
+    transport->setup();
+    transport->setTimeSignature(4, 4);
+    timeSignature = "4/4";
+    ofAddListener(transport->ClockCallback, this, &ofApp::globalState);
+    
+    bHost = false; //add GUI for this parameter.
+    isPlay = false;
+    if(bHost){
+        transport->tempoSlider->setEnabled(true);
+        transport->text->setEnabled(true);
+        transport->tempoSlider->setValue(120);
+        setTempo(120); //as long as it works as master mode. the initial tempo is 120. or it takes Tempo from Master(Ableton Live)
+        tempo = 120;
+    }else{
+        transport->tempoSlider->setEnabled(false);
+        transport->text->setEnabled(false);
+    }
+
+    //MIDI Initialization
+    midi = new INF_MIDI();
     
     //Sequencer
     module = unique_ptr<INF_Module>(new INF_Module(0));
     module->pos = ofPoint(0, docks->getHeight());
     module->setup();
-    
-    transport = unique_ptr<INF_Transport>(new INF_Transport());
-    transport->pos = ofPoint(0,754);
-    transport->setup();
     
     //default IP:PORT Address
     string netAddress;
@@ -40,15 +54,14 @@ void ofApp::setup(){
     oscListener.setup();
     ofAddListener(oscListener.AbletonPlayed, this, &ofApp::AbletonPlayed);
 
-    isPlay = false;
-    setTempo(120); //as long as it works as master mode. the initial tempo is 120.
- 
-    
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
 }
 //--------------------------------------------------------------
 void ofApp::update(){
+    if(bHost)
+        oscListener.update(); //Listening OSC...
+    
     
     accents.resize(playHeadAmt);
     for(int i=0; i != playHeadAmt; i++){
@@ -59,9 +72,6 @@ void ofApp::update(){
         }
     }
     
-    for(int i=0;i<docker.size();i++){
-        docker[i]->update();
-    }
     module->update();
     docks->update();
     transport->update();
@@ -81,6 +91,18 @@ void ofApp::draw(){
     << "note: " << midi->note << endl
     << "velocity: " << midi->velocity << endl;
     ofDrawBitmapString(text.str(), 20, 60);
+    
+    
+    ofSetColor(255);
+    stringstream text2;
+    text2 << "Tempo " << tempo <<endl
+    << "is playing?: " << isPlay << endl << endl
+    << "Time Signature :"<< timeSignature << endl << endl
+    << "Current Beat " << currentBeat << "/"<< currentBar << endl
+    << "Beatgrid : " << beatGrid<<endl;
+    ofDrawBitmapString(text2.str(), 20, 240);
+    
+    
     
     //ofxDatGui components
     ofPushStyle();
@@ -106,8 +128,6 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
             else
                 playHead = 0;
             
-            int step_arr[]={1,0,0,0,1,0,0};
-            
             for(auto &x: module->tracks){
                 //Create Note ON/OFF Pair
                 if(x->pattern.at(playHead%playHeadAmt) == true){
@@ -130,16 +150,6 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
         }
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
     }
-}
-//--------------------------------------------------------------
-void ofApp::deviceSelected(int &eventArgs){
-    //receive list index from GUI
-    midi->setDevice(eventArgs);
-}
-//--------------------------------------------------------------
-void ofApp::MIDI_ch_changed(int &eventArgs){
-    midi->channel = eventArgs+1;
-    cout<<"Channel : "<<eventArgs+1<<endl;
 }
 //--------------------------------------------------------------
 void ofApp::tempoChange(int &eventArgs){
@@ -190,6 +200,8 @@ void ofApp::AbletonPlayed(Ableton &eventArgs){
     isPlay = eventArgs.isPlay;
     
     timeSignature = to_string(eventArgs.meter.beatPerBar) + "/" + to_string(eventArgs.meter.beatResolution);
+    if(isPlay)
+        transport->setTimeSignature(eventArgs.meter.beatResolution, eventArgs.meter.beatPerBar);
     
     divisor = eventArgs.meter.beatResolution;
     if(eventArgs.meter.beatResolution == 4){
@@ -199,6 +211,17 @@ void ofApp::AbletonPlayed(Ableton &eventArgs){
     }else if(eventArgs.meter.beatResolution == 16){
         playHeadAmt = eventArgs.meter.beatPerBar;
     }
+}
+//--------------------------------------------------------------
+void ofApp::MIDICallback(MidiState &eventArgs){
+    //receive list index from GUI
+    midi->setDevice(eventArgs.device);
+    midi->channel = eventArgs.channel+1;
+    cout<<"Bam"<<endl;
+}
+//--------------------------------------------------------------
+void ofApp::globalState(TransportMessage &eventArgs){
+    
 }
 //--------------------------------------------------------------
 void ofApp::exit(){

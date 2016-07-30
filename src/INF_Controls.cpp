@@ -243,6 +243,15 @@ void INF_Controls::setLength(int length){
     }
 }
 //--------------------------------------------------------------
+void INF_Controls::setMax(int max){
+    max_len = max;
+    for(auto &x:sliders){
+        x->setMax(max_len);
+    }
+    seq_Params.length = max_len;
+    ofNotifyEvent(GuiCallback, seq_Params, this);
+}
+//--------------------------------------------------------------
 int INF_Controls::getWidth(){
     return width;
 }

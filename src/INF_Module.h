@@ -70,6 +70,9 @@ public:
     int getWidth() const{
         return rect_ptr->getWidth();
     }
+    int setMax(int max){
+        
+    }
     
     //Event Callbacks
     void onButtonEvent(ofxDatGuiButtonEvent e);

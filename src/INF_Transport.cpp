@@ -13,35 +13,77 @@ INF_Transport::INF_Transport(){
 }
 //--------------------------------------------------------------
 INF_Transport::~INF_Transport(){
-    
+    text.reset();
+    for(auto &x:components)
+        x.reset();
 }//--------------------------------------------------------------
 void INF_Transport::setup(){
     
-    shared_ptr<ofxDatGuiLabel> label = shared_ptr<ofxDatGuiLabel>(new ofxDatGuiLabel("4/4"));
-    label->setPosition(pos.x, pos.y);
-    label->setWidth(200);
-    components.push_back(label);
-
+    text = unique_ptr<ofxDatGuiTextInput>(new ofxDatGuiTextInput("Time", meter));
+    text->setPosition(pos.x, pos.y);
+    text->setWidth(200, 50);
+    text->setText("4/4");
+    text->onTextInputEvent(this, &INF_Transport::onTextInput);
     
-    pos.x += label->getWidth();
-    shared_ptr<ofxDatGuiToggle> start = shared_ptr<ofxDatGuiToggle>(new ofxDatGuiToggle("Play", bStart));
+    
+    //BPM SLIDER
+    pos.x += text->getWidth();
+    tempoSlider = unique_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("BPM", 40, 240));
+    tempoSlider->setPosition(pos.x, pos.y);
+    tempoSlider->setWidth(200, 50);
+    tempoSlider->setPrecision(0);
+    tempoSlider->setValue(120);
+    tempoSlider->onSliderEvent(this, &INF_Transport::onSliderEvent);
+    pos.x += tempoSlider->getWidth();
+    
+    unique_ptr<ofxDatGuiToggle> start = unique_ptr<ofxDatGuiToggle>(new ofxDatGuiToggle("Play", bStart));
     start->setPosition(pos.x, pos.y);
     start->setWidth(width);
-    components.push_back(start);
-
-    
+    components.push_back(move(start));
 }
 //--------------------------------------------------------------
 void INF_Transport::update(){
+    text->update();
+    tempoSlider->update();
     for(auto &x:components){
-//        x->setWidth(width / components.size(), 100);
         x->update();
     }
-    
 }
 //--------------------------------------------------------------
 void INF_Transport::draw(){
+    text->draw();
+    tempoSlider->draw();
     for(auto &x:components)
         x->draw();
 }
 //--------------------------------------------------------------
+void INF_Transport::setMode(bool isSlave){
+    bFreeze = isSlave;
+    
+    for(auto &x:components)
+        x->setEnabled(bFreeze);
+    text->setEnabled(bFreeze);
+}
+//--------------------------------------------------------------
+void INF_Transport::setTimeSignature(int beat, int amount){
+    meter = to_string(amount) + "/" + to_string(beat);
+    text->setText(meter);
+}
+//--------------------------------------------------------------
+float INF_Transport::ClockSync(){
+    float bps = tempoVal / 60.f * 4;
+    
+    return bps;
+}
+//--------------------------------------------------------------
+void INF_Transport::onTextInput(ofxDatGuiTextInputEvent e){
+    currentState.timeSignature = e.text;
+    ofNotifyEvent(ClockCallback, currentState, this);
+}
+//--------------------------------------------------------------
+void INF_Transport::onSliderEvent(ofxDatGuiSliderEvent e){
+    tempoVal = e.value;
+    currentState.BPM = tempoVal;
+    ofNotifyEvent(ClockCallback, currentState, this);
+}
+

@@ -11,41 +11,47 @@
 
 #include "ofxDatGui.h"
 #include "DatIndex.h"
-#include "DatDropdown.h"
-#include "ImageButton.h"
 #include "ButtonEvent.h"
+
+struct MidiState{
+public:
+    
+    int device, channel;
+    string deviceName;
+    MidiState():device(0), channel(0){
+        
+    }
+};
+
+typedef shared_ptr<ofxDatGuiDropdown> DropPTR;
 
 class Dat_Docker{
 public:
     
     //ofEvents
-    ofEvent<int>deviceFocus; //eventArgs for linking GUI and MIDI Interface
-    ofEvent<int>channelChanged;
-    ofEvent<bool>deviceRefreshed;
-    ofEvent<int>tempoChange;
-    
-    static ofEvent<int>deviceFocusGlobal;
-    static ofEvent<int>midiChGlobal;
+    ofEvent<MidiState>deviceState;
+    ofEvent<bool>host;
+    MidiState midiParam;
     
     //GUI Components
     vector<ofxDatGuiComponent*> components;
-    vector<ImageButton*>buttons;
     vector<string>ch;
     DatIndex *browser;
-    DatDropdown *device_list;
-    vector<DatDropdown*> midi_lists;
+    
+    vector<DropPTR>deviceGUI;
     
     
     int width, height;
     int deviceNum;
     bool start;
+    ofPoint pos;
     
     //constructor and functions
     Dat_Docker();
     Dat_Docker(vector<string>&deviceList);
     ~Dat_Docker(){
-//        if(browser != NULL)
-//            delete browser;
+        if(browser != NULL)
+            delete browser;
     };
     int getWidth(){
         return width;
@@ -56,13 +62,8 @@ public:
     void getDeviceList(vector<string> &list);
     void selectDevice(ofxDatGuiDropdownEvent e);
     void selectChannel(ofxDatGuiDropdownEvent e);
-    void bpmChanged(ofxDatGuiSliderEvent e);
     void modeChanged(ofxDatGuiDropdownEvent e){};
-    void play(customEvent &e){cout<<e.label<<endl;};
-    void stop(customEvent &e){cout<<e.label<<endl;};
-    void customButtonEvent(customEvent &e);
     void pageAdded(ofxDatGuiButtonEvent e);
-    void deviceRefresh(ofxDatGuiButtonEvent e);
     void update();
     void draw();
     

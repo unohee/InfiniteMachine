@@ -167,7 +167,6 @@
 		85ACE15C3C663588C685C4C4 /* RoundedButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = RoundedButton.h; path = src/RoundedButton.h; sourceTree = SOURCE_ROOT; };
 		87D3A0051CCB2C0F0ECA139E /* maximilian.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = maximilian.cpp; path = ../../../addons/ofxMaxim/libs/maximilian.cpp; sourceTree = SOURCE_ROOT; };
 		87F26B4B24CBD428AD9EEBAA /* ofxBaseGui.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxBaseGui.h; path = ../../../addons/ofxGui/src/ofxBaseGui.h; sourceTree = SOURCE_ROOT; };
-		88BAF5836BD88E208BAB73BD /* DatDropdown.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = DatDropdown.h; path = src/DatDropdown.h; sourceTree = SOURCE_ROOT; };
 		89449E3044D456F7DE7BEA14 /* ofxPanel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxPanel.h; path = ../../../addons/ofxGui/src/ofxPanel.h; sourceTree = SOURCE_ROOT; };
 		896211FFD7650884437CE42C /* ofxSmartFont.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSmartFont.h; path = ../../../addons/ofxDatGui/src/libs/ofxSmartFont/ofxSmartFont.h; sourceTree = SOURCE_ROOT; };
 		8B30E93FD3D3475EED522A0E /* ofxOscBundle.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscBundle.h; path = ../../../addons/ofxOsc/src/ofxOscBundle.h; sourceTree = SOURCE_ROOT; };
@@ -640,7 +639,6 @@
 				46E849051D48076C0068B18D /* INF_Transport.cpp */,
 				46E849061D48076C0068B18D /* INF_Transport.h */,
 				46E162266356FA3B71A5C741 /* DatButton.h */,
-				88BAF5836BD88E208BAB73BD /* DatDropdown.h */,
 				107CF808CEF1EFE569C06659 /* ImgButtonEvent.h */,
 				46BB97DD1D3BE2F500129993 /* ButtonEvent.h */,
 				7A38E9C2B2D99A1E32148449 /* DatIndex.cpp */,

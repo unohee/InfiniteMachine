@@ -26,6 +26,7 @@ public:
     ofPoint pos;
     bool bEuclid, bEnabled;
     int index, seq_len, seq_pulse;
+    int max_len;
     int width;
     
     string currentNote;
@@ -44,6 +45,7 @@ public:
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void setSliders(int length, int pulse);
     void setLength(int length);
+    void setMax(int max);
     int getWidth();
     int getHeight();
 };

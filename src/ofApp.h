@@ -27,14 +27,19 @@ class ofApp : public ofBaseApp {
         void exit();
 
     
-    //Events
+    //Events used
     void keyPressed(int key);
     void keyReleased(int key);
-    void deviceSelected(int &eventArgs);
-    void MIDI_ch_changed(int &eventArgs);
-    void tempoChange(int &eventArgs);
+    
+    
     void seqStart(bool &eventArgs){};
+    
+    //custom event callbacks
     void AbletonPlayed(Ableton &eventArgs);
+    void MIDICallback(MidiState &eventArgs);
+    void globalState(TransportMessage &eventArgs);
+    void tempoChange(int &eventArgs);
+    
     
     //unused events
     void mouseMoved(int x, int y ){};
@@ -50,13 +55,9 @@ class ofApp : public ofBaseApp {
     string ip_adrs, port_adrs;
     
     //GUIs
-    vector<ofxDatGuiComponent*>docker;
     Dat_Docker *docks;
     unique_ptr<INF_Module> module;
     unique_ptr<INF_Transport> transport;
-    
-    ofxIntSlider s;
-    
 
     //Network component
     INF_MIDI *midi; //MIDI OUTPUT
