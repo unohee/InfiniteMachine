@@ -303,7 +303,16 @@ void INF_Module::seqParamChanged(Controls &e){
             if(x->bEuclid == true && x->bEnabled == true && e.length != 0 && e.pulse != 0){
                 unique_ptr<Bjorklund> euclid = unique_ptr<Bjorklund>(new Bjorklund(e.length,e.pulse));
                 euclid->init();
-                tracks[x->index]->getPattern(euclid->sequence);
+                
+                if(e.offset > 0){
+                    vector<bool>mutated;
+                    mutated = euclid->sequence;
+                    std::rotate(mutated.begin(), mutated.begin()+e.offset, mutated.end());
+                    tracks[x->index]->getPattern(mutated);
+                    mutated.clear();
+                }else{
+                    tracks[x->index]->getPattern(euclid->sequence);
+                }
                 stepGui[e.index]->setSequence(tracks[e.index]->pattern);
                 euclid.reset();
             }

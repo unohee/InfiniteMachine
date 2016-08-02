@@ -65,6 +65,8 @@ void Bjorklund::iter(){
         }while(sequence.at(zeroCount) == 0);
         std::rotate(sequence.begin(), sequence.begin() + zeroCount, sequence.end());
     }
+    //resize
+    sequence.resize(lengthOfSeq);
 }
 void Bjorklund::buildSeq(int slot){
     //construct a binary sequence of n bits with k one’s, such that the k one’s are distributed as evenly as possible among the zero’s
