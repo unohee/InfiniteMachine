@@ -34,6 +34,8 @@ public:
     //Sequencing
     bool bHost;
     
+    ofEvent<int>globalPlayHead;
+    
     float tempo;
     int currentBar, currentBeat;
     //Maximilian for Timing
@@ -56,6 +58,7 @@ public:
     void setTempo(float BPM);
     void audioOut(float * output, int bufferSize, int nChannels);
     void exit();
+    
     //Events used
     void seqStart(bool &eventArgs){};
     //custom event callbacks
@@ -64,6 +67,7 @@ public:
     void globalState(TransportMessage &eventArgs);
     void setMode(bool &eventArgs);
     void tempoChange(int &eventArgs);
+    void clockPlayed(int &eventArgs);
     void clockStarted(bool &eventArgs);
     
     

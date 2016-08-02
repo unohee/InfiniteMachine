@@ -168,15 +168,6 @@ void INF_Module::draw(){
         x->draw();
 }
 //--------------------------------------------------------------
-int INF_Module::getClock(){
-    
-    clock = unique_ptr<maxiOsc>(new maxiOsc());
-    
-    float bps = tempoVal / 60.f * 4;
-
-    return (int)floor(clock->phasor(bps));
-}
-//--------------------------------------------------------------
 void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
     //ADD SEQUENCE
     if(e.target->getLabel() == "+"){
@@ -270,27 +261,22 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
                     controls[x->index]->setSliders(16, rand);
                     euclid.reset();
                 }else{
-                    int rand1 = (int)ofRandom(16);
-                    int newPulse;
+                    int rand1 = (int)ofRandom(newStepAmt);
                     
                     do{
-                        if(newStepAmt > rand1)
-                            newPulse = rand1;
-                        else
-                            newPulse = (int)ofRandom(4);
-                        
-                        if(rand > 1){
+                        rand1 = (int)ofRandom(newStepAmt);
+                        if(rand1 > 1){
                             break;
                         }
-                    }while(newPulse == 0 || newPulse == 1);
+                    }while(rand1 == 0 || rand1 == 1);
                     
-                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(newStepAmt,newPulse));
+                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(newStepAmt,rand1));
                     euclid->init();
                     x->stepAmt = newStepAmt;
                     tracks[x->index]->getPattern(euclid->sequence);
                     x->setSequence(tracks[x->index]->pattern);
                     x->setup();
-                    controls[x->index]->setSliders(newStepAmt, newPulse);
+                    controls[x->index]->setSliders(newStepAmt, rand1);
                     euclid.reset();
                 }
             }

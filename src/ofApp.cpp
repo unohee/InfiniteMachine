@@ -60,8 +60,10 @@ void ofApp::setup(){
     oscListener.setup();
     ofAddListener(oscListener.AbletonPlayed, this, &ofApp::AbletonPlayed);
 
+
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
+    ofAddListener(globalPlayHead, this, &ofApp::clockPlayed); //add listener that maxiClock's variable
 }
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -130,7 +132,6 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
         
         if(isPlay)
             currentCount=(int)floor(transport->getClock());
-//            currentCount=(int)timer.phasor(bps);
         
         if (lastCount!=currentCount) {
             //iterate the playhead
@@ -138,29 +139,33 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
                 playHead++;
             else
                 playHead = 0;
-            
-            for(auto &x: module->tracks){
-                //Create Note ON/OFF Pair
-                if(x->pattern.at(playHead%playHeadAmt) == true){
-                    unique_ptr<Note> n = unique_ptr<Note>(new Note());
-                    n->status = KEY_ON;
-                    n->pitch = x->pitch;
-                    n->velocity = 127;
-                    midi->sendNote(*n);
-                }else{
-                    unique_ptr<Note> n = unique_ptr<Note>(new Note());
-                    n->status = KEY_OFF;
-                    n->pitch = 36;
-                    n->velocity = 0;
-                    midi->sendNote(*n);
-                }
-            }
 
             lastCount=0;//reset the metrotest
-            
+            ofNotifyEvent(globalPlayHead, playHead, this);
         }
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
     }
+}
+//--------------------------------------------------------------
+void ofApp::clockPlayed(int &eventArgs){
+    
+    for(auto &x: module->tracks){
+        //Create Note ON/OFF Pair
+        if(x->pattern.at(playHead%playHeadAmt) == true){
+            unique_ptr<Note> n = unique_ptr<Note>(new Note());
+            n->status = KEY_ON;
+            n->pitch = x->pitch;
+            n->velocity = 127;
+            midi->sendNote(*n);
+        }else{
+            unique_ptr<Note> n = unique_ptr<Note>(new Note());
+            n->status = KEY_OFF;
+            n->pitch = 36;
+            n->velocity = 0;
+            midi->sendNote(*n);
+        }
+    }
+
 }
 //--------------------------------------------------------------
 void ofApp::AbletonPlayed(Ableton &eventArgs){

@@ -41,11 +41,12 @@ void Bjorklund::iter(){
     while(true){
         if(pulseAmt != 0){
             count.push_back(divisor / remainder[index]);
-            
-        }else if(pulseAmt == lengthOfSeq){
             remainder.push_back(floor(divisor % remainder[index]));
+        }else if(pulseAmt == lengthOfSeq){
+            count.push_back(divisor / remainder[index]);
+            remainder.push_back(divisor % remainder[index]);
         }
-        remainder.push_back(divisor % remainder[index]);
+        
         divisor = remainder.at(index);
         index += 1; //move to next step.
         if(remainder[index] <= 1){

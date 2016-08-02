@@ -8,7 +8,6 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxDatGui.h"
-#include "ofxMaxim.h"
 #include "RoundedButton.h"
 #include "INF_Controls.hpp"
 #include "CircleStep.h"
@@ -46,7 +45,6 @@ public:
     float radius, cycleRad;
     int seqAmt, tempoVal;
     ofPoint guiLoc;
-    unique_ptr<maxiOsc> clock;
     //smart pointers
     unique_ptr<ofRectangle> rect_ptr;
     unique_ptr<RoundedButton> random;
