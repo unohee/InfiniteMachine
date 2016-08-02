@@ -16,10 +16,6 @@ INF_Controls::INF_Controls():bEuclid(1), bEnabled(false),name("Sequence"),index(
         octave = noteNum /12;
         notes.push_back(note_substring[noteNum%12]+to_string(octave));
     }
-    //Initialize Event Parameters
-    seq_Params.index = index;
-    seq_Params.mode = bEuclid;
-    seq_Params.isOn = bEnabled;//checks whether Sequencer's mode is Euclidean or Step Sequencer...
 }
 //--------------------------------------------------------------
 INF_Controls::~INF_Controls(){
@@ -32,6 +28,11 @@ INF_Controls::~INF_Controls(){
 }
 //--------------------------------------------------------------
 void INF_Controls::setup(){
+    //Initialize Event Parameters
+    seq_Params.index = index;
+    seq_Params.mode = bEuclid;
+    seq_Params.isOn = bEnabled;//checks whether Sequencer's mode is Euclidean or Step Sequencer...
+    
     string label_ = name + " " +to_string(index+1);
     shared_ptr<ofxDatGuiLabel> label = shared_ptr<ofxDatGuiLabel>(new ofxDatGuiLabel(label_));
     label->setPosition(pos.x, pos.y);
@@ -148,20 +149,20 @@ void INF_Controls::draw(){
 }
 //--------------------------------------------------------------
 void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
-    bEnabled = e.checked;
     for(auto &x:sliders)
         x->setEnabled(e.checked);
     if(e.checked == false){
         seq_Params.index = index;
         seq_Params.length = 0;
         seq_Params.pulse = 0;
+        seq_Params.isOn = e.checked;
         ofNotifyEvent(GuiCallback, seq_Params, this);
         
     }else{
         seq_Params.index = index;
         seq_Params.length = seq_len;
         seq_Params.pulse = seq_pulse;
-
+        seq_Params.isOn = e.checked;
             sliders[0]->setValue(seq_len);
             sliders[1]->setValue(seq_pulse);
         ofNotifyEvent(GuiCallback, seq_Params, this);
@@ -170,6 +171,7 @@ void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
     seq_Params.index = index;
     seq_Params.isOn = e.checked;
     ofNotifyEvent(GuiCallback, seq_Params, this);
+    bEnabled = e.checked;
 }
 //--------------------------------------------------------------
 void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){

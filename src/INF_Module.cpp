@@ -33,7 +33,6 @@ void INF_Module::setup(){
     CyclicSeq cyclic = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad)); //GUI
     cyclic->bEuclid = true;
     
-    
     Track t = Track(new Sequence());//Actual Sequence data
     t->index = seqAmt;
     
@@ -62,6 +61,8 @@ void INF_Module::setup(){
     c->pos = guiLoc;
     c->setup();
     controls.push_back(c);
+    cout<<"Test"<<endl;
+    cout<<controls[0]->seq_Params.isOn<<endl;
     ofAddListener(c->GuiCallback, this, &INF_Module::seqParamChanged);
     
     if(index ==0){//only first page can have 8 tracks
