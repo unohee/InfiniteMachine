@@ -8,7 +8,7 @@
 
 #include "INF_Controls.hpp"
 
-INF_Controls::INF_Controls():bEuclid(1), bEnabled(1),name("Sequence"),index(0),seq_len(16),seq_pulse(4){
+INF_Controls::INF_Controls():bEuclid(1), bEnabled(false),name("Sequence"),index(0),seq_len(16),seq_pulse(4){
     //Create midi note array...
     const string note_substring[] = {"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
     int octave;//octave is 0 - 8;
@@ -67,6 +67,10 @@ void INF_Controls::setup(){
     //PULSES
     pos.y += s->getHeight();
     s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("Pulses", 0,seq_len));
+    if(bEuclid)
+        s->setMin(1);
+    else
+        s->setMin(0);
     s->setPrecision(0);
     s->setPosition(pos.x, pos.y);
     s->setValue(seq_pulse);
@@ -144,16 +148,13 @@ void INF_Controls::draw(){
 }
 //--------------------------------------------------------------
 void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
+    bEnabled = e.checked;
     for(auto &x:sliders)
         x->setEnabled(e.checked);
-    
     if(e.checked == false){
         seq_Params.index = index;
         seq_Params.length = 0;
         seq_Params.pulse = 0;
-            for(auto &x:sliders){
-                x->setValue(0);
-            }
         ofNotifyEvent(GuiCallback, seq_Params, this);
         
     }else{
@@ -185,16 +186,17 @@ void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
     }
     
     if(e.child ==0){
-        cout<<"step"<<endl;
         //IF MODE is changed to Manual mode..
         bEuclid = false;
         sliders[1]->setEnabled(false); //pulse slider is disabled.
         sliders[1]->setValue(0);
     }else if(e.child ==1){
+        //Euclidean Mode
         bEuclid = true;
         sliders[1]->setEnabled(bEuclid);
         sliders[0]->setValue(seq_len);
         sliders[1]->setValue(seq_pulse);
+        sliders[1]->setMin(1);
     }
     //send Sequencer mode
     seq_Params.index = index;

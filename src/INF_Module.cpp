@@ -58,6 +58,7 @@ void INF_Module::setup(){
     //and Add its controller
     guiLoc = ofPoint(rect_ptr->getTopRight());
     GuiPtr c = GuiPtr(new INF_Controls());
+    c->bEnabled = true;
     c->pos = guiLoc;
     c->setup();
     controls.push_back(c);
@@ -312,11 +313,12 @@ void INF_Module::seqParamChanged(Controls &e){
         stepGui[e.index]->isEnabled = e.isOn;
         
         for(auto &x:controls){
-            if(x->bEuclid == true){
-                euclid = unique_ptr<Bjorklund>(new Bjorklund(e.length,e.pulse));
+            if(x->bEuclid == true && x->bEnabled == true && e.length != 0 && e.pulse != 0){
+                unique_ptr<Bjorklund> euclid = unique_ptr<Bjorklund>(new Bjorklund(e.length,e.pulse));
                 euclid->init();
-                tracks[x->index]->pattern = euclid->LoadSequence();
+                tracks[x->index]->getPattern(euclid->sequence);
                 stepGui[e.index]->setSequence(tracks[e.index]->pattern);
+                euclid.reset();
             }
         }
         stepGui[e.index]->setup();

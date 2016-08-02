@@ -50,7 +50,6 @@ public:
     //smart pointers
     unique_ptr<ofRectangle> rect_ptr;
     unique_ptr<RoundedButton> random;
-    unique_ptr<Bjorklund> euclid;
     
     //vectors
     vector<RButtonPtr>rButtons;

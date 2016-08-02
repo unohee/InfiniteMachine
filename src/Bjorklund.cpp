@@ -39,10 +39,13 @@ void Bjorklund::iter(){
     int index = 0; //we start algorithm from first index.
     
     while(true){
-        if(divisor !=0 && remainder[index] != 0){
-            count.push_back(std::floor(divisor / remainder[index]));
-            remainder.push_back(divisor % remainder[index]);
+        if(pulseAmt != 0){
+            count.push_back(divisor / remainder[index]);
+            
+        }else if(pulseAmt == lengthOfSeq){
+            remainder.push_back(floor(divisor % remainder[index]));
         }
+        remainder.push_back(divisor % remainder[index]);
         divisor = remainder.at(index);
         index += 1; //move to next step.
         if(remainder[index] <= 1){
