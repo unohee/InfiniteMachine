@@ -33,6 +33,7 @@ public:
     }
     void setup();
     void sendNote(Note &n);
+    void enableVirtual();
     void setDevice(int &device){
         midiOut.openPort(device); // by number
         midiOut.getPort();

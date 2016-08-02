@@ -39,3 +39,6 @@ void INF_MIDI::sendNote(Note &n){
         midiOut.sendNoteOff(channel, n.pitch-12);
     }
 }
+void INF_MIDI::enableVirtual(){
+    midiOut.openVirtualPort("Infinite Machine");
+}

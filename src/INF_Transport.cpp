@@ -41,18 +41,26 @@ void INF_Transport::setup(){
     start->setPosition(pos.x, pos.y);
     start->setWidth(width);
     start->onToggleEvent(this, &INF_Transport::onToggleEvent);
+    
+    pos.x += start->getWidth();
+    status = unique_ptr<ofxDatGuiLabel>(new ofxDatGuiLabel("Status:"));
+    status->setPosition(pos.x, pos.y);
+    status->setWidth(540);
+    status->setOpacity(80);
 }
 //--------------------------------------------------------------
 void INF_Transport::update(){
     text->update();
     tempoSlider->update();
     start->update();
+    status->update();
 }
 //--------------------------------------------------------------
 void INF_Transport::draw(){
     text->draw();
     tempoSlider->draw();
     start->draw();
+    status->draw();
 }
 //--------------------------------------------------------------
 void INF_Transport::setTimeSignature(int beat, int amount){

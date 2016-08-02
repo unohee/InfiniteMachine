@@ -39,9 +39,9 @@ void INF_Module::setup(){
     
         if(cyclic->bEuclid == true){//if euclidean mode is enabled in initial state..
             //Add Euclidean Rhythm  (4:16)
-            unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,4, false));
+            unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,4));
             euclid->init();
-            vector<bool> seq = euclid->sequence;
+            vector<bool> seq = euclid->LoadSequence();
             t->pattern = seq;
             cyclic->setSequence(t->pattern);
         }else{
@@ -206,8 +206,7 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             c->setup();
             controls.push_back(c);
             ofAddListener(c->GuiCallback, this, &INF_Module::seqParamChanged);
-            
-            
+
             //Cyclic Gui Setup
             seq->isEnabled = false;
             if(controls[seqAmt]->bEnabled == true){
@@ -254,31 +253,44 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
             
             if(controls[x->index]->bEuclid == true && x->isEnabled == true){
                 if(x->index == 0){
+                    do{
+                        rand = (int)ofRandom(16);
+                        if(rand > 1){
+                            break;
+                        }
+                    }while(rand == 0 || rand == 1);
                     
-                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,rand, false));
+                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,rand));
                     euclid->init();
                     x->stepAmt = 16;
-                    tracks[x->index]->pattern = euclid->sequence;
+                    tracks[x->index]->getPattern(euclid->sequence);
                     x->setSequence(tracks[x->index]->pattern);
                     x->setup();
                     controls[x->index]->setSliders(16, rand);
-                    
+                    euclid.reset();
                 }else{
                     int rand1 = (int)ofRandom(16);
                     int newPulse;
                     
-                    if(newStepAmt > rand1)
-                        newPulse = rand1;
-                    else
-                        newPulse = (int)ofRandom(4);
+                    do{
+                        if(newStepAmt > rand1)
+                            newPulse = rand1;
+                        else
+                            newPulse = (int)ofRandom(4);
+                        
+                        if(rand > 1){
+                            break;
+                        }
+                    }while(newPulse == 0 || newPulse == 1);
                     
-                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(newStepAmt,newPulse, false));
+                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(newStepAmt,newPulse));
                     euclid->init();
                     x->stepAmt = newStepAmt;
-                    tracks[x->index]->pattern = euclid->sequence;
+                    tracks[x->index]->getPattern(euclid->sequence);
                     x->setSequence(tracks[x->index]->pattern);
                     x->setup();
                     controls[x->index]->setSliders(newStepAmt, newPulse);
+                    euclid.reset();
                 }
             }
         }
@@ -301,9 +313,9 @@ void INF_Module::seqParamChanged(Controls &e){
         
         for(auto &x:controls){
             if(x->bEuclid == true){
-                euclid = unique_ptr<Bjorklund>(new Bjorklund(e.length,e.pulse, false));
+                euclid = unique_ptr<Bjorklund>(new Bjorklund(e.length,e.pulse));
                 euclid->init();
-                tracks[x->index]->pattern = euclid->sequence;
+                tracks[x->index]->pattern = euclid->LoadSequence();
                 stepGui[e.index]->setSequence(tracks[e.index]->pattern);
             }
         }

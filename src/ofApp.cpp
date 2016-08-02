@@ -76,17 +76,21 @@ void ofApp::update(){
             }
         }
     }
-
-    
     module->update();
     docks->update();
     transport->update();
+    stringstream newStatus;
+    newStatus <<"connected to "<<midi->midiOut.getName()<<" "<<
+    "Channel : "<< midi->channel;
+    string status = newStatus.str();
+    transport->status->setLabel(status);
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
     module->draw();
     transport->draw();
     
+    /*
     // let's see something
     ofSetColor(255);
     stringstream text;
@@ -97,8 +101,8 @@ void ofApp::draw(){
     << "note: " << midi->note << endl
     << "velocity: " << midi->velocity << endl;
     ofDrawBitmapString(text.str(), 20, 60);
-    
-    
+     */
+
     ofSetColor(255);
     stringstream text2;
     text2 << "Tempo " << tempo <<endl
@@ -106,7 +110,7 @@ void ofApp::draw(){
     << "Time Signature :"<< timeSignature << endl << endl
     << "Current Beat " << currentBeat << "/"<< currentBar << endl
     << "Beatgrid : " << beatGrid<<endl;
-    ofDrawBitmapString(text2.str(), 20, 240);
+    ofDrawBitmapString(text2.str(), 20, 60);
     
     
     
@@ -159,43 +163,6 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     }
 }
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-    //MIDINOTE SENDER TEST
-    
-    // send a note on if the key is a letter or a number
-    if(isalnum((unsigned char) key)) {
-        
-        // scale the ascii values to midi velocity range 0-127
-        // see an ascii table: http://www.asciitable.com/
-        int _note = ofMap(key, 48, 122, 0, 127);
-        int _velocity = 127;
-        
-//        n = new Note();
-//        n->status = KEY_ON;
-//        n->pitch =_note;
-//        n->velocity = _velocity;
-//        midi->sendNote(*n);
-    }
-
-}
-//--------------------------------------------------------------
-void ofApp::keyReleased(int key){
-    
-    if(isalnum((unsigned char) key)) {
-        // scale the ascii values to midi velocity range 0-127
-        // see an ascii table: http://www.asciitable.com/
-        int _note = ofMap(key, 48, 122, 0, 127);
-        int _velocity = 0;
-        
-//        n = new Note();
-//        n->status = KEY_OFF;
-//        n->pitch =_note;
-//        n->velocity = 0;
-//        midi->sendNote(*n);
-    }
-
-}
-//--------------------------------------------------------------
 void ofApp::AbletonPlayed(Ableton &eventArgs){
     tempo = eventArgs.tempo;
     currentBar = eventArgs.bar;
@@ -205,8 +172,7 @@ void ofApp::AbletonPlayed(Ableton &eventArgs){
         isPlay = eventArgs.isPlay;
         transport->start->setChecked(isPlay);
     }
-    
-    
+
     timeSignature = to_string(eventArgs.meter.beatPerBar) + "/" + to_string(eventArgs.meter.beatResolution);
     if(isPlay)
         transport->setTimeSignature(eventArgs.meter.beatResolution, eventArgs.meter.beatPerBar);
@@ -225,7 +191,6 @@ void ofApp::MIDICallback(MidiState &eventArgs){
     //receive list index from GUI
     midi->setDevice(eventArgs.device);
     midi->channel = eventArgs.channel+1;
-    cout<<"Bam"<<endl;
 }
 //--------------------------------------------------------------
 void ofApp::globalState(TransportMessage &eventArgs){
@@ -244,6 +209,8 @@ void ofApp::setMode(bool &eventArgs){
         bHost = false;
         cout<<"[Slave Mode is Activated]"<<endl
         <<"[Now Listening Ableton Live...]"<<endl;
+        midi->midiOut.openVirtualPort("Infinite Machine");
+        midi->enableVirtual();
     }else{
         bHost = true;
         
@@ -253,6 +220,7 @@ void ofApp::setMode(bool &eventArgs){
     transport->text->setEnabled(bHost);
     transport->tempoSlider->setEnabled(bHost);
     transport->start->setEnabled(bHost);
+    docks->deviceGUI[0]->setEnabled(bHost);
 }
 //--------------------------------------------------------------
 void ofApp::clockStarted(bool &eventArgs){

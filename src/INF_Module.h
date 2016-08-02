@@ -25,6 +25,9 @@ struct Sequence{
             pattern.push_back(0);
         }
     };
+    void getPattern(vector<bool> &v){
+        pattern = v;
+    }
 
 };
 

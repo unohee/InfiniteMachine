@@ -15,6 +15,7 @@ public:
     unique_ptr<ofxDatGuiTextInput> text;
     unique_ptr<ofxDatGuiSlider> tempoSlider;
     unique_ptr<ofxDatGuiToggle> start;
+    unique_ptr<ofxDatGuiLabel> status;
     ofPoint pos;
     
     ofEvent<TransportMessage> ClockCallback;
