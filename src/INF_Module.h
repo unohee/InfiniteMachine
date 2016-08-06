@@ -12,23 +12,7 @@
 #include "INF_Controls.hpp"
 #include "CircleStep.h"
 #include "Bjorklund.h"
-
-
-struct Sequence{
-    
-    vector<bool>pattern;
-    int index,pitch, velocity;
-    
-    Sequence():index(0), pitch(36), velocity(80){
-        while(pattern.size() < 16){
-            pattern.push_back(0);
-        }
-    };
-    void getPattern(vector<bool> &v){
-        pattern = v;
-    }
-
-};
+#include "Sequence.h"
 
 typedef shared_ptr<circleStep> CyclicSeq;
 typedef shared_ptr<ofxDatGuiComponent> ofxDatGuiPtr;

@@ -38,11 +38,12 @@ void INF_Module::setup(){
     
         if(cyclic->bEuclid == true){//if euclidean mode is enabled in initial state..
             //Add Euclidean Rhythm  (4:16)
-            unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,4));
+            auto_ptr<Bjorklund>euclid = auto_ptr<Bjorklund>(new Bjorklund(16,4));
             euclid->init();
             vector<bool> seq = euclid->LoadSequence();
             t->pattern = seq;
             cyclic->setSequence(t->pattern);
+            euclid.reset();
         }else{
             for(int i=0; i < 16;i++)
                 t->pattern.push_back(0);
@@ -253,7 +254,7 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
                         }
                     }while(rand == 0 || rand == 1);
                     
-                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(16,rand));
+                    auto_ptr<Bjorklund>euclid = auto_ptr<Bjorklund>(new Bjorklund(16,rand));
                     euclid->init();
                     x->stepAmt = 16;
                     tracks[x->index]->getPattern(euclid->sequence);
@@ -271,7 +272,7 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
                         }
                     }while(rand1 == 0 || rand1 == 1);
                     
-                    unique_ptr<Bjorklund>euclid = unique_ptr<Bjorklund>(new Bjorklund(newStepAmt,rand1));
+                    auto_ptr<Bjorklund>euclid = auto_ptr<Bjorklund>(new Bjorklund(newStepAmt,rand1));
                     euclid->init();
                     x->stepAmt = newStepAmt;
                     tracks[x->index]->getPattern(euclid->sequence);
@@ -307,7 +308,7 @@ void INF_Module::seqParamChanged(Controls &e){
                 if(e.offset > 0){
                     vector<bool>mutated;
                     mutated = euclid->sequence;
-                    std::rotate(mutated.begin(), mutated.begin()+e.offset, mutated.end());
+                    std::rotate(mutated.begin(), mutated.end()-e.offset, mutated.end());
                     tracks[x->index]->getPattern(mutated);
                     mutated.clear();
                 }else{
@@ -320,7 +321,7 @@ void INF_Module::seqParamChanged(Controls &e){
         stepGui[e.index]->setup();
 
         tracks[e.index]->pitch = e.pitch;
-        tracks[e.index]->velocity = e.velocity;
+//        tracks[e.index]->velocity = e.velocity;
     }
 }
 //--------------------------------------------------------------

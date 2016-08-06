@@ -20,6 +20,7 @@
 		35FE521EC5F2C509C0449BF1 /* CircleButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68A91892A6BDCC0F278922E1 /* CircleButton.cpp */; };
 		3AEFE4FA8AD5C72671AD07F8 /* ofxRtMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 712B183BC00EBFFB1EEA5AB8 /* ofxRtMidiOut.cpp */; };
 		46BB97E01D3BED7600129993 /* INF_Controls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46BB97DE1D3BED7600129993 /* INF_Controls.cpp */; };
+		46D61F861D5696DD007BC67A /* INF_Algorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D61F841D5696DD007BC67A /* INF_Algorithm.cpp */; };
 		46E849071D48076C0068B18D /* INF_Transport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46E849051D48076C0068B18D /* INF_Transport.cpp */; };
 		483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 78D67A00EB899FAC09430597 /* ofxLabel.cpp */; };
 		4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AED834CE4DEC5260AF302A2 /* ofxOscParameterSync.cpp */; };
@@ -128,6 +129,9 @@
 		46BB97DD1D3BE2F500129993 /* ButtonEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ButtonEvent.h; sourceTree = "<group>"; };
 		46BB97DE1D3BED7600129993 /* INF_Controls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Controls.cpp; sourceTree = "<group>"; };
 		46BB97DF1D3BED7600129993 /* INF_Controls.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = INF_Controls.hpp; sourceTree = "<group>"; };
+		46D61F831D566B79007BC67A /* Sequence.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sequence.h; sourceTree = "<group>"; };
+		46D61F841D5696DD007BC67A /* INF_Algorithm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Algorithm.cpp; sourceTree = "<group>"; };
+		46D61F851D5696DD007BC67A /* INF_Algorithm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INF_Algorithm.h; sourceTree = "<group>"; };
 		46E162266356FA3B71A5C741 /* DatButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = DatButton.h; path = src/DatButton.h; sourceTree = SOURCE_ROOT; };
 		46E849051D48076C0068B18D /* INF_Transport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Transport.cpp; sourceTree = "<group>"; };
 		46E849061D48076C0068B18D /* INF_Transport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INF_Transport.h; sourceTree = "<group>"; };
@@ -322,6 +326,9 @@
 				46BB97DF1D3BED7600129993 /* INF_Controls.hpp */,
 				46E849051D48076C0068B18D /* INF_Transport.cpp */,
 				46E849061D48076C0068B18D /* INF_Transport.h */,
+				46D61F841D5696DD007BC67A /* INF_Algorithm.cpp */,
+				46D61F851D5696DD007BC67A /* INF_Algorithm.h */,
+				46D61F831D566B79007BC67A /* Sequence.h */,
 			);
 			name = Sequencer;
 			sourceTree = "<group>";
@@ -819,6 +826,7 @@
 				4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */,
 				640279EE111671BD026CB013 /* ofxOscReceiver.cpp in Sources */,
 				8F5205AEF8861EF234F0651A /* ofxOscSender.cpp in Sources */,
+				46D61F861D5696DD007BC67A /* INF_Algorithm.cpp in Sources */,
 				ADE367465D2A8EBAD4C7A8D9 /* IpEndpointName.cpp in Sources */,
 				67FE4C7B15C2F0478C8126C2 /* NetworkingUtils.cpp in Sources */,
 				510CAFE035E576A4E1502D52 /* UdpSocket.cpp in Sources */,

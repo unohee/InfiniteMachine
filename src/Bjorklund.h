@@ -11,7 +11,9 @@ public:
     Bjorklund(){};
     Bjorklund(int step, int pulse): lengthOfSeq(step), pulseAmt(pulse){
         if(lengthOfSeq <= 0 || lengthOfSeq < pulseAmt) lengthOfSeq = pulseAmt;
+        sequence.reserve(lengthOfSeq);
         init();
+        
     };
     ~Bjorklund(){
         remainder.clear();

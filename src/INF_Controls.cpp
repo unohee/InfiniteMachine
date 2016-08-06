@@ -80,7 +80,7 @@ void INF_Controls::setup(){
     
     //OFFSET
     pos.y += s->getHeight();
-    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("OFFSET", 0, 16));
+    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("OFFSET", 0, 15));
     s->setPrecision(0);
     s->setPosition(pos.x, pos.y);
     s->setValue(0);
@@ -218,6 +218,8 @@ void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
     }else if(e.target->getLabel() =="STEP"){
         seq_len = e.value;
         seq_Params.length = seq_len;
+        sliders[1]->setMax(e.value);
+        sliders[2]->setMax(e.value-1);
     }else if(e.target->getLabel() =="PULSES"){
         seq_pulse = e.value;
         seq_Params.pulse = seq_pulse;
