@@ -49,15 +49,20 @@ void INF_Controls::setup(){
     
     //Sequencer Mode
     pos.y += label->getHeight();
-    vector<string>mode = {"Mode : Manual", "Mode : EUCLID"};
+    vector<string>mode = {"Mode : Manual", "Mode : EUCLID", "Mode : COMP"};
     shared_ptr<ofxDatGuiDropdown> d = shared_ptr<ofxDatGuiDropdown>(new ofxDatGuiDropdown("Mode", mode));
     d->setPosition(pos.x, pos.y);
     d->select(1);
     d->onDropdownEvent(this, &INF_Controls::onDropdownEvent);
     components.push_back(d);
     
+
+    
+    //Component for Euclidean Mode
     //STEP
     pos.y += d->getHeight();
+    setComp(pos);
+    
     shared_ptr<ofxDatGuiSlider> s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("Step", 4,16));
     s->setPrecision(0);
     s->setPosition(pos.x, pos.y);
@@ -96,16 +101,6 @@ void INF_Controls::setup(){
     s->onSliderEvent(this, &INF_Controls::onSliderEvent);
     sliders.push_back(s);
     
-    //VELOCITY (UNUSED)
-//    pos.y += s->getHeight();
-//    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("Velocity", 1,127));
-//    s->setPrecision(0);
-//    s->setPosition(pos.x, pos.y);
-//    s->setValue(80);
-//    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
-//    heightSum += s->getHeight();
-//    sliders.push_back(s);
-    
     //Current NOTE in string
     pos.y += s->getHeight();
     label = shared_ptr<ofxDatGuiLabel>(new ofxDatGuiLabel("Current Note :: C1"));
@@ -118,7 +113,30 @@ void INF_Controls::setup(){
             x->setStripe(randC, 2);
         for(auto &x:sliders)
             x->setStripe(randC, 2);
+        for(auto &x:compSet)
+            x->setStripe(randC, 2);
     
+}
+//--------------------------------------------------------------
+void INF_Controls::setComp(ofPoint p){
+    ofPoint pos;
+    pos = p;
+    vector<string>target;
+    target.reserve(8);
+    for(int i=1;i <= 8;i++)//populate string
+        target.push_back(to_string(i));
+    shared_ptr<ofxDatGuiDropdown> d = shared_ptr<ofxDatGuiDropdown>(new ofxDatGuiDropdown("Target", target));
+    d->setPosition(pos.x, pos.y);
+    compSet.push_back(d);
+    
+    //MIDI NOTE
+    pos.y += d->getHeight();
+    shared_ptr<ofxDatGuiSlider> s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("MIDI NOTE", 12,108));
+    s->setPrecision(0);
+    s->setPosition(pos.x, pos.y);
+    s->setValue(12);
+    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
+    compSet.push_back(s);
 }
 //--------------------------------------------------------------
 void INF_Controls::update(){
@@ -132,20 +150,32 @@ void INF_Controls::update(){
                 x->setEnabled(false);
         }
     }
-    for(auto &x:sliders){
-        x->update();
-        if(x->getLabel()=="PULSES"){
-            if(x->getValue() >seq_len)
-                x->setValue(seq_len);
+    
+    if(!bComp){
+        for(auto &x:sliders){
+            x->update();
+            if(x->getLabel()=="PULSES"){
+                if(x->getValue() >seq_len)
+                    x->setValue(seq_len);
+            }
         }
+    }else{
+        for(auto &x:compSet)
+            x->update();
     }
+
 }
 //--------------------------------------------------------------
 void INF_Controls::draw(){
-    for(auto &x:sliders)
-        x->draw();
+    if(!bComp){
+        for(auto &x:sliders)
+            x->draw();
+    }
     for(auto &x:components)
         x->draw();
+    if(bComp == true)
+        for(auto &x:compSet)
+            x->draw();
 }
 //--------------------------------------------------------------
 void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
@@ -186,19 +216,23 @@ void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
         for(auto &x: sliders)
             x->setEnabled(true);
     }
-    
+
     if(e.child ==0){
         //IF MODE is changed to Manual mode..
         bEuclid = false;
+        bComp = false;
         sliders[1]->setEnabled(false); //pulse slider is disabled.
         sliders[1]->setValue(0);
     }else if(e.child ==1){
         //Euclidean Mode
         bEuclid = true;
+        bComp = false;
         sliders[1]->setEnabled(bEuclid);
         sliders[0]->setValue(seq_len);
         sliders[1]->setValue(seq_pulse);
         sliders[1]->setMin(1);
+    }else if(e.child ==2){
+        bComp = true;
     }
     //send Sequencer mode
     seq_Params.index = index;

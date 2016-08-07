@@ -40,8 +40,7 @@ void INF_Module::setup(){
             //Add Euclidean Rhythm  (4:16)
             auto_ptr<Bjorklund>euclid = auto_ptr<Bjorklund>(new Bjorklund(16,4));
             euclid->init();
-            vector<bool> seq = euclid->LoadSequence();
-            t->pattern = seq;
+            t->getPattern(euclid->LoadSequence());
             cyclic->setSequence(t->pattern);
             euclid.reset();
         }else{

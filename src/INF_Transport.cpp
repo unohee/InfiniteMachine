@@ -70,7 +70,6 @@ void INF_Transport::setTimeSignature(int beat, int amount){
 //--------------------------------------------------------------
 float INF_Transport::getClock(){
     float bps = tempoVal / 60.f * 4;
-    
     return clock.phasor(bps);
 }
 //--------------------------------------------------------------

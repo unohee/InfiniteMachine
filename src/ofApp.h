@@ -33,21 +33,25 @@ public:
     
     //Sequencing
     bool bHost;
-    
+    vector<bool> seq;
     ofEvent<int>globalPlayHead;
     
     float tempo;
     int currentBar, currentBeat;
+    
+    
     //Maximilian for Timing
     int currentCount, lastCount;
     int playHead;
     double bps;
     bool isPlay;
     maxiOsc timer;
+    ofSoundStream soundStream;
     
     ofEvent<bool>activated;
     string timeSignature;
     int divisor, playHeadAmt;
+    int kicktrigger;
     vector<bool>accents;
     string beatGrid;
     

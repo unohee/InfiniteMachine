@@ -8,11 +8,12 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxDatGui.h"
-#include "RoundedButton.h"
-#include "INF_Controls.hpp"
-#include "CircleStep.h"
-#include "Bjorklund.h"
 #include "Sequence.h"
+#include "INF_Controls.hpp"
+#include "INF_Algorithm.h"
+//Custom GUI
+#include "RoundedButton.h"
+#include "CircleStep.h"
 
 typedef shared_ptr<circleStep> CyclicSeq;
 typedef shared_ptr<ofxDatGuiComponent> ofxDatGuiPtr;

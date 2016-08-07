@@ -31,8 +31,8 @@ void INF_MIDI::sendNote(Note &n){
         note = n.pitch;
         velocity = n.velocity;
         midiOut.sendNoteOn(channel, n.pitch, n.velocity);
-        ofLogNotice() << "note: " << notes[n.pitch-24]
-        << " freq: " << ofxMidi::mtof(n.pitch-12) << " Hz";
+//        ofLogNotice() << "note: " << notes[n.pitch-24]
+//        << " freq: " << ofxMidi::mtof(n.pitch-12) << " Hz";
     }else if(n.status==KEY_OFF){
         note = n.pitch;
         velocity = n.velocity;

@@ -19,6 +19,7 @@ void ofApp::setup(){
     transport->pos = ofPoint(0,754);
     transport->setup();
     transport->setTimeSignature(4, 4);
+    transport->tempoVal = 120;
     timeSignature = "4/4";
     ofAddListener(transport->ClockCallback, this, &ofApp::globalState);
     ofAddListener(activated, this, &ofApp::clockStarted);
@@ -81,6 +82,10 @@ void ofApp::update(){
     module->update();
     docks->update();
     transport->update();
+    
+    seq = module->tracks[0]->pattern;
+    
+    
     stringstream newStatus;
     newStatus <<"connected to "<<midi->midiOut.getName()<<" "<<
     "Channel : "<< midi->channel;
@@ -129,42 +134,61 @@ void ofApp::setTempo(float BPM){
 //--------------------------------------------------------------
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     for(int i = 0; i < bufferSize; i++){
+//        currentCount=(int)timer.phasor(8);
         
-        if(isPlay)
+        if(isPlay){
             currentCount=(int)floor(transport->getClock());
+            
+        }
         
         if (lastCount!=currentCount) {
             //iterate the playhead
-            if(playHead <playHeadAmt-1)
-                playHead++;
-            else
+            playHead++;
+            if(seq[playHead-1%16] == true && isPlay == true){
+                cout<<"X";
+//                cout<<"Bam."<<" "<<playHead<<endl;
+                Note *n = new Note();
+                n->status = KEY_ON;
+                n->pitch = 32;
+                n->velocity = 80;
+                midi->sendNote(*n);
+            }else if(seq[playHead-1%16] == false && isPlay == true){
+                cout<<".";
+                Note *n = new Note();
+                n->status = KEY_OFF;
+                n->pitch = 0;
+                n->velocity = 0;
+                midi->sendNote(*n);
+            }
+            if(playHead > 15){
                 playHead = 0;
-
+            }
             lastCount=0;//reset the metrotest
-            ofNotifyEvent(globalPlayHead, playHead, this);
+//
         }
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
     }
 }
 //--------------------------------------------------------------
 void ofApp::clockPlayed(int &eventArgs){
-    
-    for(auto &x: module->tracks){
-        //Create Note ON/OFF Pair
-        if(x->pattern.at(playHead%playHeadAmt) == true){
-            unique_ptr<Note> n = unique_ptr<Note>(new Note());
-            n->status = KEY_ON;
-            n->pitch = x->pitch;
-            n->velocity = 127;
-            midi->sendNote(*n);
-        }else{
-            unique_ptr<Note> n = unique_ptr<Note>(new Note());
-            n->status = KEY_OFF;
-            n->pitch = 36;
-            n->velocity = 0;
-            midi->sendNote(*n);
-        }
-    }
+    int playHeadIn = eventArgs;
+//    cout<<"Playhead"<<eventArgs<<endl;
+//    for(auto &x: module->tracks){
+//        //Create Note ON/OFF Pair
+//        if(x->pattern.at(playHeadIn%playHeadAmt) == true){
+//            Note *n = new Note();
+//            n->status = KEY_ON;
+//            n->pitch = x->pitch;
+//            n->velocity = 127;
+//            midi->sendNote(*n);
+//        }else{
+//            unique_ptr<Note> n = unique_ptr<Note>(new Note());
+//            n->status = KEY_OFF;
+//            n->pitch = 36;
+//            n->velocity = 0;
+//            midi->sendNote(*n);
+//        }
+//    }
 
 }
 //--------------------------------------------------------------
@@ -229,22 +253,22 @@ void ofApp::setMode(bool &eventArgs){
 }
 //--------------------------------------------------------------
 void ofApp::clockStarted(bool &eventArgs){
-    for(auto &x: module->tracks){
-        //Create Note ON/OFF Pair
-        if(x->pattern.at(0) == true){
-            unique_ptr<Note> n = unique_ptr<Note>(new Note());
-            n->status = KEY_ON;
-            n->pitch = x->pitch;
-            n->velocity = 127;
-            midi->sendNote(*n);
-        }else{
-            unique_ptr<Note> n = unique_ptr<Note>(new Note());
-            n->status = KEY_OFF;
-            n->pitch = x->pitch;
-            n->velocity = 0;
-            midi->sendNote(*n);
-        }
-    }
+//    for(auto &x: module->tracks){
+//        //Create Note ON/OFF Pair
+//        if(x->pattern.at(0) == true){
+//            unique_ptr<Note> n = unique_ptr<Note>(new Note());
+//            n->status = KEY_ON;
+//            n->pitch = x->pitch;
+//            n->velocity = 127;
+//            midi->sendNote(*n);
+//        }else{
+//            unique_ptr<Note> n = unique_ptr<Note>(new Note());
+//            n->status = KEY_OFF;
+//            n->pitch = x->pitch;
+//            n->velocity = 0;
+//            midi->sendNote(*n);
+//        }
+//    }
 }
 //--------------------------------------------------------------
 void ofApp::tempoChange(int &eventArgs){

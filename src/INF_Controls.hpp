@@ -24,7 +24,7 @@ public:
     Controls seq_Params;
 
     ofPoint pos;
-    bool bEuclid, bEnabled;
+    bool bEuclid, bEnabled, bComp;
     int index, seq_len, seq_pulse;
     int max_len;
     int width;
@@ -34,10 +34,12 @@ public:
     string name;
     
     vector<DatGuiPtr>components;
+    vector<DatGuiPtr>compSet;
     vector<DatSliderPtr>sliders;
     INF_Controls();
     ~INF_Controls();
     void setup();
+    void setComp(ofPoint p);
     void update();
     void draw();
     void onToggleEvent(ofxDatGuiToggleEvent e);
