@@ -36,9 +36,6 @@ void ofApp::setup(){
         transport->tempoSlider->setEnabled(false);
         transport->text->setEnabled(false);
     }
-
-    //MIDI Initialization
-    midi = new INF_MIDI();
     
     //Sequencer
     module = unique_ptr<INF_Module>(new INF_Module(0));
@@ -57,14 +54,13 @@ void ofApp::setup(){
     port_adrs = PORT;
     
     //Networking components
-    midi->midiOut.listPorts();
     oscListener.setup();
     ofAddListener(oscListener.AbletonPlayed, this, &ofApp::AbletonPlayed);
-
 
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
     ofAddListener(globalPlayHead, this, &ofApp::clockPlayed); //add listener that maxiClock's variable
+    ofSoundStreamStop();
 }
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -83,14 +79,12 @@ void ofApp::update(){
     docks->update();
     transport->update();
     
-    seq = module->tracks[0]->pattern;
-    
-    
     stringstream newStatus;
-    newStatus <<"connected to "<<midi->midiOut.getName()<<" "<<
-    "Channel : "<< midi->channel;
+    newStatus <<"connected to "<<midi.midiOut.getName()<<" "<<
+    "Channel : "<< midi.channel;
     string status = newStatus.str();
     transport->status->setLabel(status);
+    unique_lock<mutex> lock(audioMutex);
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -119,8 +113,6 @@ void ofApp::draw(){
     << "Beatgrid : " << beatGrid<<endl;
     ofDrawBitmapString(text2.str(), 20, 60);
     
-    
-    
     //ofxDatGui components
     ofPushStyle();
     ofSetColor(255, 255, 255);
@@ -134,62 +126,35 @@ void ofApp::setTempo(float BPM){
 //--------------------------------------------------------------
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     for(int i = 0; i < bufferSize; i++){
-//        currentCount=(int)timer.phasor(8);
-        
-        if(isPlay){
-            currentCount=(int)floor(transport->getClock());
-            
-        }
-        
-        if (lastCount!=currentCount) {
+        currentCount=(int)floor(transport->getClock());
+
+        if (lastCount!=currentCount){
+            ofNotifyEvent(globalPlayHead, playHead, this);
             //iterate the playhead
             playHead++;
-            if(seq[playHead-1%16] == true && isPlay == true){
-                cout<<"X";
-//                cout<<"Bam."<<" "<<playHead<<endl;
-                Note *n = new Note();
-                n->status = KEY_ON;
-                n->pitch = 32;
-                n->velocity = 80;
-                midi->sendNote(*n);
-            }else if(seq[playHead-1%16] == false && isPlay == true){
-                cout<<".";
-                Note *n = new Note();
-                n->status = KEY_OFF;
-                n->pitch = 0;
-                n->velocity = 0;
-                midi->sendNote(*n);
-            }
-            if(playHead > 15){
-                playHead = 0;
-            }
             lastCount=0;//reset the metrotest
-//
         }
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
     }
+    unique_lock<mutex> lock(audioMutex);
 }
 //--------------------------------------------------------------
 void ofApp::clockPlayed(int &eventArgs){
     int playHeadIn = eventArgs;
-//    cout<<"Playhead"<<eventArgs<<endl;
-//    for(auto &x: module->tracks){
-//        //Create Note ON/OFF Pair
-//        if(x->pattern.at(playHeadIn%playHeadAmt) == true){
-//            Note *n = new Note();
-//            n->status = KEY_ON;
-//            n->pitch = x->pitch;
-//            n->velocity = 127;
-//            midi->sendNote(*n);
-//        }else{
-//            unique_ptr<Note> n = unique_ptr<Note>(new Note());
-//            n->status = KEY_OFF;
-//            n->pitch = 36;
-//            n->velocity = 0;
-//            midi->sendNote(*n);
-//        }
-//    }
-
+    
+}
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key){
+    if(key ==32){
+        isPlay = !isPlay;
+    }
+    if(isPlay == true){
+        ofSoundStreamStart();
+    }
+    else{
+        ofSoundStreamStop();
+        playHead = 0;
+    }
 }
 //--------------------------------------------------------------
 void ofApp::AbletonPlayed(Ableton &eventArgs){
@@ -276,12 +241,15 @@ void ofApp::tempoChange(int &eventArgs){
 }
 //--------------------------------------------------------------
 void ofApp::exit(){
+    mOut.exit();
+    ofSoundStreamClose();
     //delete raw pointers
     delete midi;
     delete docks;
     //and smart pointers
     module.reset();
     transport.release();
+    
 
     cout<<"[Infinite Machine : Goodbye.]"<<endl;
 }

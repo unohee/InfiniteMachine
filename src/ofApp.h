@@ -17,6 +17,9 @@
 #define HOST "localhost" //default address
 #define PORT 8080 //default port.
 
+typedef INF_MIDI MidiOut;
+typedef OSC_Receive oscIn;
+
 class ofApp : public ofBaseApp {
 public:
     
@@ -26,19 +29,21 @@ public:
     unique_ptr<INF_Transport> transport;
     
     //Network component
-    INF_MIDI *midi; //MIDI OUTPUT
-    OSC_Receive oscListener; //OSC Receiver (from Ableton)
+    MidiOut midi; //MIDI OUTPUT
+    oscIn oscListener; //OSC Receiver (from Ableton)
     string notes[127];
     string ip_adrs, port_adrs;
     
+    
+    
+    //Events
+    ofEvent<int>globalPlayHead;
+    ofEvent<bool>activated;
+    
     //Sequencing
     bool bHost;
-    vector<bool> seq;
-    ofEvent<int>globalPlayHead;
-    
     float tempo;
     int currentBar, currentBeat;
-    
     
     //Maximilian for Timing
     int currentCount, lastCount;
@@ -46,9 +51,9 @@ public:
     double bps;
     bool isPlay;
     maxiOsc timer;
-    ofSoundStream soundStream;
-    
-    ofEvent<bool>activated;
+    mutex audioMutex;
+
+    //Transport informations
     string timeSignature;
     int divisor, playHeadAmt;
     int kicktrigger;
@@ -64,7 +69,7 @@ public:
     void exit();
     
     //Events used
-    void seqStart(bool &eventArgs){};
+    void keyPressed(int key);
     //custom event callbacks
     void AbletonPlayed(Ableton &eventArgs);
     void MIDICallback(MidiState &eventArgs);
@@ -74,9 +79,9 @@ public:
     void clockPlayed(int &eventArgs);
     void clockStarted(bool &eventArgs);
     
+    void seqStart(bool &eventArgs){};
     
     //unused events
-    void keyPressed(int key){};
     void keyReleased(int key){};
     void mouseMoved(int x, int y ){};
     void mouseDragged(int x, int y, int button){};
