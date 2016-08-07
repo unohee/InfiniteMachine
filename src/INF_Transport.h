@@ -18,12 +18,14 @@ public:
     unique_ptr<ofxDatGuiLabel> status;
     ofPoint pos;
     
+    ofEvent<int>tempoChange;
     ofEvent<TransportMessage> ClockCallback;
     TransportMessage currentState;
     
     maxiOsc clock;
-    int width;
-    float tempoVal;
+    int ticksPerBeat;
+    ofParameter<int> tempo;
+    float bps;
     bool bStart, bFreeze;
     INF_Transport();
     ~INF_Transport();
@@ -32,8 +34,6 @@ public:
     void update();
     void draw();
     void setTimeSignature(int beat, int amount);
-    float getClock();
-    float getClock(int ticks);
     string meter;
     
     void onTextInput(ofxDatGuiTextInputEvent e);

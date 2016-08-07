@@ -9,29 +9,31 @@ void ofApp::setup(){
     ofSetWindowTitle("Infinite Machine");
     
     //Upper dock
-    docks = new Dat_Docker(midi->midiOut.getPortList());
+    docks = new Dat_Docker(midi.midiOut.getPortList());
     ofAddListener(docks->deviceState, this, &ofApp::MIDICallback);//add EventListener.
     ofAddListener(docks->modeChange, this, &ofApp::setMode);
     
     
-    //Lower Transport dock Init
+    //Transport Control..
     transport = unique_ptr<INF_Transport>(new INF_Transport());
     transport->pos = ofPoint(0,754);
     transport->setup();
     transport->setTimeSignature(4, 4);
-    transport->tempoVal = 120;
     timeSignature = "4/4";
+    ticksPerBeat = 4;
+    tempo = 120;
+    bps = (tempo / 60.) * ticksPerBeat;
+    ofAddListener(transport->tempoChange, this, &ofApp::tempoChange);
     ofAddListener(transport->ClockCallback, this, &ofApp::globalState);
-    ofAddListener(activated, this, &ofApp::clockStarted);
     
     bHost = true; //add GUI for this parameter.
-    isPlay = false;
+    
+    
     if(bHost){
         transport->tempoSlider->setEnabled(true);
         transport->text->setEnabled(true);
         transport->tempoSlider->setValue(120);
-        setTempo(120); //as long as it works as master mode. the initial tempo is 120. or it takes Tempo from Master(Ableton Live)
-        tempo = 120;
+        transport->setTimeSignature(4, 4);
     }else{
         transport->tempoSlider->setEnabled(false);
         transport->text->setEnabled(false);
@@ -41,6 +43,11 @@ void ofApp::setup(){
     module = unique_ptr<INF_Module>(new INF_Module(0));
     module->pos = ofPoint(0, docks->getHeight());
     module->setup();
+    
+    triggers.reserve(module->tracks.size());
+    for(int i=0;i < module->tracks.size();i++){
+        triggers.push_back(0);
+    }
     
     playHeadAmt = 16;
     divisor = 4;
@@ -60,7 +67,8 @@ void ofApp::setup(){
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
     ofAddListener(globalPlayHead, this, &ofApp::clockPlayed); //add listener that maxiClock's variable
-    ofSoundStreamStop();
+    ofSoundStreamStop(); //in initial state, soundstream is stopped.
+    isPlay = false; //and its boolean
 }
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -78,7 +86,7 @@ void ofApp::update(){
     module->update();
     docks->update();
     transport->update();
-    
+ 
     stringstream newStatus;
     newStatus <<"connected to "<<midi.midiOut.getName()<<" "<<
     "Channel : "<< midi.channel;
@@ -120,18 +128,14 @@ void ofApp::draw(){
     ofPopStyle();
 }
 //--------------------------------------------------------------
-void ofApp::setTempo(float BPM){
-    bps = BPM / 60.f * 4;
-};
-//--------------------------------------------------------------
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     for(int i = 0; i < bufferSize; i++){
-        currentCount=(int)floor(transport->getClock());
-
+        currentCount=(int)clock.phasor(bps);
+//        currentCount = (int)clock.phasor(8);
+//        currentCount=(int)transport->getClock();
         if (lastCount!=currentCount){
             ofNotifyEvent(globalPlayHead, playHead, this);
-            //iterate the playhead
-            playHead++;
+            playHead++;//iterate the playhead
             lastCount=0;//reset the metrotest
         }
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
@@ -142,11 +146,37 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
 void ofApp::clockPlayed(int &eventArgs){
     int playHeadIn = eventArgs;
     
+    for(int i=0;i < module->tracks.size();i++){
+        
+        if(module->tracks[i]->pattern.size() >0){
+            triggers[i] = module->tracks[i]->pattern[playHeadIn%16];
+        }
+    }
+    
+    for(int i=0; i < module->tracks.size();i++){
+        if(triggers[i] == 1){
+            Note* n = new Note();
+            n->status = KEY_ON;
+            n->pitch = module->tracks[i]->pitch;
+            n->velocity = 80;
+            midi.sendNote(*n);
+            delete n;
+        }else{
+            Note* n = new Note();
+            n->status = KEY_OFF;
+            n->pitch = module->tracks[i]->pitch;
+            n->velocity = 0;
+            midi.sendNote(*n);
+            delete n;
+        }
+    }
+    
 }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if(key ==32){
         isPlay = !isPlay;
+        transport->start->setChecked(isPlay);
     }
     if(isPlay == true){
         ofSoundStreamStart();
@@ -165,6 +195,14 @@ void ofApp::AbletonPlayed(Ableton &eventArgs){
     if(!bHost){
         isPlay = eventArgs.isPlay;
         transport->start->setChecked(isPlay);
+        
+        if(isPlay == true){
+            ofSoundStreamStart();
+        }
+        else{
+            ofSoundStreamStop();
+            playHead = 0;
+        }
     }
 
     timeSignature = to_string(eventArgs.meter.beatPerBar) + "/" + to_string(eventArgs.meter.beatResolution);
@@ -183,16 +221,23 @@ void ofApp::AbletonPlayed(Ableton &eventArgs){
 //--------------------------------------------------------------
 void ofApp::MIDICallback(MidiState &eventArgs){
     //receive list index from GUI
-    midi->setDevice(eventArgs.device);
-    midi->channel = eventArgs.channel+1;
+    midi.setDevice(eventArgs.device);
+    midi.channel = eventArgs.channel+1;
 }
 //--------------------------------------------------------------
 void ofApp::globalState(TransportMessage &eventArgs){
     
-    if(bHost)
+    if(bHost){
         isPlay = eventArgs.play;
-//        ofNotifyEvent(activated, isPlay, this);
-    
+        
+        if(isPlay == true){
+            ofSoundStreamStart();
+        }
+        else{
+            ofSoundStreamStop();
+            playHead = 0;
+        }
+    }
     string tempoIn = eventArgs.timeSignature;
     
     tempoIn.erase(std::remove(tempoIn.begin(),tempoIn.end(),'/'),tempoIn.end());
@@ -203,8 +248,8 @@ void ofApp::setMode(bool &eventArgs){
         bHost = false;
         cout<<"[Slave Mode is Activated]"<<endl
         <<"[Now Listening Ableton Live...]"<<endl;
-        midi->midiOut.openVirtualPort("Infinite Machine");
-        midi->enableVirtual();
+        midi.midiOut.openVirtualPort("Infinite Machine");
+        midi.enableVirtual();
     }else{
         bHost = true;
         
@@ -217,39 +262,20 @@ void ofApp::setMode(bool &eventArgs){
     docks->deviceGUI[0]->setEnabled(bHost);
 }
 //--------------------------------------------------------------
-void ofApp::clockStarted(bool &eventArgs){
-//    for(auto &x: module->tracks){
-//        //Create Note ON/OFF Pair
-//        if(x->pattern.at(0) == true){
-//            unique_ptr<Note> n = unique_ptr<Note>(new Note());
-//            n->status = KEY_ON;
-//            n->pitch = x->pitch;
-//            n->velocity = 127;
-//            midi->sendNote(*n);
-//        }else{
-//            unique_ptr<Note> n = unique_ptr<Note>(new Note());
-//            n->status = KEY_OFF;
-//            n->pitch = x->pitch;
-//            n->velocity = 0;
-//            midi->sendNote(*n);
-//        }
-//    }
-}
-//--------------------------------------------------------------
 void ofApp::tempoChange(int &eventArgs){
-    
+    tempo = eventArgs;
+    bps = (tempo / 60.) * ticksPerBeat;
+    ofLogNotice()<<"Current BPM ::"<<eventArgs<<" "<<"BPS ::"<<bps;
 }
 //--------------------------------------------------------------
 void ofApp::exit(){
-    mOut.exit();
+    midi.exit();
     ofSoundStreamClose();
     //delete raw pointers
-    delete midi;
     delete docks;
     //and smart pointers
     module.reset();
     transport.release();
     
-
-    cout<<"[Infinite Machine : Goodbye.]"<<endl;
+    ofLogNotice()<<"[Infinite Machine : Goodbye.]";
 }

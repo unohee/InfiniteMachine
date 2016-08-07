@@ -8,9 +8,8 @@
 
 #include "INF_Transport.h"
 
-INF_Transport::INF_Transport(){
-    width=  200;
-    tempoVal = 120;
+INF_Transport::INF_Transport():tempo(120), ticksPerBeat(4){
+
 }
 //--------------------------------------------------------------
 INF_Transport::~INF_Transport(){
@@ -26,10 +25,10 @@ void INF_Transport::setup(){
     text->setText("4/4");
     text->onTextInputEvent(this, &INF_Transport::onTextInput);
     
-    
     //BPM SLIDER
     pos.x += text->getWidth();
-    tempoSlider = unique_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("BPM", 40, 240));
+    tempo.set("BPM", 120, 40, 200); //init ofParameter
+    tempoSlider = unique_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider(tempo));
     tempoSlider->setPosition(pos.x, pos.y);
     tempoSlider->setWidth(200, 50);
     tempoSlider->setPrecision(0);
@@ -39,7 +38,7 @@ void INF_Transport::setup(){
     
     start = unique_ptr<ofxDatGuiToggle>(new ofxDatGuiToggle("Play", bStart));
     start->setPosition(pos.x, pos.y);
-    start->setWidth(width);
+    start->setWidth(200);
     start->onToggleEvent(this, &INF_Transport::onToggleEvent);
     
     pos.x += start->getWidth();
@@ -68,26 +67,14 @@ void INF_Transport::setTimeSignature(int beat, int amount){
     text->setText(meter);
 }
 //--------------------------------------------------------------
-float INF_Transport::getClock(){
-    float bps = tempoVal / 60.f * 4;
-    return clock.phasor(bps);
-}
-//--------------------------------------------------------------
-float INF_Transport::getClock(int ticks){
-    float bps = tempoVal / 60.f * ticks;
-    
-    return clock.phasor(bps);
-}
-//--------------------------------------------------------------
 void INF_Transport::onTextInput(ofxDatGuiTextInputEvent e){
     currentState.timeSignature = e.text;
     ofNotifyEvent(ClockCallback, currentState, this);
 }
 //--------------------------------------------------------------
 void INF_Transport::onSliderEvent(ofxDatGuiSliderEvent e){
-    tempoVal = e.value;
-    currentState.BPM = tempoVal;
-    ofNotifyEvent(ClockCallback, currentState, this);
+    int BPM = tempo;
+    ofNotifyEvent(tempoChange, BPM, this);
 }
 //--------------------------------------------------------------
 void INF_Transport::onToggleEvent(ofxDatGuiToggleEvent e){

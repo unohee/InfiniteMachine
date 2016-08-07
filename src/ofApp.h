@@ -34,26 +34,29 @@ public:
     string notes[127];
     string ip_adrs, port_adrs;
     
-    
-    
     //Events
     ofEvent<int>globalPlayHead;
     ofEvent<bool>activated;
     
     //Sequencing
+    vector<bool>triggers;
+    bool triggerTest;
+    vector<bool>seqTest;
+    
     bool bHost;
-    float tempo;
     int currentBar, currentBeat;
     
-    //Maximilian for Timing
+    //member variables for Maximilian
     int currentCount, lastCount;
-    int playHead;
+    int playHead, BPM, ticksPerBeat;
     double bps;
     bool isPlay;
-    maxiOsc timer;
+    maxiOsc clock;
+    maxiClock c;
     mutex audioMutex;
 
     //Transport informations
+    ofParameter<int>tempo;
     string timeSignature;
     int divisor, playHeadAmt;
     int kicktrigger;
@@ -64,7 +67,6 @@ public:
     void setup();
     void update();
     void draw();
-    void setTempo(float BPM);
     void audioOut(float * output, int bufferSize, int nChannels);
     void exit();
     
@@ -77,7 +79,6 @@ public:
     void setMode(bool &eventArgs);
     void tempoChange(int &eventArgs);
     void clockPlayed(int &eventArgs);
-    void clockStarted(bool &eventArgs);
     
     void seqStart(bool &eventArgs){};
     
