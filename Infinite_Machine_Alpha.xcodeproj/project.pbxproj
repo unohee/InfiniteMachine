@@ -21,7 +21,6 @@
 		3AEFE4FA8AD5C72671AD07F8 /* ofxRtMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 712B183BC00EBFFB1EEA5AB8 /* ofxRtMidiOut.cpp */; };
 		46BB97E01D3BED7600129993 /* INF_Controls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46BB97DE1D3BED7600129993 /* INF_Controls.cpp */; };
 		46D61F861D5696DD007BC67A /* INF_Algorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D61F841D5696DD007BC67A /* INF_Algorithm.cpp */; };
-		46D61F8B1D56AFBB007BC67A /* INF_Sequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D61F891D56AFBB007BC67A /* INF_Sequencer.cpp */; };
 		46E849071D48076C0068B18D /* INF_Transport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46E849051D48076C0068B18D /* INF_Transport.cpp */; };
 		483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 78D67A00EB899FAC09430597 /* ofxLabel.cpp */; };
 		4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AED834CE4DEC5260AF302A2 /* ofxOscParameterSync.cpp */; };
@@ -133,8 +132,6 @@
 		46D61F831D566B79007BC67A /* Sequence.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sequence.h; sourceTree = "<group>"; };
 		46D61F841D5696DD007BC67A /* INF_Algorithm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Algorithm.cpp; sourceTree = "<group>"; };
 		46D61F851D5696DD007BC67A /* INF_Algorithm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INF_Algorithm.h; sourceTree = "<group>"; };
-		46D61F891D56AFBB007BC67A /* INF_Sequencer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Sequencer.cpp; sourceTree = "<group>"; };
-		46D61F8A1D56AFBB007BC67A /* INF_Sequencer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = INF_Sequencer.hpp; sourceTree = "<group>"; };
 		46E162266356FA3B71A5C741 /* DatButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = DatButton.h; path = src/DatButton.h; sourceTree = SOURCE_ROOT; };
 		46E849051D48076C0068B18D /* INF_Transport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Transport.cpp; sourceTree = "<group>"; };
 		46E849061D48076C0068B18D /* INF_Transport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INF_Transport.h; sourceTree = "<group>"; };
@@ -330,8 +327,6 @@
 				46D61F841D5696DD007BC67A /* INF_Algorithm.cpp */,
 				46D61F851D5696DD007BC67A /* INF_Algorithm.h */,
 				46D61F831D566B79007BC67A /* Sequence.h */,
-				46D61F891D56AFBB007BC67A /* INF_Sequencer.cpp */,
-				46D61F8A1D56AFBB007BC67A /* INF_Sequencer.hpp */,
 			);
 			name = Sequencer;
 			sourceTree = "<group>";
@@ -788,7 +783,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
-				46D61F8B1D56AFBB007BC67A /* INF_Sequencer.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				840A58883380B43C41B86786 /* Bjorklund.cpp in Sources */,
 				35FE521EC5F2C509C0449BF1 /* CircleButton.cpp in Sources */,

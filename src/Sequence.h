@@ -19,7 +19,7 @@ public:
     vector<bool>pattern;
     vector<int>velocity;
     
-    Sequence():index(0), onset(0), length(0){
+    Sequence():index(0), onset(0), length(0), pitch(36){
         
     };
     ~Sequence(){

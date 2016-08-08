@@ -10,12 +10,12 @@
 
 INF_Controls::INF_Controls():bEuclid(1), bEnabled(false),name("Sequence"),index(0),seq_len(16),seq_pulse(4){
     //Create midi note array...
-    const string note_substring[] = {"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
     int octave;//octave is 0 - 8;
     for(int noteNum=0; noteNum<=108;noteNum++){
         octave = noteNum /12;
         notes.push_back(note_substring[noteNum%12]+to_string(octave));
     }
+    
 }
 //--------------------------------------------------------------
 INF_Controls::~INF_Controls(){
@@ -25,6 +25,8 @@ INF_Controls::~INF_Controls(){
     for(auto &x:sliders)
         x.reset();
     sliders.clear();
+    delete ptr1;
+    delete ptr2;
 }
 //--------------------------------------------------------------
 void INF_Controls::setup(){
@@ -32,6 +34,8 @@ void INF_Controls::setup(){
     seq_Params.index = index;
     seq_Params.mode = bEuclid;
     seq_Params.isOn = bEnabled;//checks whether Sequencer's mode is Euclidean or Step Sequencer...
+    
+    
     
     string label_ = name + " " +to_string(index+1);
     shared_ptr<ofxDatGuiLabel> label = shared_ptr<ofxDatGuiLabel>(new ofxDatGuiLabel(label_));
@@ -47,23 +51,17 @@ void INF_Controls::setup(){
     on->onToggleEvent(this, &INF_Controls::onToggleEvent);
     components.push_back(on);
     
+    
     //Sequencer Mode
     pos.y += label->getHeight();
-    vector<string>mode = {"Mode : Manual", "Mode : EUCLID", "Mode : COMP"};
-    shared_ptr<ofxDatGuiDropdown> d = shared_ptr<ofxDatGuiDropdown>(new ofxDatGuiDropdown("Mode", mode));
-    d->setPosition(pos.x, pos.y);
-    d->select(1);
-    d->onDropdownEvent(this, &INF_Controls::onDropdownEvent);
-    components.push_back(d);
-    
-
-    
+    ptr1 = new ofxDatGui(pos.x, pos.y);
+    ptr1->addDropdown("Mode", mode);
+    ptr1->onDropdownEvent(this, &INF_Controls::onDropdownEvent);
     //Component for Euclidean Mode
     //STEP
-    pos.y += d->getHeight();
-    setComp(pos);
+    pos.y += ptr1->getHeight();
     
-    shared_ptr<ofxDatGuiSlider> s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("Step", 4,16));
+    shared_ptr<ofxDatGuiSlider> s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("STEP", 4,16));
     s->setPrecision(0);
     s->setPosition(pos.x, pos.y);
     s->setValue(seq_len);
@@ -72,7 +70,7 @@ void INF_Controls::setup(){
     
     //PULSES
     pos.y += s->getHeight();
-    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("Pulses", 0,seq_len));
+    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("PULSES", 0,seq_len));
     if(bEuclid)
         s->setMin(1);
     else
@@ -92,22 +90,15 @@ void INF_Controls::setup(){
     s->onSliderEvent(this, &INF_Controls::onSliderEvent);
     sliders.push_back(s);
     
-    //MIDI NOTE
+    //NOTE Selection.
+    //instead of picking pitch from slider, I use dropdown.
     pos.y += s->getHeight();
-    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("MIDI NOTE", 12,108));
-    s->setPrecision(0);
-    s->setPosition(pos.x, pos.y);
-    s->setValue(12);
-    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
-    sliders.push_back(s);
-    
-    //Current NOTE in string
-    pos.y += s->getHeight();
-    label = shared_ptr<ofxDatGuiLabel>(new ofxDatGuiLabel("Current Note :: C1"));
-    label->setPosition(pos.x, pos.y);
-    components.push_back(label);
-    
-    
+    ptr2 = new ofxDatGui(pos.x, pos.y);
+    ptr2->addDropdown("MIDI NOTE", AbletonDrumMap);
+    ptr2->addBreak();
+    ptr2->onSliderEvent(this, &INF_Controls::onSliderEvent);
+    ptr2->onDropdownEvent(this, &INF_Controls::onNoteSelection);
+
         ofColor randC = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
         for(auto &x:components)
             x->setStripe(randC, 2);
@@ -115,7 +106,6 @@ void INF_Controls::setup(){
             x->setStripe(randC, 2);
         for(auto &x:compSet)
             x->setStripe(randC, 2);
-    
 }
 //--------------------------------------------------------------
 void INF_Controls::setComp(ofPoint p){
@@ -173,6 +163,8 @@ void INF_Controls::draw(){
     }
     for(auto &x:components)
         x->draw();
+    ptr1->draw();
+    ptr2->draw();
     if(bComp == true)
         for(auto &x:compSet)
             x->draw();
@@ -193,8 +185,8 @@ void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
         seq_Params.length = seq_len;
         seq_Params.pulse = seq_pulse;
         seq_Params.isOn = e.checked;
-            sliders[0]->setValue(seq_len);
-            sliders[1]->setValue(seq_pulse);
+//            sliders[0]->setValue(seq_len);
+//            sliders[1]->setValue(seq_pulse);
         ofNotifyEvent(GuiCallback, seq_Params, this);
     }
     //send Sequencer state
@@ -207,8 +199,7 @@ void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
 void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
     
     if(e.target->ofxDatGuiComponent::getIsExpanded()){
-        cout<<"Expand!"<<endl;
-        //this never be caught up
+        cout<<"Expand!"<<endl;//this never be caught up
         
     }else{
         //avoiding clicking overlay.
@@ -233,11 +224,18 @@ void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
         sliders[1]->setMin(1);
     }else if(e.child ==2){
         bComp = true;
+        setComp(pos);
     }
     //send Sequencer mode
     seq_Params.index = index;
     seq_Params.mode = e.child;
     ofNotifyEvent(GuiCallback, seq_Params, this);
+    
+}
+//--------------------------------------------------------------
+void INF_Controls::onNoteSelection(ofxDatGuiDropdownEvent e){
+    
+    string selection = AbletonDrumMap.at(e.child);
     
 }
 //--------------------------------------------------------------
@@ -255,6 +253,7 @@ void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
         sliders[1]->setMax(e.value);
         sliders[2]->setMax(e.value-1);
     }else if(e.target->getLabel() =="PULSES"){
+        ofLogNotice()<<e.value;
         seq_pulse = e.value;
         seq_Params.pulse = seq_pulse;
     }else if(e.target->getLabel() =="OFFSET"){

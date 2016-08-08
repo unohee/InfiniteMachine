@@ -98,19 +98,6 @@ void ofApp::update(){
 void ofApp::draw(){
     module->draw();
     transport->draw();
-    
-    /*
-    // let's see something
-    ofSetColor(255);
-    stringstream text;
-    text << "connected to port " << midi->midiOut.getPort()
-    << " \"" << midi->midiOut.getName() << "\"" << endl
-    << "is virtual?: " << midi->midiOut.isVirtual() << endl << endl
-    << "sending to channel " << midi->channel << endl << endl
-    << "note: " << midi->note << endl
-    << "velocity: " << midi->velocity << endl;
-    ofDrawBitmapString(text.str(), 20, 60);
-     */
 
     ofSetColor(255);
     stringstream text2;

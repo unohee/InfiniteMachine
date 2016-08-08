@@ -20,7 +20,40 @@ typedef shared_ptr<ofxDatGuiSlider> DatSliderPtr;
 class INF_Controls{
 public:
     
-    ofEvent<Controls>GuiCallback;    
+    const string note_substring[12] = {
+        "C","C#","D","D#",
+        "E","F","F#","G",
+        "G#","A","A#","B"};
+    
+    const vector<string> AbletonDrumMap ={
+        "Kick", "Rim", "Snare", "Clap",
+        "Clave", "Tom Low", "Hihat Closed", "Tom Mid",
+        "Maracas", "Tom Hi", "Hihat Open", "Conga Low",
+        "Conga Mid", "Cymbal", "Conga Hi", "Cowbell"
+    };//I know this is kinda weird, but ofxDatGuiDropdown only gets vector.
+    
+    const vector<string> MachineDrum = {
+        "BD", "SD", "HT", "MT",
+        "LT", "CP", "RS", "CB",
+        "CH", "OH", "RC", "CC",
+        "M1", "M2", "M3", "M4"
+    };
+    
+    const int MIDI_NOTES [16] = {
+        36,37,38,39,
+        40,41,42,43,
+        44,45,46,47,
+        48,49,50,51
+    };
+    
+    const vector<string> mode = {
+        "Mode : Manual",
+        "Mode : EUCLID",
+        "Mode : COMP"};
+    
+    ofEvent<Controls>GuiCallback;
+    ofxDatGui *ptr1, *ptr2;
+    
     Controls seq_Params;
 
     ofPoint pos;
@@ -44,6 +77,7 @@ public:
     void draw();
     void onToggleEvent(ofxDatGuiToggleEvent e);
     void onDropdownEvent(ofxDatGuiDropdownEvent e);
+    void onNoteSelection(ofxDatGuiDropdownEvent e);
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void setSliders(int length, int pulse);
     void setLength(int length);
