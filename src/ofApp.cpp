@@ -118,8 +118,7 @@ void ofApp::draw(){
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     for(int i = 0; i < bufferSize; i++){
         currentCount=(int)clock.phasor(bps);
-//        currentCount = (int)clock.phasor(8);
-//        currentCount=(int)transport->getClock();
+        
         if (lastCount!=currentCount){
             ofNotifyEvent(globalPlayHead, playHead, this);
             playHead++;//iterate the playhead
@@ -134,11 +133,38 @@ void ofApp::clockPlayed(int &eventArgs){
     int playHeadIn = eventArgs;
     
     for(int i=0;i < module->tracks.size();i++){
-        
-        if(module->tracks[i]->pattern.size() >0){
-            triggers[i] = module->tracks[i]->pattern[playHeadIn%16];
+        int length = module->tracks[i]->pattern.size();
+//        
+//        if(module->tracks[0]->pattern.size() >0 && module->tracks[0]){
+//            triggers[0] = module->tracks[0]->pattern[playHeadIn%16];
+//        }
+//        if(module->tracks[1]->pattern.size() >0 && module->tracks[1]){
+//            triggers[1] = module->tracks[1]->pattern[playHeadIn%16];
+//        }
+        if(module->tracks[i]->pattern.size() >0 && module->tracks[i]){
+            triggers[i] = module->tracks[i]->pattern[playHeadIn%length];
         }
     }
+    
+    /*
+    //STUPID TEST
+    if(triggers[0] == 1){
+        Note* n = new Note();
+        n->status = KEY_ON;
+        n->pitch = module->tracks[0]->pitch;
+        n->velocity = 80;
+        midi.sendNote(*n);
+        delete n;
+    }else{
+        Note* n = new Note();
+        n->status = KEY_OFF;
+        n->pitch = module->tracks[0]->pitch;
+        n->velocity = 0;
+        midi.sendNote(*n);
+        delete n;
+    }
+     */
+    
     
     for(int i=0; i < module->tracks.size();i++){
         if(triggers[i] == 1){

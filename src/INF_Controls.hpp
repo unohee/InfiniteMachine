@@ -52,8 +52,7 @@ public:
         "Mode : COMP"};
     
     ofEvent<Controls>GuiCallback;
-    ofxDatGui *ptr1, *ptr2;
-    
+    ofxDatGui *ptr;
     Controls seq_Params;
 
     ofPoint pos;

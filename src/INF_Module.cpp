@@ -299,6 +299,8 @@ void INF_Module::seqParamChanged(Controls &e){
         stepGui[e.index]->stepAmt = e.length;
         stepGui[e.index]->isEnabled = e.isOn;
         
+        
+        //HAS OVERFLOW ERROR HERE*********
         for(auto &x:controls){
             if(x->bEuclid == true && x->bEnabled == true && e.length != 0 && e.pulse != 0){
                 unique_ptr<Bjorklund> euclid = unique_ptr<Bjorklund>(new Bjorklund(e.length,e.pulse));
@@ -308,10 +310,10 @@ void INF_Module::seqParamChanged(Controls &e){
                     vector<bool>mutated;
                     mutated = euclid->sequence;
                     std::rotate(mutated.begin(), mutated.end()-e.offset, mutated.end());
-                    tracks[x->index]->getPattern(mutated);
+                    tracks[e.index]->getPattern(mutated);
                     mutated.clear();
                 }else{
-                    tracks[x->index]->getPattern(euclid->sequence);
+                    tracks[e.index]->getPattern(euclid->sequence);
                 }
                 stepGui[e.index]->setSequence(tracks[e.index]->pattern);
                 euclid.reset();
