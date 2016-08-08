@@ -12,5 +12,6 @@ Hybrid Sequencing Model : mutate sequences on-the-go with Deterministic/stochast
 MIDI-compatible software : allows to connect external instrument such as Elektron Machinedrum (natively supported in current build*)
 
 ##Dependencies
+Ableton Live 9 with Max 4 Live (for Slave mode)
 Requiring openFrameworks addons to build : ofxMaxim, ofxDatGui, ofxOSC, ofxMidi...
 **TESTED on OSX El Capitan, Xcode 7.3.1
