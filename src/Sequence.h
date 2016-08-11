@@ -10,6 +10,8 @@
 #include <vector>
 #include <cmath>
 
+enum DRUM_NOTE {KICK, SNARE, PERC, HAT};
+
 using namespace std;
 class Sequence{
     
@@ -37,5 +39,12 @@ public:
                 onset ++;
         }
     }
-    
+    /*
+    vector<bool> operator +(const Sequence &d){
+        for(int i=0; i < d.pattern.size();i++){
+            pattern.insert(pattern.end()+i, d.pattern[i]);
+        }
+        return pattern;
+    }
+     */
 };

@@ -40,8 +40,6 @@ public:
     vector<GuiPtr> controls;
     vector<ofxDatGuiPtr>components;
     vector<Track> tracks;
-    vector<bool>::iterator sequenceIterator; //DEPRECATED
-    
     
     
     INF_Module(){};

@@ -64,7 +64,6 @@ void INF_Module::setup(){
     cout<<"Test"<<endl;
     cout<<controls[0]->seq_Params.isOn<<endl;
     ofAddListener(c->GuiCallback, this, &INF_Module::seqParamChanged);
-    
     if(index ==0){//only first page can have 8 tracks
         for(int i=1; i < 8; i ++){
             seqAmt ++;
@@ -299,8 +298,6 @@ void INF_Module::seqParamChanged(Controls &e){
         stepGui[e.index]->stepAmt = e.length;
         stepGui[e.index]->isEnabled = e.isOn;
         
-        
-        //HAS OVERFLOW ERROR HERE*********
         for(auto &x:controls){
             if(x->bEuclid == true && x->bEnabled == true && e.length != 0 && e.pulse != 0){
                 unique_ptr<Bjorklund> euclid = unique_ptr<Bjorklund>(new Bjorklund(e.length,e.pulse));
@@ -320,7 +317,6 @@ void INF_Module::seqParamChanged(Controls &e){
             }
         }
         stepGui[e.index]->setup();
-
         tracks[e.index]->pitch = e.pitch;
 //        tracks[e.index]->velocity = e.velocity;
     }

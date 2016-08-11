@@ -134,37 +134,11 @@ void ofApp::clockPlayed(int &eventArgs){
     
     for(int i=0;i < module->tracks.size();i++){
         int length = module->tracks[i]->pattern.size();
-//        
-//        if(module->tracks[0]->pattern.size() >0 && module->tracks[0]){
-//            triggers[0] = module->tracks[0]->pattern[playHeadIn%16];
-//        }
-//        if(module->tracks[1]->pattern.size() >0 && module->tracks[1]){
-//            triggers[1] = module->tracks[1]->pattern[playHeadIn%16];
-//        }
+        
         if(module->tracks[i]->pattern.size() >0 && module->tracks[i]){
             triggers[i] = module->tracks[i]->pattern[playHeadIn%length];
         }
     }
-    
-    /*
-    //STUPID TEST
-    if(triggers[0] == 1){
-        Note* n = new Note();
-        n->status = KEY_ON;
-        n->pitch = module->tracks[0]->pitch;
-        n->velocity = 80;
-        midi.sendNote(*n);
-        delete n;
-    }else{
-        Note* n = new Note();
-        n->status = KEY_OFF;
-        n->pitch = module->tracks[0]->pitch;
-        n->velocity = 0;
-        midi.sendNote(*n);
-        delete n;
-    }
-     */
-    
     
     for(int i=0; i < module->tracks.size();i++){
         if(triggers[i] == 1){

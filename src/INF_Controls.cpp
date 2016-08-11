@@ -239,7 +239,6 @@ void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
 }
 //--------------------------------------------------------------
 void INF_Controls::onNoteSelection(ofxDatGuiDropdownEvent e){
-    
     string selection = AbletonDrumMap.at(e.child);
     seq_Params.pitch = MIDI_NOTES[e.child];
     ofNotifyEvent(GuiCallback, seq_Params, this);

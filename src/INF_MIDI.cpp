@@ -33,8 +33,7 @@ void INF_MIDI::sendNote(Note &n){
         velocity = n.velocity;
         midiOut.sendNoteOn(channel, note, velocity);
         //in Ableton, pitch is 2 octave higher.
-        ofLogNotice() << "note: " << notes[n.pitch-24]
-        << " freq: " << ofxMidi::mtof(n.pitch-12) << " Hz";
+//        ofLogNotice() << "note: " << notes[n.pitch-24]<< " freq: " << ofxMidi::mtof(n.pitch-12) << " Hz";
     }else if(n.status==KEY_OFF){
         note = n.pitch;
         velocity = 0;

@@ -2,6 +2,7 @@
 
 #include "ofxDatGui.h"
 #include "ofMain.h"
+#include "Sequence.h"
 using namespace std;
 
 struct Controls{
@@ -52,6 +53,8 @@ public:
         "Mode : COMP"};
     
     ofEvent<Controls>GuiCallback;
+    ofEvent<int>sendPitch;
+    
     ofxDatGui *ptr;
     Controls seq_Params;
 
