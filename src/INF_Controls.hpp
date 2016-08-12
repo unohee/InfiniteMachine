@@ -51,6 +51,9 @@ public:
         "Mode : Manual",
         "Mode : EUCLID",
         "Mode : COMP"};
+    const vector<string> note = {
+        "Quaver", "Triplets", "Semi-Quaver","Quintuplet","Sextuplet","Septuplet"
+    };
     
     ofEvent<Controls>GuiCallback;
     ofEvent<int>sendPitch;
@@ -60,7 +63,7 @@ public:
 
     ofPoint pos;
     bool bEuclid, bEnabled, bComp;
-    int index, seq_len, seq_pulse;
+    int index, seq_len, seq_pulse, beatPerBar;
     int max_len;
     int width;
     

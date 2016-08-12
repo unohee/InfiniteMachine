@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-
+#include "INF_Clock.h"
 #include "INF_Utils.h"
 #include "INF_Module.h"
 #include "INF_MIDI.h"
@@ -19,7 +19,7 @@
 
 typedef INF_MIDI MidiOut;
 typedef OSC_Receive oscIn;
-
+typedef INF_Clock Metro;
 class ofApp : public ofBaseApp {
 public:
     
@@ -48,7 +48,7 @@ public:
     
     //member variables for Maximilian
     int currentCount, lastCount;
-    int playHead, BPM, ticksPerBeat;
+    int playHead, BPM, ticksPerBeat, beatResolution;
     double bps;
     bool isPlay;
     maxiOsc clock;
@@ -76,6 +76,7 @@ public:
     void AbletonPlayed(Ableton &eventArgs);
     void MIDICallback(MidiState &eventArgs);
     void globalState(TransportMessage &eventArgs);
+    void onMeterChange(currentMeter &e);
     void setMode(bool &eventArgs);
     void tempoChange(int &eventArgs);
     void clockPlayed(int &eventArgs);

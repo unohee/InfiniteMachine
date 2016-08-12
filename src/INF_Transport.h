@@ -2,6 +2,7 @@
 #include "ofxDatGui.h"
 #include "ofxMaxim.h"
 #include "ofMain.h"
+#include "Meter.h"
 
 struct TransportMessage{
     float BPM;
@@ -19,11 +20,13 @@ public:
     ofPoint pos;
     
     ofEvent<int>tempoChange;
-    ofEvent<TransportMessage> ClockCallback;
-    TransportMessage currentState;
+    ofEvent<TransportMessage> TransportCallback;
+    ofEvent<currentMeter> MeterChanged;
     
+    TransportMessage currentState;
+    currentMeter cMeter;
     maxiOsc clock;
-    int ticksPerBeat;
+    int ticksPerBeat, beatResolution;
     ofParameter<int> tempo;
     float bps;
     bool bStart, bFreeze;

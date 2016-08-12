@@ -31,6 +31,7 @@ void INF_Module::setup(){
     cycleRad = radius - 12;
 
     CyclicSeq cyclic = CyclicSeq(new circleStep(rect_ptr->getCenter(), cycleRad)); //GUI
+    cyclic->beatsPerBar = beatAmt * beatResolution;
     cyclic->bEuclid = true;
     
     Track t = Track(new Sequence());//Actual Sequence data
@@ -166,6 +167,18 @@ void INF_Module::draw(){
         x->draw();
     for(auto &x: components)
         x->draw();
+}
+//--------------------------------------------------------------
+void INF_Module::setMeter(int _amount, int _beatResolution){
+    beatAmt = _amount;
+    beatResolution = _beatResolution;
+    
+    if(stepGui.size() > 0){
+        for(auto &x:stepGui){
+            x->beatsPerBar = beatAmt * beatResolution;
+            x->setup();
+        }
+    }
 }
 //--------------------------------------------------------------
 void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){

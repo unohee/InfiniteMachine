@@ -8,26 +8,34 @@ void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE);
     ofSetWindowTitle("Infinite Machine");
     
+    timeSignature = "4/4";
+    ticksPerBeat = 4;
+    beatResolution = 4;
+    tempo = 120;
+    
     //Upper dock
-    docks = new Dat_Docker(midi.midiOut.getPortList());
+    docks = new Dat_Docker(midi.midiOut->getPortList());
     ofAddListener(docks->deviceState, this, &ofApp::MIDICallback);//add EventListener.
     ofAddListener(docks->modeChange, this, &ofApp::setMode);
     
+    //Sequencer
+    module = unique_ptr<INF_Module>(new INF_Module(0));
+    module->pos = ofPoint(0, docks->getHeight());
+    module->setMeter(ticksPerBeat, beatResolution);
+    module->setup();
     
     //Transport Control..
     transport = unique_ptr<INF_Transport>(new INF_Transport());
     transport->pos = ofPoint(0,754);
     transport->setup();
-    transport->setTimeSignature(4, 4);
-    timeSignature = "4/4";
-    ticksPerBeat = 4;
-    tempo = 120;
+    transport->setTimeSignature(beatResolution, ticksPerBeat);
     bps = (tempo / 60.) * ticksPerBeat;
     ofAddListener(transport->tempoChange, this, &ofApp::tempoChange);
-    ofAddListener(transport->ClockCallback, this, &ofApp::globalState);
+    ofAddListener(transport->MeterChanged, this, &ofApp::onMeterChange);
+    ofAddListener(transport->TransportCallback, this, &ofApp::globalState);
+    
     
     bHost = true; //add GUI for this parameter.
-    
     
     if(bHost){
         transport->tempoSlider->setEnabled(true);
@@ -39,10 +47,7 @@ void ofApp::setup(){
         transport->text->setEnabled(false);
     }
     
-    //Sequencer
-    module = unique_ptr<INF_Module>(new INF_Module(0));
-    module->pos = ofPoint(0, docks->getHeight());
-    module->setup();
+    
     
     triggers.reserve(module->tracks.size());
     for(int i=0;i < module->tracks.size();i++){
@@ -88,7 +93,7 @@ void ofApp::update(){
     transport->update();
  
     stringstream newStatus;
-    newStatus <<"connected to "<<midi.midiOut.getName()<<" "<<
+    newStatus <<"connected to "<<midi.midiOut->getName()<<" "<<
     "Channel : "<< midi.channel;
     string status = newStatus.str();
     transport->status->setLabel(status);
@@ -212,6 +217,9 @@ void ofApp::MIDICallback(MidiState &eventArgs){
     midi.channel = eventArgs.channel+1;
 }
 //--------------------------------------------------------------
+void ofApp::onMeterChange(currentMeter &e){
+    
+}
 void ofApp::globalState(TransportMessage &eventArgs){
     
     if(bHost){
@@ -235,7 +243,7 @@ void ofApp::setMode(bool &eventArgs){
         bHost = false;
         cout<<"[Slave Mode is Activated]"<<endl
         <<"[Now Listening Ableton Live...]"<<endl;
-        midi.midiOut.openVirtualPort("Infinite Machine");
+        midi.midiOut->openVirtualPort("Infinite Machine");
         midi.enableVirtual();
     }else{
         bHost = true;

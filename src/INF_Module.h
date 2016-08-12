@@ -29,6 +29,7 @@ public:
     ofPoint pos;
     float radius, cycleRad;
     int seqAmt, tempoVal;
+    int beatAmt, beatResolution;
     ofPoint guiLoc;
     //smart pointers
     unique_ptr<ofRectangle> rect_ptr;
@@ -49,14 +50,12 @@ public:
     void setGui();
     void update();
     void draw();
-
+    void setMeter(int amount, int beatResolution);
     int getClock();
     int getWidth() const{
         return rect_ptr->getWidth();
     }
-    int setMax(int max){
-        
-    }
+    
     
     //Event Callbacks
     void onButtonEvent(ofxDatGuiButtonEvent e);

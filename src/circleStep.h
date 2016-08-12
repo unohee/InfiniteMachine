@@ -39,7 +39,7 @@ public:
     ofEvent<SequenceEvent>stepUpdated;
     
     //Sequence
-    int stepAmt;
+    int stepAmt, beatsPerBar;
     vector<shared_ptr<CircleButton>>steps;
     vector<shared_ptr<ofPoint>>stepPos;
     vector<bool>stepState;

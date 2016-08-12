@@ -8,8 +8,9 @@
 
 #include "INF_Transport.h"
 
-INF_Transport::INF_Transport():tempo(120), ticksPerBeat(4){
-
+INF_Transport::INF_Transport():tempo(120), beatResolution(4),ticksPerBeat(4){
+    cMeter.beatResolution = beatResolution;
+    cMeter.beats = ticksPerBeat;
 }
 //--------------------------------------------------------------
 INF_Transport::~INF_Transport(){
@@ -65,11 +66,22 @@ void INF_Transport::draw(){
 void INF_Transport::setTimeSignature(int beat, int amount){
     meter = to_string(amount) + "/" + to_string(beat);
     text->setText(meter);
+    cMeter.beatResolution = beat;
+    cMeter.beats = amount;
+    ofNotifyEvent(MeterChanged, cMeter, this);
 }
 //--------------------------------------------------------------
 void INF_Transport::onTextInput(ofxDatGuiTextInputEvent e){
-    currentState.timeSignature = e.text;
-    ofNotifyEvent(ClockCallback, currentState, this);
+    currentMeter c;
+    //parsing strings
+    std::string meter = e.text;
+    string s;
+    s = "/";
+    vector<string> v = ofSplitString(meter, s);
+    cout<<v[0]<<"/"<<v[1]<<endl;
+    cMeter.beats = stoi(v[0]);
+    cMeter.beatResolution = stoi(v[1]);
+    ofNotifyEvent(MeterChanged, cMeter, this);
 }
 //--------------------------------------------------------------
 void INF_Transport::onSliderEvent(ofxDatGuiSliderEvent e){
@@ -79,5 +91,5 @@ void INF_Transport::onSliderEvent(ofxDatGuiSliderEvent e){
 //--------------------------------------------------------------
 void INF_Transport::onToggleEvent(ofxDatGuiToggleEvent e){
     currentState.play = e.checked;
-    ofNotifyEvent(ClockCallback, currentState, this);
+    ofNotifyEvent(TransportCallback, currentState, this);
 }

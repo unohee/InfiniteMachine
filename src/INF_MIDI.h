@@ -17,7 +17,7 @@ class INF_MIDI{
 public:
 
     ofxMidiMessage midiMessage;
-    ofxMidiOut midiOut;
+    ofxMidiOut *midiOut;
     int channel;
     unsigned int currentPgm;
     int voice;
@@ -29,25 +29,25 @@ public:
     INF_MIDI();
     ~INF_MIDI(){
         //destructor
-        midiOut.closePort();
+        midiOut->closePort();
     }
     void setup();
     void sendNote(Note &n);
     void enableVirtual();
     void setDevice(int &device){
-        midiOut.openPort(device); // by number
-        midiOut.getPort();
+        midiOut->openPort(device); // by number
+        midiOut->getPort();
     };
     void setDevice(string &name){
-        midiOut.openPort(name);
-        midiOut.getPort();
+        midiOut->openPort(name);
+        midiOut->getPort();
     };
     void deviceSelected(ofxDatGuiDropdownEvent e){
-        midiOut.openPort(e.child);
-        midiOut.getPort();
+        midiOut->openPort(e.child);
+        midiOut->getPort();
     };
     void exit(){
-        midiOut.closePort();
+        midiOut->closePort();
     };
     
 

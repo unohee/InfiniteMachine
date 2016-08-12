@@ -87,21 +87,24 @@ void INF_Controls::setup(){
     s->onSliderEvent(this, &INF_Controls::onSliderEvent);
     sliders.push_back(s);
     
+    //Timespan
+    pos.y += s->getHeight();
+    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("TICKS", 2,4));
+    s->setPrecision(0);
+    s->setPosition(pos.x, pos.y);
+    s->setValue(4);
+    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
+    sliders.push_back(s);
+    
     //NOTE Selection.
     //instead of picking pitch from slider, I use dropdown.
     pos.y += s->getHeight();
-
-//    d = shared_ptr<ofxDatGuiDropdown>(new ofxDatGuiDropdown("MIDI NOTE", AbletonDrumMap));
-//    d->setPosition(pos.x, pos.y);
-//    d->select(0);
-//    d->onDropdownEvent(this, &INF_Controls::onNoteSelection);
-//    components.push_back(d);
-    
     ptr = new ofxDatGui(pos.x, pos.y);
     ptr->addDropdown("MIDI NOTE", AbletonDrumMap);
     ptr->addBreak();
     ptr->onSliderEvent(this, &INF_Controls::onSliderEvent);
     ptr->onDropdownEvent(this, &INF_Controls::onNoteSelection);
+    
     
         ofColor randC = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
         for(auto &x:components)
@@ -138,11 +141,10 @@ void INF_Controls::update(){
     
     for(auto &x:components){
         x->update();
-        
-//        if(x->getIsExpanded()){//avoiding clicking overlay. seems bit unorthodox but this is the only way out.
-//            for(auto &x: sliders)
-//                x->setEnabled(false);
-//        }
+        if(x->getIsExpanded()){//avoiding clicking overlay. seems bit unorthodox but this is the only way out.
+            for(auto &x: sliders)
+                x->setEnabled(false);
+        }
     }
     
     if(!bComp){
@@ -217,6 +219,7 @@ void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
         //IF MODE is changed to Manual mode..
         bEuclid = false;
         bComp = false;
+        sliders[1]->setMin(0);
         sliders[1]->setEnabled(false); //pulse slider is disabled.
         sliders[1]->setValue(0);
     }else if(e.child ==1){
@@ -257,6 +260,8 @@ void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
         seq_Params.pulse = seq_pulse;
     }else if(e.target->getLabel() =="OFFSET"){
         seq_Params.offset = e.value;
+    }else if(e.target->getLabel() =="TICKS"){
+        seq_Params.length = e.value * 4;
     }
     ofNotifyEvent(GuiCallback, seq_Params, this);
 }
