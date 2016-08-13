@@ -331,6 +331,7 @@
 				46D61F841D5696DD007BC67A /* INF_Algorithm.cpp */,
 				46D61F851D5696DD007BC67A /* INF_Algorithm.h */,
 				46D61F831D566B79007BC67A /* Sequence.h */,
+				464697F11D5E894C00CC9DF1 /* Meter.h */,
 			);
 			name = Sequencer;
 			sourceTree = "<group>";
@@ -639,7 +640,6 @@
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
 				46E849051D48076C0068B18D /* INF_Transport.cpp */,
 				46E849061D48076C0068B18D /* INF_Transport.h */,
-				464697F11D5E894C00CC9DF1 /* Meter.h */,
 				855E91FD53DF7F1F965CD390 /* Bjorklund.cpp */,
 				DEF8405D8D9D8A9F362138B2 /* Bjorklund.h */,
 				4448415E40740409C6DAEB22 /* Dat_Docker.cpp */,

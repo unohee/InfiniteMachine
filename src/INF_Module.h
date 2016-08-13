@@ -20,7 +20,7 @@ typedef shared_ptr<ofxDatGuiComponent> ofxDatGuiPtr;
 typedef shared_ptr<RoundedButton> RButtonPtr;
 typedef shared_ptr<INF_Controls> GuiPtr;
 typedef shared_ptr<Sequence> Track;
-
+typedef INF_Algorithm Algorithms;
 class INF_Module{
     
 public:

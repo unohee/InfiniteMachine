@@ -8,10 +8,14 @@ void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE);
     ofSetWindowTitle("Infinite Machine");
     
+    //variables for transport and maxiOsc
     timeSignature = "4/4";
-    ticksPerBeat = 4;
     beatResolution = 4;
+    beatAmount = 4;
     tempo = 120;
+    //my metronome will ticks 4 times per beat (16th note)
+    ticksPerBeat = beatAmount;
+    
     
     //Upper dock
     docks = new Dat_Docker(midi.midiOut->getPortList());
@@ -21,7 +25,7 @@ void ofApp::setup(){
     //Sequencer
     module = unique_ptr<INF_Module>(new INF_Module(0));
     module->pos = ofPoint(0, docks->getHeight());
-    module->setMeter(ticksPerBeat, beatResolution);
+    module->setMeter(beatAmount, beatResolution);
     module->setup();
     
     //Transport Control..
@@ -54,6 +58,12 @@ void ofApp::setup(){
         triggers.push_back(0);
     }
     
+    
+    
+    
+    
+    
+    //updating beatgrid
     playHeadAmt = 16;
     divisor = 4;
     
@@ -218,8 +228,11 @@ void ofApp::MIDICallback(MidiState &eventArgs){
 }
 //--------------------------------------------------------------
 void ofApp::onMeterChange(currentMeter &e){
-    
+    beatAmount = e.beats;
+    beatResolution = e.beatResolution;
+    module->setMeter(beatAmount, beatResolution);
 }
+//--------------------------------------------------------------
 void ofApp::globalState(TransportMessage &eventArgs){
     
     if(bHost){

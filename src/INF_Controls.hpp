@@ -3,6 +3,7 @@
 #include "ofxDatGui.h"
 #include "ofMain.h"
 #include "Sequence.h"
+#include "INF_Algorithm.h"
 using namespace std;
 
 struct Controls{
@@ -20,11 +21,6 @@ typedef shared_ptr<ofxDatGuiSlider> DatSliderPtr;
 
 class INF_Controls{
 public:
-    
-    const string note_substring[12] = {
-        "C","C#","D","D#",
-        "E","F","F#","G",
-        "G#","A","A#","B"};
     
     const vector<string> AbletonDrumMap ={
         "Kick", "Rim", "Snare", "Clap",
@@ -48,11 +44,15 @@ public:
     };
     
     const vector<string> mode = {
-        "Mode : Manual",
-        "Mode : EUCLID",
-        "Mode : COMP"};
+        "Manual",
+        "EUCLID",
+        "COMP"};
     const vector<string> note = {
         "Quaver", "Triplets", "Semi-Quaver","Quintuplet","Sextuplet","Septuplet"
+    };
+    
+    const vector<string> targets{
+        "1","2","3","4","5","6","7","8"
     };
     
     ofEvent<Controls>GuiCallback;

@@ -9,12 +9,7 @@
 #include "INF_Controls.hpp"
 
 INF_Controls::INF_Controls():bEuclid(1), bEnabled(false),name("Sequence"),index(0),seq_len(16),seq_pulse(4){
-    //Create midi note array...
-    int octave;//octave is 0 - 8;
-    for(int noteNum=0; noteNum<=108;noteNum++){
-        octave = noteNum /12;
-        notes.push_back(note_substring[noteNum%12]+to_string(octave));
-    }
+
     
 }
 //--------------------------------------------------------------
@@ -141,24 +136,21 @@ void INF_Controls::update(){
     
     for(auto &x:components){
         x->update();
-        if(x->getIsExpanded()){//avoiding clicking overlay. seems bit unorthodox but this is the only way out.
-            for(auto &x: sliders)
-                x->setEnabled(false);
+    }
+    for(auto &x:sliders){
+        x->update();
+        if(x->getLabel()=="PULSES"){
+            if(x->getValue() >seq_len)
+                x->setValue(seq_len);
         }
     }
     
-    if(!bComp){
-        for(auto &x:sliders){
-            x->update();
-            if(x->getLabel()=="PULSES"){
-                if(x->getValue() >seq_len)
-                    x->setValue(seq_len);
-            }
-        }
-    }else{
-        for(auto &x:compSet)
-            x->update();
-    }
+//    if(!bComp){
+//        
+//    }else{
+//        for(auto &x:compSet)
+//            x->update();
+//    }
 
 }
 //--------------------------------------------------------------
@@ -178,8 +170,9 @@ void INF_Controls::draw(){
 }
 //--------------------------------------------------------------
 void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
-    for(auto &x:sliders)
-        x->setEnabled(e.checked);
+    bool on = e.checked;
+    bEnabled = e.checked;
+    
     if(e.checked == false){
         seq_Params.index = index;
         seq_Params.length = 0;
@@ -200,21 +193,10 @@ void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
     seq_Params.index = index;
     seq_Params.isOn = e.checked;
     ofNotifyEvent(GuiCallback, seq_Params, this);
-    bEnabled = e.checked;
 }
 //--------------------------------------------------------------
 void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
     
-    if(e.target->ofxDatGuiComponent::getIsExpanded()){
-        cout<<"Expand!"<<endl;//this never be caught up
-        
-    }else{
-        //avoiding clicking overlay.
-        //somehow DatGuiDropdown checks this one.
-        for(auto &x: sliders)
-            x->setEnabled(true);
-    }
-
     if(e.child ==0){
         //IF MODE is changed to Manual mode..
         bEuclid = false;

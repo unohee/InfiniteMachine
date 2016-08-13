@@ -45,10 +45,11 @@ public:
     
     bool bHost;
     int currentBar, currentBeat;
+    int beatResolution, beatAmount;
     
     //member variables for Maximilian
     int currentCount, lastCount;
-    int playHead, BPM, ticksPerBeat, beatResolution;
+    int playHead, BPM, ticksPerBeat;
     double bps;
     bool isPlay;
     maxiOsc clock;

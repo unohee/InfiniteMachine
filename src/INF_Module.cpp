@@ -62,10 +62,8 @@ void INF_Module::setup(){
     c->pos = guiLoc;
     c->setup();
     controls.push_back(c);
-    cout<<"Test"<<endl;
-    cout<<controls[0]->seq_Params.isOn<<endl;
     ofAddListener(c->GuiCallback, this, &INF_Module::seqParamChanged);
-    if(index ==0){//only first page can have 8 tracks
+    if(index ==0){
         for(int i=1; i < 8; i ++){
             seqAmt ++;
             cycleRad -= gap;
@@ -173,12 +171,39 @@ void INF_Module::setMeter(int _amount, int _beatResolution){
     beatAmt = _amount;
     beatResolution = _beatResolution;
     
-    if(stepGui.size() > 0){
+    if(stepGui.size() > 0 && controls.size() > 0){
         for(auto &x:stepGui){
-            x->beatsPerBar = beatAmt * beatResolution;
+            if(beatResolution ==4){
+                x->beatsPerBar = beatAmt * beatResolution;
+            }else if(beatResolution == 8){
+                x->beatsPerBar = beatAmt * 2;
+                cout<<beatAmt<<"/8"<<" "<<beatAmt*2<<endl;
+            }else if(beatResolution == 16){
+                x->beatsPerBar = beatAmt;
+            }
             x->setup();
         }
+        
+        for(auto &x:controls){
+            if(beatResolution ==4){
+                int max =beatAmt * beatResolution;
+                x->sliders[0]->setMax(max);
+                x->sliders[0]->setValue(max);
+                x->sliders[1]->setMax(max);
+            }else if(beatResolution == 8){
+                int max =beatAmt * 2;
+                x->sliders[0]->setMax(max);
+                x->sliders[0]->setValue(max);
+                x->sliders[1]->setMax(max);
+            }else if(beatResolution == 16){
+                x->sliders[0]->setMax(beatAmt);
+                x->sliders[0]->setValue(beatAmt);
+                x->sliders[1]->setMax(beatAmt);
+            }
+        }
+        
     }
+    cout<<beatAmt<<"/"<<beatResolution<<endl;
 }
 //--------------------------------------------------------------
 void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
