@@ -51,17 +51,23 @@ void ofApp::setup(){
         transport->text->setEnabled(false);
     }
     
-    
-    
+    //individual clocks (for each track) and its trigger
+    for(int i=0; i < 8;i++){
+        Metro *m = new Metro();
+        m->index = i;
+        m->setTicks(ticksPerBeat); //by default, it is 4.
+        m->setTempo(tempo);
+        clockGroup.push_back(m);
+        //Add Eventlistener
+        ofAddListener(clockGroup[i]->individualPlayHead, this, &ofApp::multipleClocks);
+        ofAddListener(module->controls[i]->tickChange, this, &ofApp::tickChanged);
+    }
+    //triggers
     triggers.reserve(module->tracks.size());
     for(int i=0;i < module->tracks.size();i++){
         triggers.push_back(0);
     }
-    
-    
-    
-    
-    
+
     
     //updating beatgrid
     playHeadAmt = 16;
@@ -118,7 +124,7 @@ void ofApp::draw(){
     stringstream text2;
     text2 << "Tempo " << tempo <<endl
     << "is playing?: " << isPlay << endl << endl
-    << "Time Signature :"<< timeSignature << endl << endl
+    << "Time Signature :"<< transport->meter << endl << endl
     << "Current Beat " << currentBeat << "/"<< currentBar << endl
     << "Beatgrid : " << beatGrid<<endl;
     ofDrawBitmapString(text2.str(), 20, 60);
@@ -132,6 +138,7 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     for(int i = 0; i < bufferSize; i++){
+        
         currentCount=(int)clock.phasor(bps);
         
         if (lastCount!=currentCount){
@@ -142,6 +149,27 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
     }
     unique_lock<mutex> lock(audioMutex);
+}
+//--------------------------------------------------------------
+void ofApp::multipleClocks(ClockOut &e){
+    
+    for(auto &x:clockGroup){
+        if(x->index == e.index){
+            cout<<"Clock "<<e.index<<" "<<
+            "PlayHead :"<<e.playHead<<" "<<ofGetElapsedTimef()<<endl;
+        }
+    }
+}
+//--------------------------------------------------------------
+void ofApp::tickChanged(Ticks &eventArgs){
+
+    for(auto &x:clockGroup){
+        if(x->index == eventArgs.index){
+            x->setTicks(eventArgs.ticksPerBeat);
+            x->setTempo(tempo);
+        }
+    }
+
 }
 //--------------------------------------------------------------
 void ofApp::clockPlayed(int &eventArgs){
@@ -186,6 +214,8 @@ void ofApp::keyPressed(int key){
     else{
         ofSoundStreamStop();
         playHead = 0;
+        for(auto &x:clockGroup)
+            x->playHead = 0;
     }
 }
 //--------------------------------------------------------------
@@ -273,6 +303,10 @@ void ofApp::setMode(bool &eventArgs){
 void ofApp::tempoChange(int &eventArgs){
     tempo = eventArgs;
     bps = (tempo / 60.) * ticksPerBeat;
+    
+    for(auto &x:clockGroup)
+        x->setTempo(tempo);
+    
     ofLogNotice()<<"Current BPM ::"<<eventArgs<<" "<<"BPS ::"<<bps;
 }
 //--------------------------------------------------------------

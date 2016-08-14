@@ -2,12 +2,28 @@
 #include "ofxMaxim.h"
 #include "ofMain.h"
 
+
+struct ClockOut{
+    
+    int playHead, index;
+    
+    ClockOut():playHead(0), index(0){
+        
+    };
+    ~ClockOut(){
+        
+    };
+};
+
 class INF_Clock{
 public:
+    //    ofEvent<int>individualPlayHead;
+    ofEvent<ClockOut>individualPlayHead;
+    ClockOut output;
     
-    unique_ptr<maxiOsc> clock;
-    ofEvent<int>clockTicks;
+    maxiOsc clock;
     
+    int index, tempo, ticksPerBeat;
     
     INF_Clock();
     ~INF_Clock();
@@ -15,10 +31,9 @@ public:
     void setTicks(int tick);
     void ticker();
     int getPlayHead();
-
-private:
+    
     int currentCount, lastCount;
-    int playHead, ticksPerBeat;
+    int playHead;
     float bps;
     
 };

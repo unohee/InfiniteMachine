@@ -8,7 +8,7 @@
 
 #include "INF_Controls.hpp"
 
-INF_Controls::INF_Controls():bEuclid(1), bEnabled(false),name("Sequence"),index(0),seq_len(16),seq_pulse(4){
+INF_Controls::INF_Controls():bEuclid(1), bComp(0),bEnabled(0),name("Sequence"),index(0),seq_len(16),seq_pulse(4){
 
     
 }
@@ -42,7 +42,6 @@ void INF_Controls::setup(){
     on->ofxDatGuiComponent::setWidth(60, 20);
     on->onToggleEvent(this, &INF_Controls::onToggleEvent);
     components.push_back(on);
-    
     
     //Sequencer Mode
     pos.y += label->getHeight();
@@ -132,40 +131,35 @@ void INF_Controls::setComp(ofPoint p){
 }
 //--------------------------------------------------------------
 void INF_Controls::update(){
-    if(!currentNote.empty()) components[3]->setLabel(currentNote);
     
     for(auto &x:components){
         x->update();
     }
-    for(auto &x:sliders){
-        x->update();
-        if(x->getLabel()=="PULSES"){
-            if(x->getValue() >seq_len)
-                x->setValue(seq_len);
+    if(!bComp){
+        for(auto &x:sliders){
+            x->update();
+            if(x->getLabel()=="PULSES"){
+                if(x->getValue() >seq_len)
+                    x->setValue(seq_len);
+            }
         }
+    }else{
+        for(auto &x:compSet)
+            x->update();
     }
-    
-//    if(!bComp){
-//        
-//    }else{
-//        for(auto &x:compSet)
-//            x->update();
-//    }
 
 }
 //--------------------------------------------------------------
 void INF_Controls::draw(){
     if(!bComp){
-        
+        for(auto &x:sliders)
+            x->draw();
+    }else{
+        for(auto &x:compSet)
+            x->draw();
     }
-    for(auto &x:sliders)
-        x->draw();
     for(auto &x:components)
         x->draw();
-    
-//    if(bComp == true)
-//        for(auto &x:compSet)
-//            x->draw();
     ptr->draw();
 }
 //--------------------------------------------------------------
@@ -244,6 +238,10 @@ void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
         seq_Params.offset = e.value;
     }else if(e.target->getLabel() =="TICKS"){
         seq_Params.length = e.value * 4;
+        Ticks currentTick;
+        currentTick.index = index;
+        currentTick.ticksPerBeat = (int)e.value;
+        ofNotifyEvent(tickChange, currentTick, this);
     }
     ofNotifyEvent(GuiCallback, seq_Params, this);
 }

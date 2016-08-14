@@ -74,7 +74,7 @@ void INF_Transport::setTimeSignature(int beat, int amount){
 void INF_Transport::onTextInput(ofxDatGuiTextInputEvent e){
     currentMeter c;
     //parsing strings
-    std::string meter = e.text;
+    meter = e.text;
     string s;
     s = "/";
     vector<string> v = ofSplitString(meter, s);

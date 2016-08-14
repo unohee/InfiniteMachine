@@ -49,15 +49,17 @@ public:
     
     //member variables for Maximilian
     int currentCount, lastCount;
-    int playHead, BPM, ticksPerBeat;
+    int playHead, BPM;
     double bps;
     bool isPlay;
     maxiOsc clock;
     maxiClock c;
+    vector<Metro*> clockGroup;
     mutex audioMutex;
 
     //Transport informations
     ofParameter<int>tempo;
+    ofParameter<int>ticksPerBeat;
     string timeSignature;
     int divisor, playHeadAmt;
     int kicktrigger;
@@ -81,6 +83,9 @@ public:
     void setMode(bool &eventArgs);
     void tempoChange(int &eventArgs);
     void clockPlayed(int &eventArgs);
+    void tickChanged(Ticks &eventArgs);
+    void multipleClocks(ClockOut &e);
+    
     
     void seqStart(bool &eventArgs){};
     

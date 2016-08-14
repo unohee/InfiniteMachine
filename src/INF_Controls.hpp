@@ -7,13 +7,14 @@
 using namespace std;
 
 struct Controls{
-    
     int index, length, pulse, pitch, velocity, offset;
     bool mode, isOn;
-    Controls():index(0),length(16),offset(0){
-        
-    };
-    
+    Controls():index(0),length(16),offset(0){};
+};
+
+struct Ticks{
+    int index, ticksPerBeat;
+    Ticks():index(0), ticksPerBeat(4){};
 };
 
 typedef shared_ptr<ofxDatGuiComponent> DatGuiPtr;
@@ -56,6 +57,7 @@ public:
     };
     
     ofEvent<Controls>GuiCallback;
+    ofEvent<Ticks>tickChange;
     ofEvent<int>sendPitch;
     
     ofxDatGui *ptr;
