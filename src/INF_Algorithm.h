@@ -12,6 +12,7 @@
 #include <vector>
 #include "Sequence.h"
 #include "Bjorklund.h"
+#include "GCD.h"
 #include "ofMain.h"
 using namespace std;
 

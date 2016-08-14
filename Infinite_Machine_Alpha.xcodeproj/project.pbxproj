@@ -19,6 +19,7 @@
 		26BCE1BAC12EDDA81570F8AB /* circleStep.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B165337A72AED32E4D60AA05 /* circleStep.cpp */; };
 		35FE521EC5F2C509C0449BF1 /* CircleButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68A91892A6BDCC0F278922E1 /* CircleButton.cpp */; };
 		3AEFE4FA8AD5C72671AD07F8 /* ofxRtMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 712B183BC00EBFFB1EEA5AB8 /* ofxRtMidiOut.cpp */; };
+		4640CBDA1D61218000FA7457 /* GCD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4640CBD81D61218000FA7457 /* GCD.cpp */; };
 		46742DCE1D5C224800B3C162 /* INF_Clock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46742DCC1D5C224800B3C162 /* INF_Clock.cpp */; };
 		46BB97E01D3BED7600129993 /* INF_Controls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46BB97DE1D3BED7600129993 /* INF_Controls.cpp */; };
 		46D61F861D5696DD007BC67A /* INF_Algorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D61F841D5696DD007BC67A /* INF_Algorithm.cpp */; };
@@ -127,6 +128,8 @@
 		440B2B891BD019685EF360B8 /* maxiMFCC.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = maxiMFCC.cpp; path = ../../../addons/ofxMaxim/libs/maxiMFCC.cpp; sourceTree = SOURCE_ROOT; };
 		444657A12E59D0ED86981498 /* TimerListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = TimerListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/TimerListener.h; sourceTree = SOURCE_ROOT; };
 		4448415E40740409C6DAEB22 /* Dat_Docker.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Dat_Docker.cpp; path = src/Dat_Docker.cpp; sourceTree = SOURCE_ROOT; };
+		4640CBD81D61218000FA7457 /* GCD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GCD.cpp; sourceTree = "<group>"; };
+		4640CBD91D61218000FA7457 /* GCD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCD.h; sourceTree = "<group>"; };
 		464697F11D5E894C00CC9DF1 /* Meter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Meter.h; sourceTree = "<group>"; };
 		46742DCC1D5C224800B3C162 /* INF_Clock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Clock.cpp; sourceTree = "<group>"; };
 		46742DCD1D5C224800B3C162 /* INF_Clock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INF_Clock.h; sourceTree = "<group>"; };
@@ -328,8 +331,6 @@
 				57E998CF210A3C7DC57CDF19 /* INF_Module.h */,
 				46BB97DE1D3BED7600129993 /* INF_Controls.cpp */,
 				46BB97DF1D3BED7600129993 /* INF_Controls.hpp */,
-				46D61F841D5696DD007BC67A /* INF_Algorithm.cpp */,
-				46D61F851D5696DD007BC67A /* INF_Algorithm.h */,
 				46D61F831D566B79007BC67A /* Sequence.h */,
 				464697F11D5E894C00CC9DF1 /* Meter.h */,
 			);
@@ -346,6 +347,19 @@
 				9D46FE36305D9C3E285A92A7 /* INF_OSC.h */,
 			);
 			name = Networking;
+			sourceTree = "<group>";
+		};
+		4640CBDB1D61218F00FA7457 /* Algorithms */ = {
+			isa = PBXGroup;
+			children = (
+				855E91FD53DF7F1F965CD390 /* Bjorklund.cpp */,
+				DEF8405D8D9D8A9F362138B2 /* Bjorklund.h */,
+				46D61F841D5696DD007BC67A /* INF_Algorithm.cpp */,
+				46D61F851D5696DD007BC67A /* INF_Algorithm.h */,
+				4640CBD81D61218000FA7457 /* GCD.cpp */,
+				4640CBD91D61218000FA7457 /* GCD.h */,
+			);
+			name = Algorithms;
 			sourceTree = "<group>";
 		};
 		480A780D8D0308AE4A368801 /* ofxGui */ = {
@@ -633,6 +647,7 @@
 			children = (
 				46040C851D2DDFCA00B902FE /* Sequencer */,
 				46040C861D2DDFE000B902FE /* Networking */,
+				4640CBDB1D61218F00FA7457 /* Algorithms */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
@@ -640,8 +655,6 @@
 				46742DCD1D5C224800B3C162 /* INF_Clock.h */,
 				46E849051D48076C0068B18D /* INF_Transport.cpp */,
 				46E849061D48076C0068B18D /* INF_Transport.h */,
-				855E91FD53DF7F1F965CD390 /* Bjorklund.cpp */,
-				DEF8405D8D9D8A9F362138B2 /* Bjorklund.h */,
 				4448415E40740409C6DAEB22 /* Dat_Docker.cpp */,
 				406489C76FF642F0D7A5F7BD /* Dat_Docker.h */,
 				46E162266356FA3B71A5C741 /* DatButton.h */,
@@ -813,6 +826,7 @@
 				B56FE57CC35806596D38118C /* ofxSliderGroup.cpp in Sources */,
 				46E849071D48076C0068B18D /* INF_Transport.cpp in Sources */,
 				1CD33E884D9E3358252E82A1 /* ofxToggle.cpp in Sources */,
+				4640CBDA1D61218000FA7457 /* GCD.cpp in Sources */,
 				0FCED26D40D46CF89A58E54C /* fft.cpp in Sources */,
 				5C4A4AA5D4784DF23EA43038 /* maxiAtoms.cpp in Sources */,
 				ABA8875AF0C06690CC0B92B1 /* maxiBark.cpp in Sources */,

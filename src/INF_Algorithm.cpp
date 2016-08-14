@@ -134,29 +134,23 @@ vector<bool> INF_Algorithm::join(vector<bool> first, vector<bool> second){
     vector<bool>join;
     int length = 0;
     int counter = 0;
-    bool next = false;
-    
     length = first.size() + second.size();
-    cout<<"Concated Length::"<<length;
-
+    
     do{
-        if(join.size() < first.size() && next == false){
-            join.push_back(first[counter]);
-            if(counter == first.size()){
-                counter = 0;
-                next = true;
-            }
-        }else{
-            join.push_back(second[counter]);
-            if(join.size() == length && next == true){
-                break;
-            }
-        }
+        join.push_back(first[counter]);
+        counter ++;
+    }while(join.size() < first.size());
+    
+    counter = 0;
+    
+    do{
+        join.push_back(second[counter]);
         counter ++;
     }while(join.size() < length);
+    
     return join;
 }
-
+//--------------------------------------------------------------
 vector<bool> INF_Algorithm::join(vector<Sequence> &v){
     vector<bool>concated;
     int length = 0;
