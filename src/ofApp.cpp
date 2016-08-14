@@ -33,7 +33,10 @@ void ofApp::setup(){
     transport->pos = ofPoint(0,754);
     transport->setup();
     transport->setTimeSignature(beatResolution, ticksPerBeat);
-    bps = (tempo / 60.) * ticksPerBeat;
+    
+    //Transport counts the bar length and playHead's position
+    bps = (tempo / 60.) * 1; //thus it ticks once per beat
+    currentBar = 0; currentBeat = 0;
     ofAddListener(transport->tempoChange, this, &ofApp::tempoChange);
     ofAddListener(transport->MeterChanged, this, &ofApp::onMeterChange);
     ofAddListener(transport->TransportCallback, this, &ofApp::globalState);
@@ -87,7 +90,7 @@ void ofApp::setup(){
 
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
-    ofAddListener(globalPlayHead, this, &ofApp::clockPlayed); //add listener that maxiClock's variable
+    ofAddListener(globalPlayHead, this, &ofApp::onGlobalClock); //add listener that maxiClock's variable
     ofSoundStreamStop(); //in initial state, soundstream is stopped.
     isPlay = false; //and its boolean
 }
@@ -125,7 +128,7 @@ void ofApp::draw(){
     text2 << "Tempo " << tempo <<endl
     << "is playing?: " << isPlay << endl << endl
     << "Time Signature :"<< transport->meter << endl << endl
-    << "Current Beat " << currentBeat << "/"<< currentBar << endl
+    << "Current Beat " << currentBeat+1 << " / "<<"Current Bar "<< currentBar << endl
     << "Beatgrid : " << beatGrid<<endl;
     ofDrawBitmapString(text2.str(), 20, 60);
     
@@ -185,18 +188,43 @@ void ofApp::multipleClocks(ClockOut &e){
 void ofApp::tickChanged(Ticks &eventArgs){
 
     cout<<"Track"<<eventArgs.index<<" "<<"Ticks:"<<eventArgs.ticksPerBeat<<endl;
+    
+    for(int i=0; i< clockGroup.size();i++){
+        if(clockGroup[i]->index == eventArgs.index){
+            clockGroup[i]->setTicks(eventArgs.ticksPerBeat);
+        }
+        
+        if(i > 0){
+            clockGroup[i]->playHead = clockGroup[i-1]->playHead;
+        }
+        
+    }
+    
     for(auto &x:clockGroup){
         if(x->index == eventArgs.index){
-            x->setTicks(eventArgs.ticksPerBeat);
-            x->setTempo(tempo);
-            x->playHead = 0;
+//            x->setTicks(eventArgs.ticksPerBeat);
+//            if(currentBeat == 0){
+//                x->playHead = 0; //retriggering
+//            }else{
+//                x->playHead = currentBeat*2;
+//            }
+            
         }
     }
 
 }
 //--------------------------------------------------------------
-void ofApp::clockPlayed(int &eventArgs){
-    int playHeadIn = eventArgs;
+void ofApp::onGlobalClock(int &eventArgs){
+    int beatsPerBar = 4;
+    int beat = eventArgs;
+    currentBeat ++;
+    
+    if(beat % beatAmount == 0){
+        currentBar ++;
+        currentBeat = 0;
+    }
+    
+    
     /*
     for(int i=0;i < module->tracks.size();i++){
         int length = module->tracks[i]->pattern.size();

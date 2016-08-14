@@ -82,7 +82,7 @@ public:
     void onMeterChange(currentMeter &e);
     void setMode(bool &eventArgs);
     void tempoChange(int &eventArgs);
-    void clockPlayed(int &eventArgs);
+    void onGlobalClock(int &eventArgs);
     void tickChanged(Ticks &eventArgs);
     void multipleClocks(ClockOut &e);
     
