@@ -63,7 +63,9 @@ void INF_Module::setup(){
     c->setup();
     controls.push_back(c);
     ofAddListener(c->GuiCallback, this, &INF_Module::seqParamChanged);
+    
     if(index ==0){
+        //Add rest of objects
         for(int i=1; i < 8; i ++){
             seqAmt ++;
             cycleRad -= gap;

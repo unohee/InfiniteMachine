@@ -26,7 +26,7 @@ void circleStep::setup(){
     if(!stepPos.empty())stepPos.clear();
     if(!steps.empty()){steps.clear();}
     
-    float angle = 360.f / beatsPerBar;
+    float angle = 360.f / stepAmt;
     //create a set of buttons
     if(isEnabled){
         for(int i = 0; i < stepAmt; i++){

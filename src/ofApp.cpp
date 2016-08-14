@@ -139,6 +139,8 @@ void ofApp::draw(){
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     for(int i = 0; i < bufferSize; i++){
         
+        for(auto &x:clockGroup)
+            x->ticker();
         currentCount=(int)clock.phasor(bps);
         
         if (lastCount!=currentCount){
@@ -153,20 +155,41 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
 //--------------------------------------------------------------
 void ofApp::multipleClocks(ClockOut &e){
     
-    for(auto &x:clockGroup){
-        if(x->index == e.index){
-            cout<<"Clock "<<e.index<<" "<<
-            "PlayHead :"<<e.playHead<<" "<<ofGetElapsedTimef()<<endl;
+    for(auto &x:module->tracks){
+        int length = x->pattern.size();
+        if(x->pattern.size() > 0 && x->index == e.index){
+            triggers[e.index] = x->pattern[e.playHead%length];
+        }
+    }
+    
+    for(int i=0; i < module->tracks.size();i++){
+        if(triggers[i] == 1 && i == e.index && module->tracks[i]->pattern.size() > 0){
+            Note* n = new Note();
+            n->status = KEY_ON;
+            n->pitch = module->tracks[i]->pitch;
+            n->velocity = 80;
+            ofLogNotice()<<"NOTE ON:"<<module->tracks[i]->pitch<<" "<<"Track"<<e.index<<" "<<ofGetElapsedTimef();
+            midi.sendNote(*n);
+            delete n;
+        }else{
+            Note* n = new Note();
+            n->status = KEY_OFF;
+            n->pitch = module->tracks[i]->pitch;
+            n->velocity = 0;
+            midi.sendNote(*n);
+            delete n;
         }
     }
 }
 //--------------------------------------------------------------
 void ofApp::tickChanged(Ticks &eventArgs){
 
+    cout<<"Track"<<eventArgs.index<<" "<<"Ticks:"<<eventArgs.ticksPerBeat<<endl;
     for(auto &x:clockGroup){
         if(x->index == eventArgs.index){
             x->setTicks(eventArgs.ticksPerBeat);
             x->setTempo(tempo);
+            x->playHead = 0;
         }
     }
 
@@ -174,10 +197,11 @@ void ofApp::tickChanged(Ticks &eventArgs){
 //--------------------------------------------------------------
 void ofApp::clockPlayed(int &eventArgs){
     int playHeadIn = eventArgs;
-    
+    /*
     for(int i=0;i < module->tracks.size();i++){
         int length = module->tracks[i]->pattern.size();
         
+        //matching pattern into trigger by indices
         if(module->tracks[i]->pattern.size() >0 && module->tracks[i]){
             triggers[i] = module->tracks[i]->pattern[playHeadIn%length];
         }
@@ -200,7 +224,7 @@ void ofApp::clockPlayed(int &eventArgs){
             delete n;
         }
     }
-    
+     */
 }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
