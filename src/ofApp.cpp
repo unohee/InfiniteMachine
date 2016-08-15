@@ -13,7 +13,10 @@ void ofApp::setup(){
     beatResolution = 4;
     beatAmount = 4;
     tempo = 120;
-    //my metronome will ticks 4 times per beat (16th note)
+    currentBar = 1;
+    currentBeat = 1;
+    
+    //as default, my metronome will ticks 4 times per beat (16th note) on 4/4
     ticksPerBeat = beatAmount;
     
     
@@ -36,7 +39,6 @@ void ofApp::setup(){
     
     //Transport counts the bar length and playHead's position
     bps = (tempo / 60.) * 1; //thus it ticks once per beat
-    currentBar = 0; currentBeat = 0;
     ofAddListener(transport->tempoChange, this, &ofApp::tempoChange);
     ofAddListener(transport->MeterChanged, this, &ofApp::onMeterChange);
     ofAddListener(transport->TransportCallback, this, &ofApp::globalState);
@@ -128,7 +130,7 @@ void ofApp::draw(){
     text2 << "Tempo " << tempo <<endl
     << "is playing?: " << isPlay << endl << endl
     << "Time Signature :"<< transport->meter << endl << endl
-    << "Current Beat " << currentBeat+1 << " / "<<"Current Bar "<< currentBar << endl
+    << "Current Beat " << currentBeat << " / "<<"Current Bar "<< currentBar << endl
     << "Beatgrid : " << beatGrid<<endl;
     ofDrawBitmapString(text2.str(), 20, 60);
     
@@ -199,18 +201,6 @@ void ofApp::tickChanged(Ticks &eventArgs){
         }
         
     }
-    
-    for(auto &x:clockGroup){
-        if(x->index == eventArgs.index){
-//            x->setTicks(eventArgs.ticksPerBeat);
-//            if(currentBeat == 0){
-//                x->playHead = 0; //retriggering
-//            }else{
-//                x->playHead = currentBeat*2;
-//            }
-            
-        }
-    }
 
 }
 //--------------------------------------------------------------
@@ -221,38 +211,8 @@ void ofApp::onGlobalClock(int &eventArgs){
     
     if(beat % beatAmount == 0){
         currentBar ++;
-        currentBeat = 0;
+        currentBeat = 1;
     }
-    
-    
-    /*
-    for(int i=0;i < module->tracks.size();i++){
-        int length = module->tracks[i]->pattern.size();
-        
-        //matching pattern into trigger by indices
-        if(module->tracks[i]->pattern.size() >0 && module->tracks[i]){
-            triggers[i] = module->tracks[i]->pattern[playHeadIn%length];
-        }
-    }
-    
-    for(int i=0; i < module->tracks.size();i++){
-        if(triggers[i] == 1){
-            Note* n = new Note();
-            n->status = KEY_ON;
-            n->pitch = module->tracks[i]->pitch;
-            n->velocity = 80;
-            midi.sendNote(*n);
-            delete n;
-        }else{
-            Note* n = new Note();
-            n->status = KEY_OFF;
-            n->pitch = module->tracks[i]->pitch;
-            n->velocity = 0;
-            midi.sendNote(*n);
-            delete n;
-        }
-    }
-     */
 }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
@@ -264,8 +224,11 @@ void ofApp::keyPressed(int key){
         ofSoundStreamStart();
     }
     else{
+        //reset all member variables for Transport.
         ofSoundStreamStop();
         playHead = 0;
+        currentBar = 1;
+        currentBeat = 1;
         for(auto &x:clockGroup)
             x->playHead = 0;
     }

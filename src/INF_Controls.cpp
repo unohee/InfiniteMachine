@@ -219,8 +219,10 @@ void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
 //--------------------------------------------------------------
 void INF_Controls::onNoteSelection(ofxDatGuiDropdownEvent e){
     string selection = AbletonDrumMap.at(e.child);
-    seq_Params.pitch = MIDI_NOTES[e.child];
-    ofNotifyEvent(GuiCallback, seq_Params, this);
+    noteOut noteEvent;
+    noteEvent.index = index;
+    noteEvent.pitch = MIDI_NOTES[e.child];
+    ofNotifyEvent(sendPitch, noteEvent, this);
 }
 //--------------------------------------------------------------
 void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
@@ -230,20 +232,33 @@ void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
         seq_Params.length = seq_len;
         sliders[1]->setMax(e.value);
         sliders[2]->setMax(e.value-1);
+        ofNotifyEvent(GuiCallback, seq_Params, this);
     }else if(e.target->getLabel() =="PULSES"){
         ofLogNotice()<<e.value;
         seq_pulse = e.value;
         seq_Params.pulse = seq_pulse;
+        ofNotifyEvent(GuiCallback, seq_Params, this);
     }else if(e.target->getLabel() =="OFFSET"){
-        seq_Params.offset = e.value;
+        offset = e.value;
+        vOffset r;
+        r.index = index;
+        r.offset = offset;
+        ofNotifyEvent(vectorRotated, r, this);
     }else if(e.target->getLabel() =="TICKS"){
-        seq_Params.length = e.value * 4;
+        //STEP MAX
+        sliders[0]->setMax(e.value*4);
+        sliders[0]->setValue(e.value*4);
+        //PULSE MAX
+        sliders[1]->setMax(e.value*4);
+        sliders[1]->setValue(sliders[0]->getValue()/2);
+        //OFFSET MAX
+        sliders[2]->setMax((e.value*4) -1);
         Ticks currentTick;
         currentTick.index = index;
         currentTick.ticksPerBeat = (int)e.value;
         ofNotifyEvent(tickChange, currentTick, this);
     }
-    ofNotifyEvent(GuiCallback, seq_Params, this);
+    
 }
 //--------------------------------------------------------------
 void INF_Controls::setSliders(int length, int pulse){

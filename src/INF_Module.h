@@ -63,5 +63,7 @@ public:
     void customButtonEvent(ButtonEvent &e);
     void onDropdownEvent(ofxDatGuiDropdownEvent e);
     void sequenceCallback(SequenceEvent &e);
+    void onNoteChange(noteOut &n);
+    void seqRotate(vOffset &offset);
     void seqParamChanged(Controls &e);
 };

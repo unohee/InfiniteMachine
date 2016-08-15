@@ -7,14 +7,26 @@
 using namespace std;
 
 struct Controls{
-    int index, length, pulse, pitch, velocity, offset;
+    int index, pitch, velocity;
     bool mode, isOn;
-    Controls():index(0),length(16),offset(0){};
+    ofParameter<int>length, pulse, offset;
+    
+    Controls():index(0),length(16),pulse(4),offset(0){};
 };
 
 struct Ticks{
     int index, ticksPerBeat;
     Ticks():index(0), ticksPerBeat(4){};
+};
+
+struct noteOut{
+    int index, pitch;
+    noteOut():index(0), pitch(0){};
+};
+
+struct vOffset{
+    int index, offset;
+    vOffset():index(0), offset(0){};
 };
 
 typedef shared_ptr<ofxDatGuiComponent> DatGuiPtr;
@@ -58,17 +70,18 @@ public:
     
     ofEvent<Controls>GuiCallback;
     ofEvent<Ticks>tickChange;
-    ofEvent<int>sendPitch;
+    ofEvent<noteOut>sendPitch;
+    ofEvent<vOffset>vectorRotated;
     
     ofxDatGui *ptr;
     Controls seq_Params;
 
     ofPoint pos;
     bool bEuclid, bEnabled, bComp;
-    int index, seq_len, seq_pulse, beatPerBar;
+    int index, beatPerBar;
     int max_len;
     int width;
-    
+    ofParameter<int>seq_len, seq_pulse, offset;
     string currentNote;
     vector<string>notes;
     string name;

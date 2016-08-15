@@ -63,7 +63,8 @@ void INF_Module::setup(){
     c->setup();
     controls.push_back(c);
     ofAddListener(c->GuiCallback, this, &INF_Module::seqParamChanged);
-    
+    ofAddListener(c->sendPitch, this, &INF_Module::onNoteChange);
+    ofAddListener(c->vectorRotated, this, &INF_Module::seqRotate);
     if(index ==0){
         //Add rest of objects
         for(int i=1; i < 8; i ++){
@@ -92,6 +93,8 @@ void INF_Module::setup(){
             c->setup();
             controls.push_back(c);
             ofAddListener(c->GuiCallback, this, &INF_Module::seqParamChanged);
+            ofAddListener(c->sendPitch, this, &INF_Module::onNoteChange);
+            ofAddListener(c->vectorRotated, this, &INF_Module::seqRotate);
             
             //Cyclic Gui Setup
             seq->isEnabled = false;
@@ -333,13 +336,30 @@ void INF_Module::sequenceCallback(SequenceEvent &e){
         tracks[e.index]->pattern = e.seq;
 };
 //--------------------------------------------------------------
+void INF_Module::onNoteChange(noteOut &n){
+    tracks[n.index]->pitch = n.pitch;
+}
+//--------------------------------------------------------------
+void INF_Module::seqRotate(vOffset &e){
+    int offset = e.offset;
+    if(tracks[e.index]->pattern.size() > 1){
+        rotate(tracks[e.index]->pattern.begin(), tracks[e.index]->pattern.end()-offset,tracks[e.index]->pattern.end());
+        stepGui[e.index]->setSequence(tracks[e.index]->pattern);
+    }
+}
+//--------------------------------------------------------------
 void INF_Module::seqParamChanged(Controls &e){
     
     //this is the function which generates Euclidean Rhythm in various conditions
     vector<bool>output;
     vector<bool>::iterator outputIterator;
     Algorithms al;
+    ofParameter<int> offset = 0;
+    int seq_len, seq_pulse;
     
+    seq_len = e.length;
+    seq_pulse = e.pulse;
+    offset = e.offset;
     if(e.index < stepGui.size() && e.index < tracks.size()){
         stepGui[e.index]->stepAmt = e.length;
         stepGui[e.index]->isEnabled = e.isOn;
@@ -348,76 +368,64 @@ void INF_Module::seqParamChanged(Controls &e){
             if(x->bEuclid == true && x->bEnabled == true && e.length != 0 && e.pulse != 0){
                 auto_ptr<Bjorklund> euclid = auto_ptr<Bjorklund>(new Bjorklund());
                 
-                if(e.pulse > (e.length /2)-1){//make compound euclidean sequence by using GCD
-                    vector<bool> first, second;
-                    GCD *g = new GCD();
-                    g->gen(e.length, e.pulse);
+                vector<bool> first, second;
+                GCD *g = new GCD();
+                
+                //before apply Bjorklund's Algorithm, we need to find the GCD of Two input number (which is length and amount of onset)
+                g->gen(seq_len, seq_pulse);
+                //GCD algorithm finds the subsets through the process of finding GCD(Greator Common Divisor)
+                
+                if(g->subsets.size() > 2){
+                    //this is compound set.
+                    //it joins 2 euclidean rhythms into one compound rhythm. it is different as simply applying two numbers into Bjorklund algorithm. it makes rhythm sequence more interesting while it still explicits the characteristic feature of Euclidean rhythm, or poly-rhythm.
+                    ofLogNotice()<<"Compound Euclidean 2-3"<<"Size of subsets: "<<g->subsets.size()<<endl;
                     
-                    if(g->subsets.size() > 2){//it joins 2 euclidean rhythms into one compound.
-                        ofLogNotice()<<"Compound Euclidean 2-3"<<"Size of subsets: "<<g->subsets.size()<<endl;
+                    try{
                         euclid->init(g->subsets[1]->length, g->subsets[1]->onset);
                         first = euclid->LoadSequence();
-                        
-                        cout<<"First :";
-                        
-                        for(outputIterator = first.begin();
-                            outputIterator != first.end();
-                            outputIterator++){
-                            cout<<*outputIterator;
-                        }
-                        cout<<endl;
-                        
                         euclid->init(g->subsets[2]->length, g->subsets[2]->onset);
                         second = euclid->LoadSequence();
-                        
-                        cout<<"Second :";
-                        for(outputIterator = second.begin();
-                            outputIterator != second.end();
-                            outputIterator++){
-                            cout<<*outputIterator;
-                        }
-                        cout<<endl;
+
+                    }catch(bad_exception e){
+                        ofLogNotice()<<e.what()<<endl;
+                    }
+                    output = al.join(first, second);
+                }else if(g->subsets.size() <=2){
+                    ofLogNotice()<<"Single Euclidean"<<endl;
                     
-                        output = al.join(first, second);
-                    }else if(g->subsets.size() <=2){
-//                        ofLogNotice()<<"Compound Euclidean 1-2"<<"Size of subsets: "<<g->subsets.size()<<endl;
-//                        euclid->init(g->subsets[1]->length, g->subsets[1]->onset);
-//                        output = euclid->LoadSequence();
-//                        
-                        ofLogNotice()<<"Single Euclidean"<<endl;
-                        euclid->init(e.length, e.pulse);
+                    try {
+                        euclid->init(seq_len, seq_pulse);
                         output = euclid->LoadSequence();
-                        
-                        cout<<"Output :";
-                        for(outputIterator = output.begin();
-                            outputIterator != output.end();
-                            outputIterator++){
-                            cout<<*outputIterator;
-                        }
-                        cout<<endl;
+                    } catch (bad_exception e) {
+                        ofLogNotice()<<e.what()<<endl;
+                    }
+                }else{
+                    try {
+                        euclid->init(seq_len, seq_pulse);
+                        output = euclid->LoadSequence();
+                    } catch (bad_exception e) {
+                        ofLogNotice()<<e.what()<<endl;
                     }
                     
-                }else{
-                    euclid->init(e.length, e.pulse);
-                    output = euclid->LoadSequence();
                 }
                 
-                //rotating of sequence.
-                if(e.offset > 0){
-                    vector<bool>mutated;
-                    mutated = output;
-                    std::rotate(mutated.begin(), mutated.end()-e.offset, mutated.end());
-                    tracks[e.index]->getPattern(mutated);
-                    mutated.clear();
-                }else{
-                    tracks[e.index]->getPattern(output);
-                }
+//                rotate(output.begin(), output.end()-offset, output.end());
+                tracks[e.index]->getPattern(output);
                 stepGui[e.index]->setSequence(tracks[e.index]->pattern);
                 euclid.reset();
+                
+                
+                cout<<"Output :";
+                for(outputIterator = output.begin();
+                    outputIterator != output.end();
+                    outputIterator++){
+                    cout<<*outputIterator;
+                }
+                cout<<endl;
             }
         }
         stepGui[e.index]->setup();
-        tracks[e.index]->pitch = e.pitch;
+//        tracks[e.index]->pitch = e.pitch;
 //        tracks[e.index]->velocity = e.velocity;
     }
 }
