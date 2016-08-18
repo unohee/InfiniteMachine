@@ -70,13 +70,15 @@ public:
     void setup();
     void update();
     void draw();
+    void setSoundstream(bool start);
     void audioOut(float * output, int bufferSize, int nChannels);
     void exit();
     
     //Events used
     void keyPressed(int key);
     //custom event callbacks
-    void AbletonPlayed(Ableton &eventArgs);
+    void AbletonPlayed(bool &eventArgs);
+    void receiveTransport(Ableton &eventArgs);
     void MIDICallback(MidiState &eventArgs);
     void globalState(TransportMessage &eventArgs);
     void onMeterChange(currentMeter &e);
@@ -85,9 +87,6 @@ public:
     void onGlobalClock(int &eventArgs);
     void tickChanged(Ticks &eventArgs);
     void multipleClocks(ClockOut &e);
-    
-    
-    void seqStart(bool &eventArgs){};
     
     //unused events
     void keyReleased(int key){};

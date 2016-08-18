@@ -25,7 +25,6 @@ void INF_Transport::setup(){
     text->setWidth(200, 50);
     text->setText("4/4");
     text->onTextInputEvent(this, &INF_Transport::onTextInput);
-    
     //BPM SLIDER
     pos.x += text->getWidth();
     tempo.set("BPM", 120, 40, 200); //init ofParameter

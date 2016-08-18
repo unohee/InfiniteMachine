@@ -74,9 +74,10 @@ public:
     ofEvent<vOffset>vectorRotated;
     
     ofxDatGui *ptr;
+    shared_ptr<ofxDatGuiScrollView> scroll;
     Controls seq_Params;
 
-    ofPoint pos;
+    ofPoint pos, currentPos;
     bool bEuclid, bEnabled, bComp;
     int index, beatPerBar;
     int max_len;
@@ -97,7 +98,7 @@ public:
     void draw();
     void onToggleEvent(ofxDatGuiToggleEvent e);
     void onDropdownEvent(ofxDatGuiDropdownEvent e);
-    void onNoteSelection(ofxDatGuiDropdownEvent e);
+    void onNoteSelection(ofxDatGuiScrollViewEvent e);
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void setSliders(int length, int pulse);
     void setLength(int length);

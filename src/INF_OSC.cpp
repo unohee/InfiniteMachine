@@ -27,8 +27,6 @@ void OSC_Receive::update(){
         
         if(m.getAddress()== "/transport/tempo"){
             state.tempo = m.getArgAsFloat(0);
-        }else if(m.getAddress()== "/transport/play"){
-            state.isPlay = m.getArgAsBool(0);
         }else if(m.getAddress()== "/transport/currentBar"){
             state.bar = m.getArgAsInt(0);
         }else if(m.getAddress()== "/transport/currentBeat"){
@@ -38,7 +36,14 @@ void OSC_Receive::update(){
         }else if(m.getAddress()== "/transport/beatResolution"){
             state.meter.beatResolution = m.getArgAsInt(0);
         }
-        ofNotifyEvent(AbletonPlayed, state, this);
+        ofNotifyEvent(AbletonState, state, this);
+        
+        if(m.getAddress()== "/transport/play"){
+            bool state;
+            state = m.getArgAsBool(0);
+            ofNotifyEvent(onAbletonStart, state, this);
+        }
+        
     }
 }
 //--------------------------------------------------------------

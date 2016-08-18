@@ -28,7 +28,8 @@ public:
     void update();
     
     ofxOscReceiver receiver;
-    ofEvent<Ableton> AbletonPlayed;
+    ofEvent<Ableton> AbletonState;
+    ofEvent<bool> onAbletonStart;
     int current_msg_string;
     string msg_strings[NUM_MSG_STRINGS];
     float timers[NUM_MSG_STRINGS];

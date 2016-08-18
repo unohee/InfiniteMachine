@@ -7,6 +7,11 @@ void ofApp::setup(){
     ofBackground(0);
     ofSetLogLevel(OF_LOG_VERBOSE);
     ofSetWindowTitle("Infinite Machine");
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    ofGLFWWindowSettings setting;
+    setting.resizable = false;
+
+    
     
     //variables for transport and maxiOsc
     timeSignature = "4/4";
@@ -42,9 +47,7 @@ void ofApp::setup(){
     ofAddListener(transport->tempoChange, this, &ofApp::tempoChange);
     ofAddListener(transport->MeterChanged, this, &ofApp::onMeterChange);
     ofAddListener(transport->TransportCallback, this, &ofApp::globalState);
-    
-    
-    bHost = true; //add GUI for this parameter.
+    bHost = true;
     
     if(bHost){
         transport->tempoSlider->setEnabled(true);
@@ -88,16 +91,20 @@ void ofApp::setup(){
     
     //Networking components
     oscListener.setup();
-    ofAddListener(oscListener.AbletonPlayed, this, &ofApp::AbletonPlayed);
+    ofAddListener(oscListener.onAbletonStart, this, &ofApp::AbletonPlayed); //playState
+    ofAddListener(oscListener.AbletonState, this, &ofApp::receiveTransport);
 
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
     ofAddListener(globalPlayHead, this, &ofApp::onGlobalClock); //add listener that maxiClock's variable
     ofSoundStreamStop(); //in initial state, soundstream is stopped.
     isPlay = false; //and its boolean
+
 }
 //--------------------------------------------------------------
 void ofApp::update(){
+    ofSetWindowShape(1140,780);
+    
     if(!bHost && playHeadAmt != NULL && divisor != NULL){
         oscListener.update(); //Listening OSC...
         accents.resize(playHeadAmt);
@@ -139,6 +146,23 @@ void ofApp::draw(){
     ofSetColor(255, 255, 255);
     docks->draw();
     ofPopStyle();
+}
+//--------------------------------------------------------------
+void ofApp::setSoundstream(bool start){
+    if(start == true){
+        ofSoundStreamStart();
+        ofLogNotice()<<"Soundstream start"<<endl;
+    }
+    else{
+        //reset all member variables for Transport.
+        ofSoundStreamStop();
+        playHead = 0;
+        currentBar = 1;
+        currentBeat = 1;
+        for(auto &x:clockGroup)
+            x->playHead = 0;
+        ofLogNotice()<<"Soundstream stop, clocks are reset"<<endl;
+    }
 }
 //--------------------------------------------------------------
 void ofApp::audioOut(float *output, int bufferSize, int nChannels){
@@ -212,6 +236,8 @@ void ofApp::onGlobalClock(int &eventArgs){
     if(beat % beatAmount == 0){
         currentBar ++;
         currentBeat = 1;
+        for(auto &x:clockGroup)
+            x->playHead = 0;
     }
 }
 //--------------------------------------------------------------
@@ -219,39 +245,23 @@ void ofApp::keyPressed(int key){
     if(key ==32){
         isPlay = !isPlay;
         transport->start->setChecked(isPlay);
-    }
-    if(isPlay == true){
-        ofSoundStreamStart();
-    }
-    else{
-        //reset all member variables for Transport.
-        ofSoundStreamStop();
-        playHead = 0;
-        currentBar = 1;
-        currentBeat = 1;
-        for(auto &x:clockGroup)
-            x->playHead = 0;
+        setSoundstream(isPlay);
     }
 }
 //--------------------------------------------------------------
-void ofApp::AbletonPlayed(Ableton &eventArgs){
+void ofApp::AbletonPlayed(bool &eventArgs){
+    if(!bHost){//slave (Ableton sync mode)
+        isPlay = eventArgs;
+        transport->start->setChecked(isPlay);
+        setSoundstream(isPlay);
+    }
+}
+//--------------------------------------------------------------
+void ofApp::receiveTransport(Ableton &eventArgs){
     tempo = eventArgs.tempo;
     currentBar = eventArgs.bar;
     currentBeat = eventArgs.beat;
     
-    if(!bHost){
-        isPlay = eventArgs.isPlay;
-        transport->start->setChecked(isPlay);
-        
-        if(isPlay == true){
-            ofSoundStreamStart();
-        }
-        else{
-            ofSoundStreamStop();
-            playHead = 0;
-        }
-    }
-
     timeSignature = to_string(eventArgs.meter.beatPerBar) + "/" + to_string(eventArgs.meter.beatResolution);
     if(isPlay)
         transport->setTimeSignature(eventArgs.meter.beatResolution, eventArgs.meter.beatPerBar);
@@ -279,17 +289,9 @@ void ofApp::onMeterChange(currentMeter &e){
 }
 //--------------------------------------------------------------
 void ofApp::globalState(TransportMessage &eventArgs){
-    
     if(bHost){
         isPlay = eventArgs.play;
-        
-        if(isPlay == true){
-            ofSoundStreamStart();
-        }
-        else{
-            ofSoundStreamStop();
-            playHead = 0;
-        }
+        setSoundstream(isPlay);
     }
     string tempoIn = eventArgs.timeSignature;
     
@@ -305,9 +307,7 @@ void ofApp::setMode(bool &eventArgs){
         midi.enableVirtual();
     }else{
         bHost = true;
-        
         cout<<"[Master Mode is Activated]"<<endl;
-       
     }
     transport->text->setEnabled(bHost);
     transport->tempoSlider->setEnabled(bHost);

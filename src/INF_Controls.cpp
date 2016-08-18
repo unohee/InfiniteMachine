@@ -20,7 +20,6 @@ INF_Controls::~INF_Controls(){
     for(auto &x:sliders)
         x.reset();
     sliders.clear();
-    delete ptr;
 }
 //--------------------------------------------------------------
 void INF_Controls::setup(){
@@ -28,6 +27,8 @@ void INF_Controls::setup(){
     seq_Params.index = index;
     seq_Params.mode = bEuclid;
     seq_Params.isOn = bEnabled;//checks whether Sequencer's mode is Euclidean or Step Sequencer...
+    currentPos = pos;
+    
     
     string label_ = name + " " +to_string(index+1);
     shared_ptr<ofxDatGuiLabel> label = shared_ptr<ofxDatGuiLabel>(new ofxDatGuiLabel(label_));
@@ -58,6 +59,8 @@ void INF_Controls::setup(){
     s->setValue(seq_len);
     s->onSliderEvent(this, &INF_Controls::onSliderEvent);
     sliders.push_back(s);
+    
+    setComp(pos);
     
     //PULSES
     pos.y += s->getHeight();
@@ -93,20 +96,20 @@ void INF_Controls::setup(){
     //NOTE Selection.
     //instead of picking pitch from slider, I use dropdown.
     pos.y += s->getHeight();
-    ptr = new ofxDatGui(pos.x, pos.y);
-    ptr->addDropdown("MIDI NOTE", AbletonDrumMap);
-    ptr->addBreak();
-    ptr->onSliderEvent(this, &INF_Controls::onSliderEvent);
-    ptr->onDropdownEvent(this, &INF_Controls::onNoteSelection);
+    scroll = shared_ptr<ofxDatGuiScrollView>(new ofxDatGuiScrollView("Instruments", 1));
+    scroll->setPosition(pos.x, pos.y);
+    for(auto &x:AbletonDrumMap)
+        scroll->add(x);
+    scroll->onScrollViewEvent(this, &INF_Controls::onNoteSelection);
     
-    
-        ofColor randC = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
-        for(auto &x:components)
-            x->setStripe(randC, 2);
-        for(auto &x:sliders)
-            x->setStripe(randC, 2);
-        for(auto &x:compSet)
-            x->setStripe(randC, 2);
+    ofColor randC = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
+    for(auto &x:components)
+        x->setStripe(randC, 2);
+    for(auto &x:sliders)
+        x->setStripe(randC, 2);
+    for(auto &x:compSet)
+        x->setStripe(randC, 2);
+    scroll->setStripe(randC, 2);
 }
 //--------------------------------------------------------------
 void INF_Controls::setComp(ofPoint p){
@@ -147,7 +150,7 @@ void INF_Controls::update(){
         for(auto &x:compSet)
             x->update();
     }
-
+    scroll->update();
 }
 //--------------------------------------------------------------
 void INF_Controls::draw(){
@@ -158,9 +161,11 @@ void INF_Controls::draw(){
         for(auto &x:compSet)
             x->draw();
     }
+    for(auto &x:sliders)
+        x->draw();
     for(auto &x:components)
         x->draw();
-    ptr->draw();
+    scroll->draw();
 }
 //--------------------------------------------------------------
 void INF_Controls::onToggleEvent(ofxDatGuiToggleEvent e){
@@ -217,11 +222,19 @@ void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
     
 }
 //--------------------------------------------------------------
-void INF_Controls::onNoteSelection(ofxDatGuiDropdownEvent e){
-    string selection = AbletonDrumMap.at(e.child);
+void INF_Controls::onNoteSelection(ofxDatGuiScrollViewEvent e){
+    int ind = index;
+    string selection = AbletonDrumMap.at(e.index);
+    
+    ofxDatGuiButton* button = e.target; // a pointer to the button that was selected //
+    ofxDatGuiScrollView* parent = e.parent;
+    ofLogNotice()<<button->getLabel()<<"[index "<<e.index<<"] selected in ["<<parent->getName()<<"]"<<endl;
+    
+    
     noteOut noteEvent;
-    noteEvent.index = index;
-    noteEvent.pitch = MIDI_NOTES[e.child];
+    noteEvent.index = ind;
+    noteEvent.pitch = MIDI_NOTES[e.index];
+    
     ofNotifyEvent(sendPitch, noteEvent, this);
 }
 //--------------------------------------------------------------
