@@ -1,21 +1,15 @@
 
 #pragma once
 #include "ofxOsc.h"
+#include "Meter.h"
 
 #define PORT 8080
 #define NUM_MSG_STRINGS 20
 
-struct Meter{
-public:
-    
-    int beatPerBar, beatResolution;
-};
 struct Ableton{
 public:
     //Parameters that is received from Ableton Live
-    int tempo, bar, beat;
-    bool isPlay;
-    Meter meter;
+    int bar, beat;
     Ableton(){};
 };
 
@@ -29,7 +23,14 @@ public:
     
     ofxOscReceiver receiver;
     ofEvent<Ableton> AbletonState;
+    ofEvent<int>tempoChange;
     ofEvent<bool> onAbletonStart;
+    ofEvent<currentMeter> onMeterChange;
+    
+    Ableton state;
+    currentMeter cMeter;
+    int tempo;
+    
     int current_msg_string;
     string msg_strings[NUM_MSG_STRINGS];
     float timers[NUM_MSG_STRINGS];

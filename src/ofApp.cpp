@@ -46,7 +46,7 @@ void ofApp::setup(){
     bps = (tempo / 60.) * 1; //thus it ticks once per beat
     ofAddListener(transport->tempoChange, this, &ofApp::tempoChange);
     ofAddListener(transport->MeterChanged, this, &ofApp::onMeterChange);
-    ofAddListener(transport->TransportCallback, this, &ofApp::globalState);
+    ofAddListener(transport->playPressed, this, &ofApp::appPlayed);
     bHost = true;
     
     if(bHost){
@@ -91,8 +91,9 @@ void ofApp::setup(){
     
     //Networking components
     oscListener.setup();
-    ofAddListener(oscListener.onAbletonStart, this, &ofApp::AbletonPlayed); //playState
+    ofAddListener(oscListener.onAbletonStart, this, &ofApp::appPlayed); //playState
     ofAddListener(oscListener.AbletonState, this, &ofApp::receiveTransport);
+    ofAddListener(oscListener.tempoChange, this, &ofApp::tempoChange);
 
     //Audio Setup
     ofSoundStreamSetup(2, 0, this, SRATE, BUFFER_SIZE, 4);
@@ -104,17 +105,19 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     ofSetWindowShape(1140,780);
-    
-    if(!bHost && playHeadAmt != NULL && divisor != NULL){
+
+    if(!bHost)
         oscListener.update(); //Listening OSC...
+
+    if(!bHost && playHeadAmt != NULL && divisor != NULL){
         accents.resize(playHeadAmt);
-        for(int i=0; i != playHeadAmt; i++){
-            if(i % divisor == 0){//find strong beat and weak beats
-                accents.at(i) = 1;
-            }else{
-                accents.at(i) = 0;
-            }
-        }
+//        for(int i=0; i != playHeadAmt; i++){
+//            if(i % divisor == 0){//find strong beat and weak beats
+//                accents.at(i) = 1;
+//            }else{
+//                accents.at(i) = 0;
+//            }
+//        }
     }
     module->update();
     docks->update();
@@ -136,7 +139,7 @@ void ofApp::draw(){
     stringstream text2;
     text2 << "Tempo " << tempo <<endl
     << "is playing?: " << isPlay << endl << endl
-    << "Time Signature :"<< transport->meter << endl << endl
+    << "Time Signature :"<< module->beatAmt <<"/"<<module->beatResolution<< endl << endl
     << "Current Beat " << currentBeat << " / "<<"Current Bar "<< currentBar << endl
     << "Beatgrid : " << beatGrid<<endl;
     ofDrawBitmapString(text2.str(), 20, 60);
@@ -249,31 +252,26 @@ void ofApp::keyPressed(int key){
     }
 }
 //--------------------------------------------------------------
-void ofApp::AbletonPlayed(bool &eventArgs){
-    if(!bHost){//slave (Ableton sync mode)
-        isPlay = eventArgs;
-        transport->start->setChecked(isPlay);
-        setSoundstream(isPlay);
-    }
-}
-//--------------------------------------------------------------
 void ofApp::receiveTransport(Ableton &eventArgs){
-    tempo = eventArgs.tempo;
+    int tempoAsInt = tempo;
+    
     currentBar = eventArgs.bar;
     currentBeat = eventArgs.beat;
     
-    timeSignature = to_string(eventArgs.meter.beatPerBar) + "/" + to_string(eventArgs.meter.beatResolution);
-    if(isPlay)
-        transport->setTimeSignature(eventArgs.meter.beatResolution, eventArgs.meter.beatPerBar);
     
-    divisor = eventArgs.meter.beatResolution;
-    if(eventArgs.meter.beatResolution == 4){
-        playHeadAmt = eventArgs.meter.beatPerBar * 4; //calculate the amount of semi-crochet per bar.
-    }else if(eventArgs.meter.beatResolution == 8){
-        playHeadAmt = eventArgs.meter.beatPerBar * 2;
-    }else if(eventArgs.meter.beatResolution == 16){
-        playHeadAmt = eventArgs.meter.beatPerBar;
-    }
+//    timeSignature = to_string(eventArgs.meter.beatPerBar) + "/" + to_string(eventArgs.meter.beatResolution);
+    
+//    if(isPlay)
+//        transport->setTimeSignature(eventArgs.meter.beatResolution, eventArgs.meter.beatPerBar);
+//    
+//    divisor = eventArgs.meter.beatResolution;
+//    if(eventArgs.meter.beatResolution == 4){
+//        playHeadAmt = eventArgs.meter.beatPerBar * 4; //calculate the amount of semi-crochet per bar.
+//    }else if(eventArgs.meter.beatResolution == 8){
+//        playHeadAmt = eventArgs.meter.beatPerBar * 2;
+//    }else if(eventArgs.meter.beatResolution == 16){
+//        playHeadAmt = eventArgs.meter.beatPerBar;
+//    }
 }
 //--------------------------------------------------------------
 void ofApp::MIDICallback(MidiState &eventArgs){
@@ -285,17 +283,17 @@ void ofApp::MIDICallback(MidiState &eventArgs){
 void ofApp::onMeterChange(currentMeter &e){
     beatAmount = e.beats;
     beatResolution = e.beatResolution;
+    
+    timeSignature = to_string(beatAmount) + "/" + to_string(beatResolution);
+    ofLogNotice()<<"Current Meter :: "<<timeSignature<<endl;
     module->setMeter(beatAmount, beatResolution);
+//    transport->setTimeSignature(beatAmount, beatResolution);
 }
 //--------------------------------------------------------------
-void ofApp::globalState(TransportMessage &eventArgs){
-    if(bHost){
-        isPlay = eventArgs.play;
-        setSoundstream(isPlay);
-    }
-    string tempoIn = eventArgs.timeSignature;
-    
-    tempoIn.erase(std::remove(tempoIn.begin(),tempoIn.end(),'/'),tempoIn.end());
+void ofApp::appPlayed(bool &eventArgs){
+    isPlay = eventArgs;
+    transport->start->setChecked(isPlay);
+    setSoundstream(isPlay);
 }
 //--------------------------------------------------------------
 void ofApp::setMode(bool &eventArgs){
@@ -317,6 +315,8 @@ void ofApp::setMode(bool &eventArgs){
 //--------------------------------------------------------------
 void ofApp::tempoChange(int &eventArgs){
     tempo = eventArgs;
+    if(!bHost)
+        transport->tempoSlider->setValue(tempo);
     bps = (tempo / 60.) * ticksPerBeat;
     
     for(auto &x:clockGroup)

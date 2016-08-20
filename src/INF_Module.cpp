@@ -208,7 +208,6 @@ void INF_Module::setMeter(int _amount, int _beatResolution){
         }
         
     }
-    cout<<beatAmt<<"/"<<beatResolution<<endl;
 }
 //--------------------------------------------------------------
 void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){

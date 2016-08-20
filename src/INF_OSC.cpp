@@ -20,28 +20,40 @@ void OSC_Receive::update(){
             msg_strings[i] = "";
         }
     }
+    
+    
     while(receiver.hasWaitingMessages()){
         ofxOscMessage m;
         receiver.getNextMessage(m);
-        Ableton state;
-        
+
         if(m.getAddress()== "/transport/tempo"){
-            state.tempo = m.getArgAsFloat(0);
+            tempo = m.getArgAsFloat(0);
+            ofNotifyEvent(tempoChange, tempo, this);
         }else if(m.getAddress()== "/transport/currentBar"){
             state.bar = m.getArgAsInt(0);
+            ofNotifyEvent(AbletonState, state, this);
         }else if(m.getAddress()== "/transport/currentBeat"){
             state.beat = m.getArgAsInt(0);
-        }else if(m.getAddress()== "/transport/beatPerBar"){
-            state.meter.beatPerBar = m.getArgAsInt(0);
-        }else if(m.getAddress()== "/transport/beatResolution"){
-            state.meter.beatResolution = m.getArgAsInt(0);
+            ofNotifyEvent(AbletonState, state, this);
         }
-        ofNotifyEvent(AbletonState, state, this);
         
-        if(m.getAddress()== "/transport/play"){
+        if(m.getAddress()== "/state/play"){
             bool state;
             state = m.getArgAsBool(0);
+            if(state)
+                ofLogNotice()<<"Ableton Played"<<endl;
+            else
+                ofLogNotice()<<"Ableton Stopped"<<endl;
             ofNotifyEvent(onAbletonStart, state, this);
+        }
+        
+        if(m.getAddress()== "/meter/beatPerBar"){
+            ofLogNotice()<<"Meter Changed"<<endl;
+            cMeter.beats = (int)m.getArgAsFloat(0);
+            ofNotifyEvent(onMeterChange, cMeter, this);
+        }else if(m.getAddress()== "/meter/beatResolution"){
+            cMeter.beatResolution = (int)m.getArgAsFloat(0);
+            ofNotifyEvent(onMeterChange, cMeter, this);
         }
         
     }

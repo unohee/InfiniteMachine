@@ -77,10 +77,9 @@ public:
     //Events used
     void keyPressed(int key);
     //custom event callbacks
-    void AbletonPlayed(bool &eventArgs);
     void receiveTransport(Ableton &eventArgs);
     void MIDICallback(MidiState &eventArgs);
-    void globalState(TransportMessage &eventArgs);
+    void appPlayed(bool &eventArgs);
     void onMeterChange(currentMeter &e);
     void setMode(bool &eventArgs);
     void tempoChange(int &eventArgs);

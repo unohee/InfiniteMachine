@@ -4,12 +4,6 @@
 #include "ofMain.h"
 #include "Meter.h"
 
-struct TransportMessage{
-    float BPM;
-    bool play;
-    string timeSignature;
-};
-
 class INF_Transport{
 public:
     
@@ -20,10 +14,9 @@ public:
     ofPoint pos;
     
     ofEvent<int>tempoChange;
-    ofEvent<TransportMessage> TransportCallback;
+    ofEvent<bool> playPressed;
     ofEvent<currentMeter> MeterChanged;
     
-    TransportMessage currentState;
     currentMeter cMeter;
     maxiOsc clock;
     int ticksPerBeat, beatResolution;

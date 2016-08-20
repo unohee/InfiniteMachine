@@ -89,6 +89,6 @@ void INF_Transport::onSliderEvent(ofxDatGuiSliderEvent e){
 }
 //--------------------------------------------------------------
 void INF_Transport::onToggleEvent(ofxDatGuiToggleEvent e){
-    currentState.play = e.checked;
-    ofNotifyEvent(TransportCallback, currentState, this);
+    bool play = e.checked;
+    ofNotifyEvent(playPressed, play, this);
 }
