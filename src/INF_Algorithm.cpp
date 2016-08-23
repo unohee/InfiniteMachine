@@ -7,23 +7,34 @@
 //
 
 #include "INF_Algorithm.h"
-
-vector<bool> INF_Algorithm::makeComp(Sequence s){
+INF_Algorithm::INF_Algorithm(){
+    ofLogNotice()<<"Algorithm agent called"<<endl;
+}
+INF_Algorithm::~INF_Algorithm(){
+    ofLogNotice()<<"Deallocate Algorithms"<<endl;
+}
+vector<bool> INF_Algorithm::makeComp(vector<bool> &v){
     //complementary rhythm set for Euclidean Rhythm
-    int offset = 0;
+    int offset = 0; int onset = 0;
     vector<bool> comp;
-    comp.reserve(s.length);
+    comp.reserve(v.size());
     
     int pulse, length;
-    length = s.length;
-    if(s.onset >=1)
-        pulse = s.length - s.onset;//E(n,k)'s subset is E(n-k, k)
+    length = v.size();
+
+    for(int i=0; i < v.size();i++){
+        if(v[i] == 1)
+            onset ++;// count input sequence's onsets
+    }
+    
+    if(onset >=1)
+        pulse = length - onset;//E(n,k)'s subset is E(n-k, k)
     
     Bjorklund *b = new Bjorklund(length, pulse);
     comp = b->LoadSequence();
 
     for(int i=0; i<comp.size();i++){
-        if(s.pattern[i] == true && comp[i]== true){
+        if(v[i] == true && comp[i]== true){
             offset++;
             std::rotate(comp.begin(), comp.begin()+(offset-1), comp.end());
         }

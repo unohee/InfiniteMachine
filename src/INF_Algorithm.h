@@ -20,7 +20,11 @@ class INF_Algorithm{
 public:
     //no member variable. everything is arbitrary.
     //pattern processing algorithms
-    vector<bool> makeComp(Sequence s);
+    
+    INF_Algorithm();
+    ~INF_Algorithm();
+    
+    vector<bool> makeComp(vector<bool> &v);
     vector<bool> join(vector<bool> first, vector<bool> second);
     vector<bool> join(vector<Sequence> &v);
     vector<bool> multiply(Sequence s, int mult);

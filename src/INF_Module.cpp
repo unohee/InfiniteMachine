@@ -372,53 +372,12 @@ void INF_Module::seqParamChanged(Controls &e){
         
         for(auto &x:controls){
             if(x->bEuclid == true && x->bEnabled == true && e.length != 0 && e.pulse != 0){
-                auto_ptr<Bjorklund> euclid = auto_ptr<Bjorklund>(new Bjorklund());
-                
-                vector<bool> first, second;
-                GCD *g = new GCD();
-                
-                //before apply Bjorklund's Algorithm, we need to find the GCD of Two input number (which is length and amount of onset)
-                g->gen(seq_len, seq_pulse);
-                //GCD algorithm finds the subsets through the process of finding GCD(Greator Common Divisor)
-                if(seq_pulse > 1){
-                    if(g->subsets.size() > 2 && g->subsets[1]->length + g->subsets[2]->length == seq_len){
-                        //this is compound set.
-                        //it joins 2 euclidean rhythms into one compound rhythm. it is different as simply applying two numbers into Bjorklund algorithm. it makes rhythm sequence more interesting while it still explicits the characteristic feature of Euclidean rhythm, or poly-rhythm.
-                        ofLogNotice()<<"Compound Euclidean 2-3"<<"Size of subsets: "<<g->subsets.size()<<endl;
-                        euclid->init(g->subsets[1]->length, g->subsets[1]->onset);
-                        first = euclid->LoadSequence();
-                        euclid->init(g->subsets[2]->length, g->subsets[2]->onset);
-                        second = euclid->LoadSequence();
-                        output = al.join(first, second);
-                    }else if(g->subsets.size() <=2){
-                        ofLogNotice()<<"Single Euclidean"<<endl;
-                        euclid->init(seq_len, seq_pulse);
-                        output = euclid->LoadSequence();
-                    }else{
-                        ofLogNotice()<<"Single Euclidean"<<endl;
-                        euclid->init(seq_len, seq_pulse);
-                        output = euclid->LoadSequence();
-                    }
-                }else{
-                    euclid->init(seq_len, seq_pulse);
-                    output = euclid->LoadSequence();
-                }
-
-                tracks[e.index]->getPattern(output);
+                SeqAgent = auto_ptr<INF_Sequencer>(new INF_Sequencer());
+                SeqAgent->setup(seq_len, seq_pulse, 4);
+                SeqAgent->generate();
+                tracks[e.index]->getPattern(SeqAgent->getPattern());
                 stepGui[e.index]->setSequence(tracks[e.index]->pattern);
-                euclid.reset();
                 
-                
-                cout<<"Output :";
-                for(outputIterator = output.begin();
-                    outputIterator != output.end();
-                    outputIterator++){
-                    if(*outputIterator == 1)
-                        cout<<"X";
-                    else
-                        cout<<".";
-                }
-                cout<<endl;
             }
         }
         stepGui[e.index]->setup();

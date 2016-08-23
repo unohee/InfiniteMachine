@@ -19,6 +19,7 @@
 		26BCE1BAC12EDDA81570F8AB /* circleStep.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B165337A72AED32E4D60AA05 /* circleStep.cpp */; };
 		35FE521EC5F2C509C0449BF1 /* CircleButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68A91892A6BDCC0F278922E1 /* CircleButton.cpp */; };
 		3AEFE4FA8AD5C72671AD07F8 /* ofxRtMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 712B183BC00EBFFB1EEA5AB8 /* ofxRtMidiOut.cpp */; };
+		461DA43C1D6933B90069732C /* INF_Sequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 461DA43A1D6933B90069732C /* INF_Sequencer.cpp */; };
 		4640CBDA1D61218000FA7457 /* GCD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4640CBD81D61218000FA7457 /* GCD.cpp */; };
 		46742DCE1D5C224800B3C162 /* INF_Clock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46742DCC1D5C224800B3C162 /* INF_Clock.cpp */; };
 		46BB97E01D3BED7600129993 /* INF_Controls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46BB97DE1D3BED7600129993 /* INF_Controls.cpp */; };
@@ -128,6 +129,8 @@
 		440B2B891BD019685EF360B8 /* maxiMFCC.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = maxiMFCC.cpp; path = ../../../addons/ofxMaxim/libs/maxiMFCC.cpp; sourceTree = SOURCE_ROOT; };
 		444657A12E59D0ED86981498 /* TimerListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = TimerListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/TimerListener.h; sourceTree = SOURCE_ROOT; };
 		4448415E40740409C6DAEB22 /* Dat_Docker.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Dat_Docker.cpp; path = src/Dat_Docker.cpp; sourceTree = SOURCE_ROOT; };
+		461DA43A1D6933B90069732C /* INF_Sequencer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Sequencer.cpp; sourceTree = "<group>"; };
+		461DA43B1D6933B90069732C /* INF_Sequencer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = INF_Sequencer.hpp; sourceTree = "<group>"; };
 		4640CBD81D61218000FA7457 /* GCD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GCD.cpp; sourceTree = "<group>"; };
 		4640CBD91D61218000FA7457 /* GCD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCD.h; sourceTree = "<group>"; };
 		464697F11D5E894C00CC9DF1 /* Meter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Meter.h; sourceTree = "<group>"; };
@@ -331,6 +334,8 @@
 				57E998CF210A3C7DC57CDF19 /* INF_Module.h */,
 				46BB97DE1D3BED7600129993 /* INF_Controls.cpp */,
 				46BB97DF1D3BED7600129993 /* INF_Controls.hpp */,
+				461DA43A1D6933B90069732C /* INF_Sequencer.cpp */,
+				461DA43B1D6933B90069732C /* INF_Sequencer.hpp */,
 				46D61F831D566B79007BC67A /* Sequence.h */,
 				464697F11D5E894C00CC9DF1 /* Meter.h */,
 			);
@@ -843,6 +848,7 @@
 				C6FE64F74F1EA1D98C8F9847 /* ofxMidiMessage.cpp in Sources */,
 				83D9F930112E0944444124EE /* ofxMidiOut.cpp in Sources */,
 				63D0FD8734D5760B8080C901 /* RtMidi.cpp in Sources */,
+				461DA43C1D6933B90069732C /* INF_Sequencer.cpp in Sources */,
 				72A929D3561B8232A182ABFC /* ofxOscBundle.cpp in Sources */,
 				5864AD82E20F15536D054EA3 /* ofxOscMessage.cpp in Sources */,
 				4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */,

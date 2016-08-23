@@ -10,6 +10,7 @@
 #include "ofxDatGui.h"
 #include "Sequence.h"
 #include "INF_Controls.hpp"
+#include "INF_Sequencer.hpp"
 #include "INF_Algorithm.h"
 //Custom GUI
 #include "RoundedButton.h"
@@ -35,7 +36,7 @@ public:
     //smart pointers
     unique_ptr<ofRectangle> rect_ptr;
     unique_ptr<RoundedButton> random;
-    
+    auto_ptr<INF_Sequencer> SeqAgent;
     //vectors
     vector<RButtonPtr>rButtons;
     vector<CyclicSeq>stepGui;

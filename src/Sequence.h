@@ -31,7 +31,6 @@ public:
     void getPattern(vector<bool>v){
         length = v.size();
         pattern.reserve(length);
-        velocity.reserve(length);
         pattern = move(v);//copy
         
         for(int i=0; i < pattern.size();i++){
