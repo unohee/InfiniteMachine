@@ -24,11 +24,21 @@ public:
     Sequence():index(0), onset(0), length(0), pitch(36){
         
     };
+    Sequence(int _index, vector<bool> &v):index(_index), length(16), pitch(36){
+        for(int i=0; i < pattern.size();i++){
+            if(pattern[i] == 1)
+                onset ++;
+        }
+        length = v.size();
+        pattern.reserve(length);
+        pattern = move(v);//copy
+        
+    }
     ~Sequence(){
         pattern.clear();
         velocity.clear();
     }
-    void getPattern(vector<bool>v){
+    void setPattern(vector<bool>v){
         length = v.size();
         pattern.reserve(length);
         pattern = move(v);//copy
@@ -38,12 +48,4 @@ public:
                 onset ++;
         }
     }
-    /*
-    vector<bool> operator +(const Sequence &d){
-        for(int i=0; i < d.pattern.size();i++){
-            pattern.insert(pattern.end()+i, d.pattern[i]);
-        }
-        return pattern;
-    }
-     */
 };

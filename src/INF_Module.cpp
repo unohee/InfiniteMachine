@@ -41,7 +41,7 @@ void INF_Module::setup(){
             //Add Euclidean Rhythm  (4:16)
             auto_ptr<Bjorklund>euclid = auto_ptr<Bjorklund>(new Bjorklund(16,4));
             euclid->init();
-            t->getPattern(euclid->LoadSequence());
+            t->setPattern(euclid->LoadSequence());
             cyclic->setSequence(t->pattern);
             euclid.reset();
         }else{
@@ -267,7 +267,6 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
             }
             guiLoc.y = rect_ptr->getTopLeft().y;
             stepGui.pop_back();
-            
             controls.pop_back();
             tracks.pop_back();
             if(seqAmt > 1){
@@ -284,6 +283,7 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
         for(auto &x:stepGui){
             int rand = (int)ofRandom(16);
             int newStepAmt = (rand > 4) ? rand : 4;
+            SeqAgent = auto_ptr<INF_Sequencer>(new INF_Sequencer());
             
             if(controls[x->index]->bEuclid == true && x->isEnabled == true){
                 if(x->index == 0){
@@ -294,14 +294,13 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
                         }
                     }while(rand == 0 || rand == 1);
                     
-                    auto_ptr<Bjorklund>euclid = auto_ptr<Bjorklund>(new Bjorklund(16,rand));
-                    euclid->init();
+                    SeqAgent->setup(16, rand, 4);
+                    SeqAgent->generate(); //generate Euclidean Sequence
                     x->stepAmt = 16;
-                    tracks[x->index]->getPattern(euclid->sequence);
+                    tracks[x->index]->setPattern(SeqAgent->getPattern());
                     x->setSequence(tracks[x->index]->pattern);
                     x->setup();
                     controls[x->index]->setSliders(16, rand);
-                    euclid.reset();
                 }else{
                     int rand1 = (int)ofRandom(newStepAmt);
                     
@@ -311,15 +310,14 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
                             break;
                         }
                     }while(rand1 == 0 || rand1 == 1);
+                    SeqAgent->setup(newStepAmt, rand1, 4);
+                    SeqAgent->generate(); //generate Euclidean Sequence
                     
-                    auto_ptr<Bjorklund>euclid = auto_ptr<Bjorklund>(new Bjorklund(newStepAmt,rand1));
-                    euclid->init();
                     x->stepAmt = newStepAmt;
-                    tracks[x->index]->getPattern(euclid->sequence);
+                    tracks[x->index]->setPattern(SeqAgent->getPattern());
                     x->setSequence(tracks[x->index]->pattern);
                     x->setup();
                     controls[x->index]->setSliders(newStepAmt, rand1);
-                    euclid.reset();
                 }
             }
         }
@@ -375,9 +373,8 @@ void INF_Module::seqParamChanged(Controls &e){
                 SeqAgent = auto_ptr<INF_Sequencer>(new INF_Sequencer());
                 SeqAgent->setup(seq_len, seq_pulse, 4);
                 SeqAgent->generate();
-                tracks[e.index]->getPattern(SeqAgent->getPattern());
+                tracks[e.index]->setPattern(SeqAgent->getPattern());
                 stepGui[e.index]->setSequence(tracks[e.index]->pattern);
-                
             }
         }
         stepGui[e.index]->setup();
