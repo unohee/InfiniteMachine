@@ -16,7 +16,8 @@ class DatIndex{
 public:
     
     ofEvent<int>pageChanged;
-    static ofEvent<int>pageChangedGlobal;
+    ofEvent<int>moduleAmt;
+    bool bAdded;
     
     ofPoint pos;
     int width, gap, size;
@@ -40,6 +41,7 @@ public:
     int getWidth(){return size;};
     void exit();//deletion process
     void onButtonEvent(ofxDatGuiButtonEvent e);
+    void pageCalled(int &eventArgs);
     
     
     

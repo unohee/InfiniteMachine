@@ -29,7 +29,8 @@ void ofApp::setup(){
     docks = new Dat_Docker(midi.midiOut->getPortList());
     ofAddListener(docks->deviceState, this, &ofApp::MIDICallback);//add EventListener.
     ofAddListener(docks->modeChange, this, &ofApp::setMode);
-    
+    ofAddListener(docks->browser->moduleAmt, this, &ofApp::onModuleCreated);
+    ofAddListener(docks->browser->pageChanged, this, &ofApp::onModuleSelect);
     //Sequencer
     module = unique_ptr<INF_Module>(new INF_Module(0));
     module->pos = ofPoint(0, docks->getHeight());
@@ -109,8 +110,8 @@ void ofApp::update(){
     if(!bHost)
         oscListener.update(); //Listening OSC...
 
-    if(!bHost && playHeadAmt != NULL && divisor != NULL){
-        accents.resize(playHeadAmt);
+//    if(!bHost && playHeadAmt != NULL && divisor != NULL){
+//        accents.resize(playHeadAmt);
 //        for(int i=0; i != playHeadAmt; i++){
 //            if(i % divisor == 0){//find strong beat and weak beats
 //                accents.at(i) = 1;
@@ -118,7 +119,7 @@ void ofApp::update(){
 //                accents.at(i) = 0;
 //            }
 //        }
-    }
+//    }
     module->update();
     docks->update();
     transport->update();
@@ -183,6 +184,20 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
         //THIS DOES NOT SEND ANY AUDIO SIGNAL.
     }
     unique_lock<mutex> lock(audioMutex);
+}
+//--------------------------------------------------------------
+void ofApp::onModuleCreated(int &eventArgs){
+    vector<int> v;
+    
+    for(int i=0;i != eventArgs;i++){
+        v.insert(v.begin()+i, eventArgs);
+    }
+    cout<<"Size : "<<v.size()<<endl;
+}
+//--------------------------------------------------------------
+void ofApp::onModuleSelect(int &eventArgs){
+
+    //calls pages(vector of INF_Module)
 }
 //--------------------------------------------------------------
 void ofApp::multipleClocks(ClockOut &e){

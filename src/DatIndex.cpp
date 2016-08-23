@@ -7,25 +7,24 @@
 //
 
 #include "DatIndex.h"
-
-ofEvent<int> DatIndex::pageChangedGlobal = ofEvent<int>();
-
 DatIndex::DatIndex():size(30), buttonIndex(1), pos(ofPoint(0,0)), gap(30), width(0){
     //constructor
     width = pos.x + gap;
     //the first page
     DatButton *db;
-    db = new DatButton(ofPoint(width+gap*buttonIndex,pos.y), &buttonIndex);
+    db = new DatButton(ofPoint(width+gap*buttonIndex,pos.y), buttonIndex);
     buttons.push_back(db);
-
+    ofAddListener(db->moduleCall, this, &DatIndex::pageCalled);
 }
+//--------------------------------------------------------------
 DatIndex::DatIndex(int x, int y):size(30), buttonIndex(1), pos(ofPoint(x,y)), gap(30){
     width = pos.x + gap;
     DatButton *db;
-    db = new DatButton(ofPoint(width+gap*buttonIndex,pos.y), &buttonIndex);
+    db = new DatButton(ofPoint(width+gap*buttonIndex,pos.y), buttonIndex);
     buttons.push_back(db);
+    ofAddListener(db->moduleCall, this, &DatIndex::pageCalled);
 }
-
+//--------------------------------------------------------------
 void DatIndex::setup(){
     //PAGE Controls
     ofxDatGuiButton *b;
@@ -46,27 +45,30 @@ void DatIndex::setup(){
     size += gap;
         control.push_back(b);
 }
-
+//--------------------------------------------------------------
 void DatIndex::update(){
     if(!buttons.empty())
         for(auto &b:buttons)b->update();
     for(auto &c:control)c->update();//CONTROLLER UPDATE
 }
+//--------------------------------------------------------------
 void DatIndex::render(){
     if(!buttons.empty())
         for(auto &b:buttons)b->render();
     
     for(auto &c:control)c->draw();//CONTROLLER RENDERING
 }
+//--------------------------------------------------------------
 void DatIndex::onButtonEvent(ofxDatGuiButtonEvent e){
     if(e.target->is("+")){
         if(buttonIndex < 8){
             buttonIndex ++;
             DatButton *db;
-            db = new DatButton(ofPoint(width+gap*buttonIndex,0), &buttonIndex);
+            db = new DatButton(ofPoint(width+gap*buttonIndex,0), buttonIndex);
             size += gap;
+            ofAddListener(db->moduleCall, this, &DatIndex::pageCalled);
             buttons.push_back(db);
-            
+            bAdded = true;
         }
         
     }else if(e.target->is("-")){
@@ -74,11 +76,19 @@ void DatIndex::onButtonEvent(ofxDatGuiButtonEvent e){
             buttonIndex --;
             buttons.pop_back();
             size -= gap;
+            ofRemoveListener(buttons[buttonIndex]->moduleCall, this, &DatIndex::pageCalled);
             delete buttons[buttonIndex];
-            
+            bAdded = false;
         }else{
             
         }
     }
+    ofNotifyEvent(moduleAmt, buttonIndex, this);
 }
+//--------------------------------------------------------------
+void DatIndex::pageCalled(int &eventArgs){
+    ofLogNotice()<<"Page "<<eventArgs<<" is called"<<endl;
+    ofNotifyEvent(pageChanged, eventArgs, this);
+}
+//--------------------------------------------------------------
 

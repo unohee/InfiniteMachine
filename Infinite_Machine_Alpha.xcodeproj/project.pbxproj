@@ -19,6 +19,7 @@
 		26BCE1BAC12EDDA81570F8AB /* circleStep.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B165337A72AED32E4D60AA05 /* circleStep.cpp */; };
 		35FE521EC5F2C509C0449BF1 /* CircleButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68A91892A6BDCC0F278922E1 /* CircleButton.cpp */; };
 		3AEFE4FA8AD5C72671AD07F8 /* ofxRtMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 712B183BC00EBFFB1EEA5AB8 /* ofxRtMidiOut.cpp */; };
+		46117E981D6CF6380004B452 /* DatButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46117E971D6CF6380004B452 /* DatButton.cpp */; };
 		461DA43C1D6933B90069732C /* INF_Sequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 461DA43A1D6933B90069732C /* INF_Sequencer.cpp */; };
 		4640CBDA1D61218000FA7457 /* GCD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4640CBD81D61218000FA7457 /* GCD.cpp */; };
 		46742DCE1D5C224800B3C162 /* INF_Clock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46742DCC1D5C224800B3C162 /* INF_Clock.cpp */; };
@@ -129,6 +130,7 @@
 		440B2B891BD019685EF360B8 /* maxiMFCC.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = maxiMFCC.cpp; path = ../../../addons/ofxMaxim/libs/maxiMFCC.cpp; sourceTree = SOURCE_ROOT; };
 		444657A12E59D0ED86981498 /* TimerListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = TimerListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/TimerListener.h; sourceTree = SOURCE_ROOT; };
 		4448415E40740409C6DAEB22 /* Dat_Docker.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Dat_Docker.cpp; path = src/Dat_Docker.cpp; sourceTree = SOURCE_ROOT; };
+		46117E971D6CF6380004B452 /* DatButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatButton.cpp; sourceTree = "<group>"; };
 		461DA43A1D6933B90069732C /* INF_Sequencer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = INF_Sequencer.cpp; sourceTree = "<group>"; };
 		461DA43B1D6933B90069732C /* INF_Sequencer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = INF_Sequencer.hpp; sourceTree = "<group>"; };
 		4640CBD81D61218000FA7457 /* GCD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GCD.cpp; sourceTree = "<group>"; };
@@ -662,10 +664,11 @@
 				46E849061D48076C0068B18D /* INF_Transport.h */,
 				4448415E40740409C6DAEB22 /* Dat_Docker.cpp */,
 				406489C76FF642F0D7A5F7BD /* Dat_Docker.h */,
+				46117E971D6CF6380004B452 /* DatButton.cpp */,
 				46E162266356FA3B71A5C741 /* DatButton.h */,
-				46BB97DD1D3BE2F500129993 /* ButtonEvent.h */,
 				7A38E9C2B2D99A1E32148449 /* DatIndex.cpp */,
 				FB9E78A215D2BE59162DFA10 /* DatIndex.h */,
+				46BB97DD1D3BE2F500129993 /* ButtonEvent.h */,
 				9B08360F51D393EF2685DFC4 /* DatPanel.h */,
 				41D2D13F01658E2E8F8EAE0E /* RoundedButton.cpp */,
 				85ACE15C3C663588C685C4C4 /* RoundedButton.h */,
@@ -807,6 +810,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46117E981D6CF6380004B452 /* DatButton.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				840A58883380B43C41B86786 /* Bjorklund.cpp in Sources */,

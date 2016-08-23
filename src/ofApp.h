@@ -77,6 +77,8 @@ public:
     //Events used
     void keyPressed(int key);
     //custom event callbacks
+    void onModuleCreated(int &eventArgs);
+    void onModuleSelect(int &eventArgs);
     void receiveTransport(Ableton &eventArgs);
     void MIDICallback(MidiState &eventArgs);
     void appPlayed(bool &eventArgs);
