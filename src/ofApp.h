@@ -20,6 +20,7 @@
 typedef INF_MIDI MidiOut;
 typedef OSC_Receive oscIn;
 typedef INF_Clock Metro;
+typedef unique_ptr<INF_Module> Loop;
 class ofApp : public ofBaseApp {
 public:
     
@@ -28,6 +29,10 @@ public:
     unique_ptr<INF_Module> module;
     unique_ptr<INF_Transport> transport;
     
+    ofParameter<int>loopIndices;
+    ofParameter<int>deviceFocus;
+    
+    ofPoint modPos;
     //Network component
     MidiOut midi; //MIDI OUTPUT
     oscIn oscListener; //OSC Receiver (from Ableton)
@@ -77,7 +82,7 @@ public:
     //Events used
     void keyPressed(int key);
     //custom event callbacks
-    void onModuleCreated(int &eventArgs);
+    void onModuleCreated(string &eventArgs);
     void onModuleSelect(int &eventArgs);
     void receiveTransport(Ableton &eventArgs);
     void MIDICallback(MidiState &eventArgs);

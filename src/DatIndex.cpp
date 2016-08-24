@@ -36,7 +36,6 @@ void DatIndex::setup(){
     size += gap;
         control.push_back(b);
     
-    
     b =new ofxDatGuiButton("-");
     b->setStripe(ofColor(0,255,46), 2);
     b->setPosition(pos.x+gap,pos.y);
@@ -60,8 +59,13 @@ void DatIndex::render(){
 }
 //--------------------------------------------------------------
 void DatIndex::onButtonEvent(ofxDatGuiButtonEvent e){
+    string target;
+    target = e.target->getLabel();
+    ofLogNotice()<<target<<endl;
+    ofNotifyEvent(moduleAdded, target, this);
     if(e.target->is("+")){
         if(buttonIndex < 8){
+
             buttonIndex ++;
             DatButton *db;
             db = new DatButton(ofPoint(width+gap*buttonIndex,0), buttonIndex);
@@ -83,7 +87,7 @@ void DatIndex::onButtonEvent(ofxDatGuiButtonEvent e){
             
         }
     }
-    ofNotifyEvent(moduleAmt, buttonIndex, this);
+    
 }
 //--------------------------------------------------------------
 void DatIndex::pageCalled(int &eventArgs){

@@ -51,16 +51,18 @@ void INF_Controls::setup(){
     d->select(1);
     d->onDropdownEvent(this, &INF_Controls::onDropdownEvent);
     components.push_back(d);
-
+    
+    
+    
+    //STEPS
     pos.y += d->getHeight();
+    setComp(pos);
     shared_ptr<ofxDatGuiSlider> s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("STEP", 4,16));
     s->setPrecision(0);
     s->setPosition(pos.x, pos.y);
     s->setValue(seq_len);
     s->onSliderEvent(this, &INF_Controls::onSliderEvent);
     sliders.push_back(s);
-    
-    setComp(pos);
     
     //PULSES
     pos.y += s->getHeight();
@@ -115,22 +117,47 @@ void INF_Controls::setup(){
 void INF_Controls::setComp(ofPoint p){
     ofPoint pos;
     pos = p;
-    vector<string>target;
-    target.reserve(8);
-    for(int i=1;i <= 8;i++)//populate string
-        target.push_back(to_string(i));
-    shared_ptr<ofxDatGuiDropdown> d = shared_ptr<ofxDatGuiDropdown>(new ofxDatGuiDropdown("Target", target));
-    d->setPosition(pos.x, pos.y);
-    compSet.push_back(d);
-    
-    //MIDI NOTE
-    pos.y += d->getHeight();
-    shared_ptr<ofxDatGuiSlider> s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("MIDI NOTE", 12,108));
+
+    //STEPS
+    shared_ptr<ofxDatGuiSlider> s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("STEP", 4,16));
     s->setPrecision(0);
+    s->setEnabled(false);
     s->setPosition(pos.x, pos.y);
-    s->setValue(12);
+    s->setValue(seq_len);
     s->onSliderEvent(this, &INF_Controls::onSliderEvent);
     compSet.push_back(s);
+    
+    //PULSES
+    pos.y += s->getHeight();
+    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("PULSES", 0,seq_len));
+    if(bEuclid)
+        s->setMin(1);
+    else
+        s->setMin(0);
+    s->setPrecision(0);
+    s->setEnabled(false);
+    s->setPosition(pos.x, pos.y);
+    s->setValue(seq_pulse);
+    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
+    compSet.push_back(s);
+    
+    //Target
+    pos.y += s->getHeight();
+    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("TARGET", 1,8));
+    s->setPrecision(0);
+    s->setValue(1);
+    s->setPosition(pos.x, pos.y);
+    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
+    compSet.push_back(s);
+    
+    pos.y += s->getHeight();
+    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("TICKS", 2,4));
+    s->setPrecision(0);
+    s->setPosition(pos.x, pos.y);
+    s->setValue(4);
+    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
+    compSet.push_back(s);
+
 }
 //--------------------------------------------------------------
 void INF_Controls::update(){
@@ -157,12 +184,11 @@ void INF_Controls::draw(){
     if(!bComp){
         for(auto &x:sliders)
             x->draw();
-    }else{
+    }
+    if(bComp == true){
         for(auto &x:compSet)
             x->draw();
     }
-    for(auto &x:sliders)
-        x->draw();
     for(auto &x:components)
         x->draw();
     scroll->draw();
@@ -270,6 +296,12 @@ void INF_Controls::onSliderEvent(ofxDatGuiSliderEvent e){
         currentTick.index = index;
         currentTick.ticksPerBeat = (int)e.value;
         ofNotifyEvent(tickChange, currentTick, this);
+    }
+    
+    if(e.target->getLabel() =="TARGET"){
+        cout<<e.value<<endl;
+        seq_Params.target = e.value;
+        ofNotifyEvent(GuiCallback, seq_Params, this);
     }
     
 }

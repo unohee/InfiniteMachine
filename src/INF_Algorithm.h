@@ -24,13 +24,14 @@ public:
     INF_Algorithm();
     ~INF_Algorithm();
     
+    vector<bool> Euclidean(int len, int pulse);
     vector<bool> makeComp(vector<bool> &v);
     vector<bool> join(vector<bool> first, vector<bool> second);
     vector<bool> join(vector<Sequence> &v);
     vector<bool> multiply(Sequence s, int mult);
     vector<bool> permutate(int timespan, vector<bool> &v);
     vector<bool> compound(vector<bool> v, bool isRandom);
-    void GCD(Sequence s);
+//    void GCD(Sequence s);
     bool isEuclid(Sequence s);
     
     int beatsPerbar, beatResolution;

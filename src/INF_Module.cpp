@@ -131,7 +131,7 @@ void INF_Module::setGui(){
     p = ofPoint(x0,y0);
     rb = RButtonPtr(new RoundedButton());
     rb->setFontSize(10);
-    rb->setLabel("VELOCITY");
+    rb->setLabel("COMPSET");
     rb->setColor(ofColor(60), ofColor(255));
     rb->set(p);
     rButtons.push_back(rb);
@@ -279,7 +279,6 @@ void INF_Module::onButtonEvent(ofxDatGuiButtonEvent e){
 //--------------------------------------------------------------
 void INF_Module::customButtonEvent(ButtonEvent &e){
     if(e.label=="RANDOMIZE!"){
-
         for(auto &x:stepGui){
             int rand = (int)ofRandom(16);
             int newStepAmt = (rand > 4) ? rand : 4;
@@ -301,6 +300,7 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
                     x->setSequence(tracks[x->index]->pattern);
                     x->setup();
                     controls[x->index]->setSliders(16, rand);
+                    
                 }else{
                     int rand1 = (int)ofRandom(newStepAmt);
                     
@@ -321,6 +321,23 @@ void INF_Module::customButtonEvent(ButtonEvent &e){
                 }
             }
         }
+    }else if(e.label == "COMPSET"){
+        for(auto &x:stepGui){
+            if(controls[x->index]->bComp == true && x->isEnabled == true){
+                if(x->index >0){
+                    int length, pulses;
+                    SeqAgent = auto_ptr<INF_Sequencer>(new INF_Sequencer());
+                    SeqAgent->makeComp(tracks[0]->getPattern());
+                    tracks[x->index]->setPattern(SeqAgent->getPattern());
+                    x->stepAmt = tracks[x->index]->length;
+                    x->setSequence(tracks[x->index]->pattern);
+                    x->setup();
+                    controls[x->index]->setSliders(tracks[x->index]->length, tracks[x->index]->onset);
+                }
+            }
+        
+        }
+        
     }
 }
 //--------------------------------------------------------------
@@ -359,24 +376,33 @@ void INF_Module::seqParamChanged(Controls &e){
     vector<bool>::iterator outputIterator;
     Algorithms al;
     ofParameter<int> offset = 0;
-    int seq_len, seq_pulse;
+    int seq_len, seq_pulse, target;
     
     seq_len = e.length;
     seq_pulse = e.pulse;
     offset = e.offset;
+    target = e.target - 1;
+    
     if(e.index < stepGui.size() && e.index < tracks.size()){
         stepGui[e.index]->stepAmt = e.length;
         stepGui[e.index]->isEnabled = e.isOn;
         
-        for(auto &x:controls){
-            if(x->bEuclid == true && x->bEnabled == true && e.length != 0 && e.pulse != 0){
-                SeqAgent = auto_ptr<INF_Sequencer>(new INF_Sequencer());
-                SeqAgent->setup(seq_len, seq_pulse, 4);
-                SeqAgent->generate();
-                tracks[e.index]->setPattern(SeqAgent->getPattern());
-                stepGui[e.index]->setSequence(tracks[e.index]->pattern);
+        if(seq_len != 0 && seq_pulse != 0){
+            for(auto &x:controls){
+                if(x->bEuclid == true && x->bEnabled == true){
+                    SeqAgent = auto_ptr<INF_Sequencer>(new INF_Sequencer());
+                    SeqAgent->setup(seq_len, seq_pulse, 4);
+                    SeqAgent->generate();
+                    tracks[e.index]->setPattern(SeqAgent->getPattern());
+                    stepGui[e.index]->setSequence(tracks[e.index]->pattern);
+                }else if(x->bComp == true && x->bEnabled == true){
+//                    if(x->index != target){
+//
+//                    }
+                }
             }
         }
+
         stepGui[e.index]->setup();
     }
 }

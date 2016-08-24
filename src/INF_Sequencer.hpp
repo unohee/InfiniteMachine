@@ -26,8 +26,10 @@ public:
     ~INF_Sequencer();
     void setup(int length, int pulse, int timeSpan);
     void generate();
+    void makeComp(vector<bool> v);
+    void rotate(int offset);
     vector<bool> getPattern();
-    friend vector<bool> makeComp(INF_Sequencer &seq);
+    
     
     
     

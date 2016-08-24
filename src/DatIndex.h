@@ -16,7 +16,7 @@ class DatIndex{
 public:
     
     ofEvent<int>pageChanged;
-    ofEvent<int>moduleAmt;
+    ofEvent<string>moduleAdded;
     bool bAdded;
     
     ofPoint pos;

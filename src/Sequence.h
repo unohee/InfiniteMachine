@@ -48,4 +48,8 @@ public:
                 onset ++;
         }
     }
+    vector<bool> getPattern(){
+        if(pattern.size() >0)
+            return pattern;
+    }
 };

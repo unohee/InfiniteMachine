@@ -8,10 +8,46 @@
 
 #include "INF_Algorithm.h"
 INF_Algorithm::INF_Algorithm(){
-    ofLogNotice()<<"Algorithm agent called"<<endl;
+
 }
 INF_Algorithm::~INF_Algorithm(){
-    ofLogNotice()<<"Deallocate Algorithms"<<endl;
+
+}
+vector<bool> INF_Algorithm::Euclidean(int len, int pulse){
+    auto_ptr<Bjorklund> euclid = auto_ptr<Bjorklund>(new Bjorklund());
+    auto_ptr<GCD> gcd = auto_ptr<GCD>(new GCD());
+    vector<bool> output;
+    vector<bool> first, second;
+    
+    //before apply Bjorklund's Algorithm with two given numbers, we need to find the GCD of Two input number (which is length and amount of onset)
+    
+    //Note that minimum length of sequence is 2.
+    gcd->gen(len, pulse);
+    //GCD algorithm finds the subsets through the process of finding GCD(Greator Common Divisor)
+    if(pulse >= 1){
+        if(gcd->subsets.size() > 2 && gcd->subsets[1]->length + gcd->subsets[2]->length == len){
+            //this is compound set.
+            //it joins 2 euclidean rhythms into one compound rhythm. it is different as simply applying two numbers into Bjorklund algorithm. it makes rhythm sequence more interesting while it still explicits the characteristic feature of Euclidean rhythm, or poly-rhythm.
+            euclid->init(gcd->subsets[1]->length, gcd->subsets[1]->onset);
+            first = euclid->LoadSequence();
+            euclid->init(gcd->subsets[2]->length, gcd->subsets[2]->onset);
+            second = euclid->LoadSequence();
+            output = join(first, second);
+        }else if(gcd->subsets.size() <=2){
+            euclid->init(len, pulse);
+            output = euclid->LoadSequence();
+        }else{
+            euclid->init(len, pulse);
+            output = euclid->LoadSequence();
+        }
+    }else{
+        euclid->init(len, pulse);
+        output = euclid->LoadSequence();
+    }
+    first.clear(); second.clear();
+    euclid.reset();
+    gcd.reset();
+    return output;
 }
 vector<bool> INF_Algorithm::makeComp(vector<bool> &v){
     //complementary rhythm set for Euclidean Rhythm
@@ -29,17 +65,14 @@ vector<bool> INF_Algorithm::makeComp(vector<bool> &v){
     
     if(onset >=1)
         pulse = length - onset;//E(n,k)'s subset is E(n-k, k)
-    
-    Bjorklund *b = new Bjorklund(length, pulse);
-    comp = b->LoadSequence();
 
+    comp = Euclidean(length, pulse);
     for(int i=0; i<comp.size();i++){
         if(v[i] == true && comp[i]== true){
             offset++;
             std::rotate(comp.begin(), comp.begin()+(offset-1), comp.end());
         }
     }
-    delete b;
     return comp;
 }
 vector<bool> INF_Algorithm::compound(vector<bool> v, bool isRandom){

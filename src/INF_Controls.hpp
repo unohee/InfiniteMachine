@@ -7,11 +7,11 @@
 using namespace std;
 
 struct Controls{
-    int index, pitch, velocity;
+    int index, pitch, velocity, target;
     bool mode, isOn;
     ofParameter<int>length, pulse, offset;
     
-    Controls():index(0),length(16),pulse(4),offset(0){};
+    Controls():index(0),length(16),pulse(4),offset(0), target(0){};
 };
 
 struct Ticks{
@@ -62,10 +62,6 @@ public:
         "COMP"};
     const vector<string> note = {
         "Quaver", "Triplets", "Semi-Quaver","Quintuplet","Sextuplet","Septuplet"
-    };
-    
-    const vector<string> targets{
-        "1","2","3","4","5","6","7","8"
     };
     
     ofEvent<Controls>GuiCallback;

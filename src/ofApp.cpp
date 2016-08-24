@@ -3,15 +3,10 @@
 #include "ofApp.h"
 //--------------------------------------------------------------
 void ofApp::setup(){
-    cout<<"[Infinite Machine ALPHA.v02]"<<endl;
+    ofLogNotice()<<"[Infinite Machine ALPHA.v02]"<<endl;
     ofBackground(0);
     ofSetLogLevel(OF_LOG_VERBOSE);
     ofSetWindowTitle("Infinite Machine");
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    ofGLFWWindowSettings setting;
-    setting.resizable = false;
-
-    
     
     //variables for transport and maxiOsc
     timeSignature = "4/4";
@@ -29,8 +24,10 @@ void ofApp::setup(){
     docks = new Dat_Docker(midi.midiOut->getPortList());
     ofAddListener(docks->deviceState, this, &ofApp::MIDICallback);//add EventListener.
     ofAddListener(docks->modeChange, this, &ofApp::setMode);
-    ofAddListener(docks->browser->moduleAmt, this, &ofApp::onModuleCreated);
+    ofAddListener(docks->browser->moduleAdded, this, &ofApp::onModuleCreated);
     ofAddListener(docks->browser->pageChanged, this, &ofApp::onModuleSelect);
+    
+    
     //Sequencer
     module = unique_ptr<INF_Module>(new INF_Module(0));
     module->pos = ofPoint(0, docks->getHeight());
@@ -186,13 +183,14 @@ void ofApp::audioOut(float *output, int bufferSize, int nChannels){
     unique_lock<mutex> lock(audioMutex);
 }
 //--------------------------------------------------------------
-void ofApp::onModuleCreated(int &eventArgs){
-    vector<int> v;
-    
-    for(int i=0;i != eventArgs;i++){
-        v.insert(v.begin()+i, eventArgs);
+void ofApp::onModuleCreated(string &eventArgs){
+    //nested event callback from ofxdatgui button in DatIndex.cpp
+    if(eventArgs == "+"){//add new module page (add new bar in the loop)
+        
+    }else if(eventArgs == "-"){//subtract
+
     }
-    cout<<"Size : "<<v.size()<<endl;
+
 }
 //--------------------------------------------------------------
 void ofApp::onModuleSelect(int &eventArgs){
