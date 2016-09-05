@@ -381,7 +381,7 @@ void INF_Module::seqParamChanged(Controls &e){
     seq_len = e.length;
     seq_pulse = e.pulse;
     offset = e.offset;
-    target = e.target - 1;
+    seqTarget = e.target - 1;
     
     if(e.index < stepGui.size() && e.index < tracks.size()){
         stepGui[e.index]->stepAmt = e.length;
@@ -389,6 +389,7 @@ void INF_Module::seqParamChanged(Controls &e){
         
         if(seq_len != 0 && seq_pulse != 0){
             for(auto &x:controls){
+                
                 if(x->bEuclid == true && x->bEnabled == true){
                     SeqAgent = auto_ptr<INF_Sequencer>(new INF_Sequencer());
                     SeqAgent->setup(seq_len, seq_pulse, 4);
@@ -396,9 +397,7 @@ void INF_Module::seqParamChanged(Controls &e){
                     tracks[e.index]->setPattern(SeqAgent->getPattern());
                     stepGui[e.index]->setSequence(tracks[e.index]->pattern);
                 }else if(x->bComp == true && x->bEnabled == true){
-//                    if(x->index != target){
-//
-//                    }
+
                 }
             }
         }

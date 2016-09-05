@@ -56,7 +56,6 @@ void INF_Controls::setup(){
     
     //STEPS
     pos.y += d->getHeight();
-    setComp(pos);
     shared_ptr<ofxDatGuiSlider> s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("STEP", 4,16));
     s->setPrecision(0);
     s->setPosition(pos.x, pos.y);
@@ -109,55 +108,7 @@ void INF_Controls::setup(){
         x->setStripe(randC, 2);
     for(auto &x:sliders)
         x->setStripe(randC, 2);
-    for(auto &x:compSet)
-        x->setStripe(randC, 2);
     scroll->setStripe(randC, 2);
-}
-//--------------------------------------------------------------
-void INF_Controls::setComp(ofPoint p){
-    ofPoint pos;
-    pos = p;
-
-    //STEPS
-    shared_ptr<ofxDatGuiSlider> s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("STEP", 4,16));
-    s->setPrecision(0);
-    s->setEnabled(false);
-    s->setPosition(pos.x, pos.y);
-    s->setValue(seq_len);
-    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
-    compSet.push_back(s);
-    
-    //PULSES
-    pos.y += s->getHeight();
-    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("PULSES", 0,seq_len));
-    if(bEuclid)
-        s->setMin(1);
-    else
-        s->setMin(0);
-    s->setPrecision(0);
-    s->setEnabled(false);
-    s->setPosition(pos.x, pos.y);
-    s->setValue(seq_pulse);
-    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
-    compSet.push_back(s);
-    
-    //Target
-    pos.y += s->getHeight();
-    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("TARGET", 1,8));
-    s->setPrecision(0);
-    s->setValue(1);
-    s->setPosition(pos.x, pos.y);
-    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
-    compSet.push_back(s);
-    
-    pos.y += s->getHeight();
-    s = shared_ptr<ofxDatGuiSlider>(new ofxDatGuiSlider("TICKS", 2,4));
-    s->setPrecision(0);
-    s->setPosition(pos.x, pos.y);
-    s->setValue(4);
-    s->onSliderEvent(this, &INF_Controls::onSliderEvent);
-    compSet.push_back(s);
-
 }
 //--------------------------------------------------------------
 void INF_Controls::update(){
@@ -173,9 +124,6 @@ void INF_Controls::update(){
                     x->setValue(seq_len);
             }
         }
-    }else{
-        for(auto &x:compSet)
-            x->update();
     }
     scroll->update();
 }
@@ -183,10 +131,6 @@ void INF_Controls::update(){
 void INF_Controls::draw(){
     if(!bComp){
         for(auto &x:sliders)
-            x->draw();
-    }
-    if(bComp == true){
-        for(auto &x:compSet)
             x->draw();
     }
     for(auto &x:components)
@@ -239,7 +183,6 @@ void INF_Controls::onDropdownEvent(ofxDatGuiDropdownEvent e){
         sliders[1]->setMin(1);
     }else if(e.child ==2){
         bComp = true;
-        setComp(pos);
     }
     //send Sequencer mode
     seq_Params.index = index;

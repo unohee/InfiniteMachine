@@ -28,6 +28,7 @@ class INF_Module{
 public:
     
     int index, gap;
+    int seqTarget;
     ofPoint pos;
     float radius, cycleRad;
     int seqAmt, tempoVal;

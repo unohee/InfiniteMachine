@@ -35,6 +35,42 @@ typedef shared_ptr<ofxDatGuiSlider> DatSliderPtr;
 class INF_Controls{
 public:
     
+    ofEvent<Controls>GuiCallback;
+    ofEvent<Ticks>tickChange;
+    ofEvent<noteOut>sendPitch;
+    ofEvent<vOffset>vectorRotated;
+    
+    shared_ptr<ofxDatGuiScrollView> scroll;
+    Controls seq_Params;
+
+    ofPoint pos, currentPos;
+    bool bEuclid, bEnabled, bComp;
+    int index, beatPerBar;
+    int max_len;
+    int width;
+    ofParameter<int>seq_len, seq_pulse, offset;
+    string currentNote;
+    vector<string>notes;
+    string name;
+    
+    vector<DatGuiPtr>components;
+    vector<DatSliderPtr>sliders;
+    INF_Controls();
+    ~INF_Controls();
+    void setup();
+    void update();
+    void draw();
+    void onToggleEvent(ofxDatGuiToggleEvent e);
+    void onDropdownEvent(ofxDatGuiDropdownEvent e);
+    void onNoteSelection(ofxDatGuiScrollViewEvent e);
+    void onSliderEvent(ofxDatGuiSliderEvent e);
+    void setSliders(int length, int pulse);
+    void setLength(int length);
+    void setMax(int max);
+    int getWidth();
+    int getHeight();
+    
+protected:
     const vector<string> AbletonDrumMap ={
         "Kick", "Rim", "Snare", "Clap",
         "Clave", "Tom Low", "Hihat Closed", "Tom Mid",
@@ -63,42 +99,4 @@ public:
     const vector<string> note = {
         "Quaver", "Triplets", "Semi-Quaver","Quintuplet","Sextuplet","Septuplet"
     };
-    
-    ofEvent<Controls>GuiCallback;
-    ofEvent<Ticks>tickChange;
-    ofEvent<noteOut>sendPitch;
-    ofEvent<vOffset>vectorRotated;
-    
-    ofxDatGui *ptr;
-    shared_ptr<ofxDatGuiScrollView> scroll;
-    Controls seq_Params;
-
-    ofPoint pos, currentPos;
-    bool bEuclid, bEnabled, bComp;
-    int index, beatPerBar;
-    int max_len;
-    int width;
-    ofParameter<int>seq_len, seq_pulse, offset;
-    string currentNote;
-    vector<string>notes;
-    string name;
-    
-    vector<DatGuiPtr>components;
-    vector<DatGuiPtr>compSet;
-    vector<DatSliderPtr>sliders;
-    INF_Controls();
-    ~INF_Controls();
-    void setup();
-    void setComp(ofPoint p);
-    void update();
-    void draw();
-    void onToggleEvent(ofxDatGuiToggleEvent e);
-    void onDropdownEvent(ofxDatGuiDropdownEvent e);
-    void onNoteSelection(ofxDatGuiScrollViewEvent e);
-    void onSliderEvent(ofxDatGuiSliderEvent e);
-    void setSliders(int length, int pulse);
-    void setLength(int length);
-    void setMax(int max);
-    int getWidth();
-    int getHeight();
 };

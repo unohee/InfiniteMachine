@@ -140,7 +140,7 @@ void ofApp::draw(){
     << "Time Signature :"<< module->beatAmt <<"/"<<module->beatResolution<< endl << endl
     << "Current Beat " << currentBeat << " / "<<"Current Bar "<< currentBar << endl
     << "Beatgrid : " << beatGrid<<endl;
-    ofDrawBitmapString(text2.str(), 20, 60);
+//    ofDrawBitmapString(text2.str(), 20, 60);
     
     //ofxDatGui components
     ofPushStyle();
@@ -239,7 +239,6 @@ void ofApp::tickChanged(Ticks &eventArgs){
         if(i > 0){
             clockGroup[i]->playHead = clockGroup[i-1]->playHead;
         }
-        
     }
 
 }

@@ -116,7 +116,7 @@ vector<bool> INF_Algorithm::compound(vector<bool> v, bool isRandom){
     return output;
 }
 //--------------------------------------------------------------
-vector<bool> INF_Algorithm::permutate(int timespan, vector<bool> &v){
+vector<bool> INF_Algorithm::expand(int timespan, vector<bool> &v){
     //Permutation process
     //fits euclidean sequence of different timespan (notes) into 16th Grid (or Mother-set)
     //

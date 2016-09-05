@@ -29,7 +29,7 @@ public:
     vector<bool> join(vector<bool> first, vector<bool> second);
     vector<bool> join(vector<Sequence> &v);
     vector<bool> multiply(Sequence s, int mult);
-    vector<bool> permutate(int timespan, vector<bool> &v);
+    vector<bool> expand(int timespan, vector<bool> &v);
     vector<bool> compound(vector<bool> v, bool isRandom);
 //    void GCD(Sequence s);
     bool isEuclid(Sequence s);
